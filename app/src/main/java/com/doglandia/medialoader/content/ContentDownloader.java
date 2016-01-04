@@ -1,6 +1,5 @@
 package com.doglandia.medialoader.content;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -32,16 +31,11 @@ public class ContentDownloader {
         torrentDownloadTask.execute(torrentFileUrl);
     }
 
-    private static final Uri getTorrentFilesUri(String fileName) {
-        // todo
-        File sdCard = Environment.getExternalStorageDirectory();
-        File dir = new File (sdCard.getAbsolutePath() + "/MediaLoader/torrent");
-        dir.mkdirs();
-        File file = new File(dir, fileName);
-        Log.d(TAG, "file created for torrent at: "+file.getPath());
-        return Uri.parse(file.getPath());
-//        FileOutputStream f = new FileOutputStream(file);
+    private void initiateTorrent(File torrentFile){
+        File outputFile = new File(getTorrentOutputUri(torrentFile.getName()).getPath());
+        TorrentDownloader torrentDownloader = new TorrentDownloader(torrentFile, outputFile);
     }
+
 
     private class TorrentDownloadTask extends AsyncTask<String, Integer, File>{
 
@@ -55,7 +49,7 @@ public class ContentDownloader {
             try {
                 Response response = call.execute();
 
-                File downloadedFile = new File(getTorrentFilesUri("torrent.torrent").getPath());
+                File downloadedFile = new File(getTorrentFileUri("torrent.torrent").getPath());
 
                 BufferedSink sink = Okio.buffer(Okio.sink(downloadedFile));
                 sink.writeAll(response.body().source());
@@ -73,10 +67,30 @@ public class ContentDownloader {
         }
 
         @Override
-        protected void onPostExecute(File file) {
-            super.onPostExecute(file);
+        protected void onPostExecute(File downloadedTorrentFile) {
+            super.onPostExecute(downloadedTorrentFile);
+            Log.d(TAG, "finished downloading .torrent file");
 
-            // todo torrent file
+            initiateTorrent(downloadedTorrentFile);
         }
+    }
+
+    private static final Uri getTorrentFileUri(String fileName) {
+        File sdCard = Environment.getExternalStorageDirectory();
+        File dir = new File (sdCard.getAbsolutePath() + "/MediaLoader/torrent");
+        dir.mkdirs();
+        File file = new File(dir, fileName);
+        Log.d(TAG, "file created for torrent at: "+file.getPath());
+        return Uri.parse(file.getPath());
+//        FileOutputStream f = new FileOutputStream(file);
+    }
+
+    private static final Uri getTorrentOutputUri(String fileName){
+        File sdCard = Environment.getExternalStorageDirectory();
+        File dir = new File (sdCard.getAbsolutePath() + "/MediaLoader/media"); // media directory will be crawled for content
+        dir.mkdirs();
+        File file = new File(dir, fileName);
+        Log.d(TAG, "file created for output torrent at: "+file.getPath());
+        return Uri.parse(file.getPath());
     }
 }
