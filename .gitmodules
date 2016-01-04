@@ -1,0 +1,3 @@
+[submodule "ttorrent"]
+	path = ttorrent
+	url = https://github.com/mpetazzoni/ttorrent.git
