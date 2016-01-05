@@ -17,11 +17,17 @@ public class TorrentDownloader {
 
     private static final String TAG = "TorrentDownloader";
 
+    private File torrentFile;
+    private File outputFile;
+
     public TorrentDownloader(File torrentFile, File outputFile){
+        this.torrentFile = torrentFile;
+        this.outputFile = outputFile;
+    }
+
+    public  void startDownloading(){
         TorrentTask torrentTask = new TorrentTask();
         torrentTask.execute(torrentFile, outputFile);
-
-
     }
 
     private class TorrentTask extends AsyncTask<File, Integer, File>{
