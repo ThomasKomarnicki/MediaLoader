@@ -1,5 +1,6 @@
 package com.doglandia.medialoader.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v17.leanback.app.BrowseFragment;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
@@ -33,7 +34,7 @@ public class MainVideosFragment extends BrowseFragment {
 
         setHeadersState(HEADERS_HIDDEN);
 
-//        ContentDownloader contentDownloader = new ContentDownloader("");
+        ContentDownloader contentDownloader = new ContentDownloader("",getActivity());
 
 //        String torrnetUrl = "http://torcache.net/torrent/302BB06718B3979F94B7EC9BE3B4AD4EAF7C061C.torrent";
     }
