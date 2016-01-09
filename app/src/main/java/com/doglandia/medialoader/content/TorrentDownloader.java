@@ -3,8 +3,8 @@ package com.doglandia.medialoader.content;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.turn.ttorrent.client.Client;
-import com.turn.ttorrent.client.SharedTorrent;
+//import com.turn.ttorrent.client.Client;
+//import com.turn.ttorrent.client.SharedTorrent;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,26 +35,26 @@ public class TorrentDownloader {
         @Override
         protected File doInBackground(File... params) {
 
-            Client client = null;
-            File torrentFile = params[0];
-            File outputFile = params[1];
-            try {
-                client = new Client(InetAddress.getLocalHost(), SharedTorrent.fromFile(torrentFile, outputFile));
-                Log.d(TAG, "created client");
-
-                client.setMaxDownloadRate(1000.0);
-                client.setMaxUploadRate(1000.0);
-                Log.d(TAG, "set up and down rates");
-
-                client.download();
-                Log.d(TAG, "started client downloading");
-
-                client.waitForCompletion();
-                Log.d(TAG, "torrent completed downloading");
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            Client client = null;
+//            File torrentFile = params[0];
+//            File outputFile = params[1];
+//            try {
+//                client = new Client(InetAddress.getLocalHost(), SharedTorrent.fromFile(torrentFile, outputFile));
+//                Log.d(TAG, "created client");
+//
+//                client.setMaxDownloadRate(1000.0);
+//                client.setMaxUploadRate(1000.0);
+//                Log.d(TAG, "set up and down rates");
+//
+//                client.download();
+//                Log.d(TAG, "started client downloading");
+//
+//                client.waitForCompletion();
+//                Log.d(TAG, "torrent completed downloading");
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
 
 
