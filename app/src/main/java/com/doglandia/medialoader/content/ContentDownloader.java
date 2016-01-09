@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
+import com.doglandia.medialoader.MediaLoaderApplication;
+import com.frostwire.bittorrent.BTEngine;
 import com.frostwire.jlibtorrent.AlertListener;
 import com.frostwire.jlibtorrent.DHT;
 import com.frostwire.jlibtorrent.Downloader;
@@ -18,6 +20,7 @@ import com.frostwire.jlibtorrent.alerts.Alert;
 import com.frostwire.jlibtorrent.alerts.AlertType;
 import com.frostwire.jlibtorrent.alerts.BlockFinishedAlert;
 import com.frostwire.jlibtorrent.alerts.DhtStatsAlert;
+import com.frostwire.jlibtorrent.alerts.TorrentAlert;
 import com.frostwire.jlibtorrent.alerts.TorrentFinishedAlert;
 import com.frostwire.jlibtorrent.swig.add_torrent_params;
 import com.frostwire.jlibtorrent.swig.error_code;
@@ -60,9 +63,11 @@ public class ContentDownloader {
         Log.d(TAG,files.toString());
 
 
-        String filePath = Environment.getExternalStorageDirectory().getPath() + File.separator + "Android"
-        + File.separator +"data" + File.separator + "com.doglandia.medialoader"+ File.separator+"files"
-                + File.separator + "302BB06718B3979F94B7EC9BE3B4AD4EAF7C061C.torrent";
+//         Environment.getExternalStorageDirectory().getPath() + File.separator + "Android"
+//        + File.separator +"data" + File.separator + "com.doglandia.medialoader"+ File.separator+"torrents"
+//                + File.separator + "302BB06718B3979F94B7EC9BE3B4AD4EAF7C061C.torrent";
+
+        String filePath = MediaLoaderApplication.getTorrentsPath() + File.separator + "302BB06718B3979F94B7EC9BE3B4AD4EAF7C061C.torrent";
 
         File file = new File(filePath);
         Log.d(TAG, "file exists = "+ file.exists());
@@ -95,34 +100,48 @@ public class ContentDownloader {
 
             System.out.println("Using libtorrent version: " + LibTorrent.version());
 
-            final Session s = new Session();
-
-            final TorrentHandle th = s.addTorrent(torrentFile, torrentFile.getParentFile());
-
-            final CountDownLatch signal = new CountDownLatch(1);
-
-            s.addListener(new TorrentAlertAdapter(th) {
+            BTEngine.getInstance().download(torrentFile, MediaLoaderApplication.getMediaPath());
+            BTEngine.getInstance().getSession().addListener(new AlertListener() {
                 @Override
-                public void blockFinished(BlockFinishedAlert alert) {
-                    int p = (int) (th.getStatus().getProgress() * 100);
-                    System.out.println("Progress: " + p + " for torrent name: " + alert.torrentName());
-                    System.out.println(s.getStats().download());
+                public int[] types() {
+                    return null;
                 }
 
                 @Override
-                public void torrentFinished(TorrentFinishedAlert alert) {
-                    System.out.print("Torrent finished");
-                    signal.countDown();
+                public void alert(Alert<?> alert) {
+
+                    AlertType type = alert.getType();
+                    Log.i(TAG, "alert: "+type+": "+alert.toString());
                 }
             });
-
-            th.resume();
-
-            try {
-                signal.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            final Session s = new Session();
+//
+//            final TorrentHandle th = s.addTorrent(torrentFile, torrentFile.getParentFile());
+//
+//            final CountDownLatch signal = new CountDownLatch(1);
+//
+//            s.addListener(new TorrentAlertAdapter(th) {
+//                @Override
+//                public void blockFinished(BlockFinishedAlert alert) {
+//                    int p = (int) (th.getStatus().getProgress() * 100);
+//                    System.out.println("Progress: " + p + " for torrent name: " + alert.torrentName());
+//                    System.out.println(s.getStats().download());
+//                }
+//
+//                @Override
+//                public void torrentFinished(TorrentFinishedAlert alert) {
+//                    System.out.print("Torrent finished");
+//                    signal.countDown();
+//                }
+//            });
+//
+//            th.resume();
+//
+//            try {
+//                signal.await();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
 
 // MAGNET DOWNLOAD
 //            Session s = new Session();
@@ -210,7 +229,7 @@ public class ContentDownloader {
         File dir = new File (sdCard.getAbsolutePath() + "/MediaLoader/torrent");
         dir.mkdirs();
         File file = new File(dir, fileName);
-        Log.d(TAG, "file created for torrent at: "+file.getPath());
+        Log.d(TAG, "file created for torrent at: " + file.getPath());
         return Uri.parse(file.getPath());
 //        FileOutputStream f = new FileOutputStream(file);
     }

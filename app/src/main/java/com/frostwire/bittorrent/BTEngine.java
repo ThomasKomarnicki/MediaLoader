@@ -23,7 +23,7 @@ import com.frostwire.jlibtorrent.alerts.*;
 import com.frostwire.jlibtorrent.swig.entry;
 import com.frostwire.jlibtorrent.swig.torrent_handle;
 import com.frostwire.logging.Logger;
-import com.frostwire.search.torrent.TorrentCrawledSearchResult;
+//import com.frostwire.search.torrent.TorrentCrawledSearchResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -526,39 +526,39 @@ public final class BTEngine {
         }
     }
 
-    public void download(TorrentCrawledSearchResult sr, File saveDir) {
-        if (session == null) {
-            return;
-        }
-
-        saveDir = setupSaveDir(saveDir);
-        if (saveDir == null) {
-            return;
-        }
-
-        TorrentInfo ti = sr.getTorrentInfo();
-        int fileIndex = sr.getFileIndex();
-
-        TorrentHandle th = downloader.find(ti.getInfoHash());
-        boolean exists = th != null;
-
-        if (th != null) {
-            Priority[] priorities = th.getFilePriorities();
-            if (priorities[fileIndex] == Priority.IGNORE) {
-                priorities[fileIndex] = Priority.NORMAL;
-                download(ti, saveDir, priorities, null);
-            }
-        } else {
-            Priority[] priorities = Priority.array(Priority.IGNORE, ti.getNumFiles());
-            priorities[fileIndex] = Priority.NORMAL;
-            download(ti, saveDir, priorities, null);
-        }
-
-        if (!exists) {
-            File torrent = saveTorrent(ti);
-            saveResumeTorrent(torrent);
-        }
-    }
+//    public void download(TorrentCrawledSearchResult sr, File saveDir) {
+//        if (session == null) {
+//            return;
+//        }
+//
+//        saveDir = setupSaveDir(saveDir);
+//        if (saveDir == null) {
+//            return;
+//        }
+//
+//        TorrentInfo ti = sr.getTorrentInfo();
+//        int fileIndex = sr.getFileIndex();
+//
+//        TorrentHandle th = downloader.find(ti.getInfoHash());
+//        boolean exists = th != null;
+//
+//        if (th != null) {
+//            Priority[] priorities = th.getFilePriorities();
+//            if (priorities[fileIndex] == Priority.IGNORE) {
+//                priorities[fileIndex] = Priority.NORMAL;
+//                download(ti, saveDir, priorities, null);
+//            }
+//        } else {
+//            Priority[] priorities = Priority.array(Priority.IGNORE, ti.getNumFiles());
+//            priorities[fileIndex] = Priority.NORMAL;
+//            download(ti, saveDir, priorities, null);
+//        }
+//
+//        if (!exists) {
+//            File torrent = saveTorrent(ti);
+//            saveResumeTorrent(torrent);
+//        }
+//    }
 
     public byte[] fetchMagnet(String uri, long timeout) {
         if (session == null) {
@@ -1019,4 +1019,5 @@ public final class BTEngine {
     public int getTotalDHTNodes() {
         return totalDHTNodes;
     }
+
 }

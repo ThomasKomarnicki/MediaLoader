@@ -5,6 +5,14 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
     defaultConfig {
         applicationId "com.doglandia.medialoader"
         minSdkVersion 21
@@ -33,4 +41,6 @@ dependencies {
     compile 'com.frostwire:jlibtorrent-android-arm64:1.1.0.16'
     compile 'com.frostwire:jlibtorrent-android-arm:1.1.0.16'
     compile 'com.google.re2j:re2j:1.1'
+    compile 'com.google.code.gson:gson:2.5'
+    compile 'com.squareup.okhttp:okhttp:2.7.2'
 }

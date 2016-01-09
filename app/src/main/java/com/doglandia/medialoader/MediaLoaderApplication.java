@@ -29,6 +29,9 @@ public class MediaLoaderApplication extends Application {
                 getLibTorrent(),
                 0,0,"0.0.0.0",false,false);
         BTEngine.ctx.optimizeMemory = true;
+        BTEngine.getInstance().setMaxConnections(4);
+        BTEngine.getInstance().setDownloadSpeedLimit(0);
+        BTEngine.getInstance().setUploadSpeedLimit(50);
         BTEngine.getInstance().start();
 
 
@@ -43,14 +46,22 @@ public class MediaLoaderApplication extends Application {
 //        }
     }
 
-    private File getTorrentsPath(){
-        File torrentFile = new File(Environment.getExternalStorageDirectory().getPath()+File.separator+"torrents");
+    public static File getTorrentsPath(){
+        File torrentFile = new File(Environment.getExternalStorageDirectory().getPath() +
+                File.separator + "Android" +
+                File.separator +"data" +
+                File.separator + "com.doglandia.medialoader"
+                +File.separator+"torrents");
         torrentFile.mkdirs();
         return torrentFile;
     }
 
-    private File getMediaPath(){
-        File mediaFile = new File(Environment.getExternalStorageDirectory().getPath()+File.separator+"media");
+    public static File getMediaPath(){
+        File mediaFile = new File(Environment.getExternalStorageDirectory().getPath() +
+                File.separator + "Android" +
+                File.separator +"data" +
+                File.separator + "com.doglandia.medialoader"
+                +File.separator+"media");
         mediaFile.mkdirs();
         return mediaFile;
     }
