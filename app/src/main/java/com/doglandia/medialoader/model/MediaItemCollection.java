@@ -1,5 +1,7 @@
 package com.doglandia.medialoader.model;
 
+import com.doglandia.medialoader.model.mediaItem.MediaItem;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

@@ -1,6 +1,5 @@
 package com.doglandia.medialoader.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v17.leanback.app.BrowseFragment;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
@@ -8,15 +7,11 @@ import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.ListRowPresenter;
 
-import com.doglandia.medialoader.R;
 import com.doglandia.medialoader.content.ContentDownloader;
-import com.doglandia.medialoader.model.MediaItem;
+import com.doglandia.medialoader.model.mediaItem.MediaItem;
 import com.doglandia.medialoader.model.MediaItemCollection;
 import com.doglandia.medialoader.sample.CardPresenter;
-import com.doglandia.medialoader.sample.Movie;
-import com.doglandia.medialoader.sample.MovieList;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,7 +29,8 @@ public class MainVideosFragment extends BrowseFragment {
 
         setHeadersState(HEADERS_HIDDEN);
 
-        ContentDownloader contentDownloader = new ContentDownloader("",getActivity());
+        ContentDownloader contentDownloader = new ContentDownloader();
+        contentDownloader.initiateDownload("http://torcache.net/torrent/302BB06718B3979F94B7EC9BE3B4AD4EAF7C061C.torrent");
 
 //        String torrnetUrl = "http://torcache.net/torrent/302BB06718B3979F94B7EC9BE3B4AD4EAF7C061C.torrent";
     }
