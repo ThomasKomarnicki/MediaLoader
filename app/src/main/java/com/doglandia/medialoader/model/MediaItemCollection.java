@@ -14,9 +14,23 @@ public class MediaItemCollection implements Iterable<List<MediaItem>> {
     List<List<MediaItem>> mediaRows;
     List<String> headers;
 
-    public MediaItemCollection(){
+    public MediaItemCollection(List<MediaItem> mediaItemList){
         mediaRows = new ArrayList<>();
         headers = new ArrayList<>();
+
+        List<MediaItem> currentRow = new ArrayList<>();
+
+        for(MediaItem mediaItem : mediaItemList){
+            currentRow.add(mediaItem);
+            if(currentRow.size() >= 5){
+                mediaRows.add(currentRow);
+                currentRow = new ArrayList<>();
+
+            }
+        }
+        if(currentRow.size() != 0) {
+            mediaRows.add(currentRow);
+        }
     }
 
     public List<MediaItem> getMediaRowAt(int index){

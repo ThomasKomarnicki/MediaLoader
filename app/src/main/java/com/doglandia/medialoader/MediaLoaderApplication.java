@@ -12,13 +12,14 @@ import com.doglandia.medialoader.media.MediaScannerTask;
 import com.frostwire.bittorrent.BTContext;
 import com.frostwire.bittorrent.BTEngine;
 import com.frostwire.jlibtorrent.DHT;
+import com.orm.SugarApp;
 
 import java.io.File;
 
 /**
  * Created by Thomas on 1/8/2016.
  */
-public class MediaLoaderApplication extends Application {
+public class MediaLoaderApplication extends SugarApp {
 
     private static final String TAG = "MediaLoaderApp";
 
@@ -53,8 +54,6 @@ public class MediaLoaderApplication extends Application {
 //        }
 
         new MediaScannerTask(getApplicationContext(), Environment.getExternalStorageDirectory().getPath() + File.separator + "MediaLoader");
-
-        ContentManager.getInstance().setContext(getApplicationContext());
 
     }
 

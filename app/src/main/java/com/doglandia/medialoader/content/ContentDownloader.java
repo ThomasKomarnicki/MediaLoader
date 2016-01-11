@@ -57,8 +57,6 @@ public class ContentDownloader {
 
         @Override
         public void run() {
-//            String torrentHttp = "http://torcache.net/torrent/302BB06718B3979F94B7EC9BE3B4AD4EAF7C061C.torrent";
-
 
             byte[] data = HttpClientFactory.getInstance(HttpClientFactory.HttpContext.DOWNLOAD).getBytes(url, 30000);
             try {
@@ -71,25 +69,26 @@ public class ContentDownloader {
                 Log.e(TAG, "Error downloading torrent", e);
             }
 
-            BTEngine.getInstance().getSession().addListener(new AlertListener() {
-                String lastAlertString = "";
-
-                @Override
-                public int[] types() {
-                    return null;
-                }
-
-                @Override
-                public void alert(Alert<?> alert) {
-
-                    AlertType type = alert.getType();
-                    if (!alert.toString().equals(lastAlertString)) {
-                        Log.i(TAG, "alert: " + type + ": " + alert.toString());
-                    }
-                    lastAlertString = new String(alert.toString());
-
-                }
-            });
+//            BTEngine.getInstance().getSession().addListener(new AlertListener() {
+//                String lastAlertString = "";
+//
+//                @Override
+//                public int[] types() {
+//                    return null;
+//                }
+//
+//                @Override
+//                public void alert(Alert<?> alert) {
+//
+//                    AlertType type = alert.getType();
+//                    if (!alert.toString().equals(lastAlertString)) {
+//                        Log.i(TAG, "alert: " + type + ": " + alert.toString());
+//                    }
+//                    lastAlertString = new String(alert.toString());
+//
+//
+//                }
+//            });
         }
     }
 

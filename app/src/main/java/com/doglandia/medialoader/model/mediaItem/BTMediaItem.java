@@ -1,29 +1,64 @@
 package com.doglandia.medialoader.model.mediaItem;
 
-import com.frostwire.jlibtorrent.TorrentHandle;
+import com.doglandia.medialoader.model.BTDownloadWrapper;
+import com.frostwire.bittorrent.BTDownload;
 
 /**
- * Created by Thomas on 1/9/2016.
+ * represents media item currently being downloaded and managed by BTEngine
  */
 public class BTMediaItem implements MediaItem {
 
+    String backgroundUrl;
+    long dateStarted;
+    private BTDownloadWrapper btDownloadWrapper;
 
-    public BTMediaItem(TorrentHandle torrentHandle){
 
+    public BTMediaItem(BTDownloadWrapper btDownload, String backgroundUrl){
+        this(btDownload);
+        this.backgroundUrl = backgroundUrl;
+
+    }
+    public BTMediaItem(BTDownloadWrapper btDownload){
+        this.btDownloadWrapper = btDownload;
+//        update(btDownload);
+    }
+
+    public void update(BTDownload btDownload){
+        this.btDownloadWrapper.updateBTDownload(btDownload);
     }
 
     @Override
     public String getDisplayName() {
-        return null;
+        return btDownloadWrapper.getDisplayName();
     }
 
     @Override
     public int getProgress() {
-        return 0;
+        return btDownloadWrapper.getProgress();
     }
 
     @Override
     public String getBackgroundUrl() {
+        return backgroundUrl;
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return false;
+    }
+
+    @Override
+    public String getFileLocation() {
         return null;
+    }
+
+    @Override
+    public long getTimeDownloaded() {
+        return dateStarted;
+    }
+
+
+    public String getName() {
+        return btDownloadWrapper.getName();
     }
 }

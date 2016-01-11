@@ -17,5 +17,8 @@ public interface MediaItem {
     String getDisplayName();
     int getProgress();
     String getBackgroundUrl();
+    boolean isAvailable();
+    String getFileLocation();
+    long getTimeDownloaded();
 
 }

@@ -6,22 +6,29 @@ import android.support.v17.leanback.widget.ArrayObjectAdapter;
 import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.ListRowPresenter;
+import android.util.Log;
 
 import com.doglandia.medialoader.content.ContentDownloader;
+import com.doglandia.medialoader.content.ContentManager;
 import com.doglandia.medialoader.model.mediaItem.MediaItem;
 import com.doglandia.medialoader.model.MediaItemCollection;
-import com.doglandia.medialoader.sample.CardPresenter;
+import com.doglandia.medialoader.presenter.MainVideoFragmentPresenter;
+import com.doglandia.medialoader.presenter.MediaItemPresenter;
+import com.doglandia.medialoader.view.MainVideosView;
 
 import java.util.List;
 
 /**
  * Created by Thomas on 1/3/2016.
  */
-public class MainVideosFragment extends BrowseFragment {
+public class MainVideosFragment extends BrowseFragment implements MainVideosView{
 
+    private static final String TAG = MainVideosFragment.class.getSimpleName();
     private ArrayObjectAdapter mRowsAdapter;
 
     private MediaItemCollection mMediaItemCollection;
+
+    private MainVideoFragmentPresenter mainVideoFragmentPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,24 +36,32 @@ public class MainVideosFragment extends BrowseFragment {
 
         setHeadersState(HEADERS_HIDDEN);
 
-        ContentDownloader contentDownloader = new ContentDownloader();
-        contentDownloader.initiateDownload("http://torcache.net/torrent/302BB06718B3979F94B7EC9BE3B4AD4EAF7C061C.torrent");
+    }
 
-//        String torrnetUrl = "http://torcache.net/torrent/302BB06718B3979F94B7EC9BE3B4AD4EAF7C061C.torrent";
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mainVideoFragmentPresenter = new MainVideoFragmentPresenter(getActivity(),this);
     }
 
     private void loadRows() {
         mRowsAdapter = new ArrayObjectAdapter(new ListRowPresenter());
-        CardPresenter cardPresenter = new CardPresenter();
+        MediaItemPresenter presenter = new MediaItemPresenter(){
+            @Override
+            public void onMediaItemClick(MediaItem mediaItem) {
+                mainVideoFragmentPresenter.onMediaItemClick(mediaItem);
+            }
+        };
 
         int i = 0;
         for (List<MediaItem> mediaItems : mMediaItemCollection) {
 //            if (i != 0) {
 //                Collections.shuffle(list);
 //            }
-            ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(cardPresenter);
+            ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(presenter);
             for (MediaItem mediaItem : mediaItems) {
 //                listRowAdapter.add(list.get(j % 5));
+                listRowAdapter.add(mediaItem);
             }
             HeaderItem header = new HeaderItem(i, mMediaItemCollection.getHeaderAt(i));
             mRowsAdapter.add(new ListRow(header, listRowAdapter));
@@ -54,6 +69,24 @@ public class MainVideosFragment extends BrowseFragment {
         }
 
         setAdapter(mRowsAdapter);
+
+    }
+
+    @Override
+    public void showMediaItems(List<MediaItem> mediaItemList) {
+        mMediaItemCollection = new MediaItemCollection(mediaItemList);
+        loadRows();
+    }
+
+    @Override
+    public void updateMediaItem(MediaItem mediaItem) {
+        // todo update
+        Log.d(TAG, mediaItem.getDisplayName() +"  update, progress = "+mediaItem.getProgress());
+        getView().invalidate();
+    }
+
+    @Override
+    public void playVideo(MediaItem mediaItem) {
 
     }
 }
