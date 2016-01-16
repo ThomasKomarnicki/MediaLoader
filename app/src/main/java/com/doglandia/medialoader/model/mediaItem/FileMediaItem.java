@@ -21,6 +21,11 @@ public class FileMediaItem implements MediaItem {
     }
 
     @Override
+    public String getName() {
+        return mediaRecord.getName();
+    }
+
+    @Override
     public int getProgress() {
         return 100;
     }

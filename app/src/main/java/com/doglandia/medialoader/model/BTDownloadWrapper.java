@@ -1,6 +1,7 @@
 package com.doglandia.medialoader.model;
 
 import com.frostwire.bittorrent.BTDownload;
+import com.frostwire.jlibtorrent.TorrentHandle;
 
 /**
  * wraps BTDownload data so we can extend it
@@ -45,5 +46,9 @@ public class BTDownloadWrapper {
 
     public String getBackgroundImageUrl(){
         return null;
+    }
+
+    public String getInfoHash(){
+        return btDownload.getInfoHash();
     }
 }

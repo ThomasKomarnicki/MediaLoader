@@ -6,17 +6,20 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.doglandia.medialoader.event.BTMediaUpdateEvent;
+import com.doglandia.medialoader.event.MediaItemsRefreshEvent;
 import com.doglandia.medialoader.event.MediaUpdateEvent;
 import com.doglandia.medialoader.fragment.MainVideosFragment;
 import com.doglandia.medialoader.localStore.MediaRecord;
 import com.doglandia.medialoader.model.BTDownloadWrapper;
 import com.doglandia.medialoader.model.mediaItem.BTMediaItem;
+import com.doglandia.medialoader.model.mediaItem.FileMediaItem;
 import com.doglandia.medialoader.model.mediaItem.MediaItem;
 import com.doglandia.medialoader.view.MainVideosView;
 import com.frostwire.bittorrent.BTDownload;
 import com.frostwire.bittorrent.BTEngine;
 import com.frostwire.bittorrent.BTEngineListener;
 import com.frostwire.jlibtorrent.TorrentHandle;
+import com.frostwire.jlibtorrent.TorrentStatus;
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
@@ -25,7 +28,7 @@ import java.util.List;
 /**
  * Created by Thomas on 1/9/2016.
  */
-public class ContentManager implements BTEngineListener {
+public class ContentManager implements BTEngineListener, DownloadCallback {
 
     private static final String TAG = ContentManager.class.getSimpleName();
 
@@ -52,10 +55,14 @@ public class ContentManager implements BTEngineListener {
     private Activity activity;
     private PersistenceManager persistenceManager;
 
+    private DownloadUpdater downloadUpdater;
+
     private ContentManager(){
         mediaList = new ArrayList<>();
         persistenceManager = new PersistenceManager();
         BTEngine.getInstance().setListener(this);
+
+        downloadUpdater = new DownloadUpdater(this, this);
 
         loadMediaItems();
     }
@@ -141,4 +148,66 @@ public class ContentManager implements BTEngineListener {
 
     }
 
+    List<TorrentHandle> getAllBtDownloads() {
+        return BTEngine.getInstance().getSession().getTorrents();
+    }
+
+    @Override
+    public void onDownloadUpdate(TorrentHandle torrentHandle, TorrentStatus.State state) {
+        for(MediaItem mediaItem : mediaList){
+            if(mediaItem instanceof BTMediaItem){
+                BTMediaItem btMediaItem = (BTMediaItem) mediaItem;
+                if(btMediaItem.containsTorrentHandle(torrentHandle)){
+                    if(state.equals(TorrentStatus.State.FINISHED) || state.equals(TorrentStatus.State.SEEDING)){
+                        onDownloadFinish(btMediaItem, torrentHandle);
+
+                    }else if(state.equals(TorrentStatus.State.DOWNLOADING)){
+                        getBus().post(new BTMediaUpdateEvent(btMediaItem));
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onDownloadUpdate() {
+        List<TorrentHandle> torrents = getAllBtDownloads();
+        for (TorrentHandle torrentHandle : torrents) {
+            Log.d(TAG, "torrent: " + torrentHandle.getInfoHash().toString() + ", state = " + torrentHandle.getStatus().getState().toString() + ", progress = " + torrentHandle.getStatus().getProgress());
+            onDownloadUpdate(torrentHandle, torrentHandle.getStatus().getState());
+        }
+        getBus().post(new MediaItemsRefreshEvent());
+
+    }
+
+    private void onDownloadFinish(BTMediaItem btMediaItem, TorrentHandle torrentHandle){
+        BTEngine.getInstance().getSession().removeTorrent(torrentHandle);
+        BTDownload btDownload = new BTDownload(BTEngine.getInstance(),torrentHandle);
+        btMediaItem.update(btDownload);
+
+        // update local store
+        MediaRecord mediaRecord = persistenceManager.finishTorrent(btMediaItem);
+        replaceMediaItem(mediaRecord);
+
+//        getBus().post(new BTMediaUpdateEvent(btMediaItem));
+
+    }
+
+    private void replaceMediaItem(MediaRecord mediaRecord){
+        MediaItem mediaItem = null;
+        if(!mediaRecord.isComplete()){
+            BTDownload btDownload = getTorrentByName(mediaRecord.getName());
+            mediaItem = new BTMediaItem(new BTDownloadWrapper(btDownload));
+        }else{
+            mediaItem = new FileMediaItem(mediaRecord);
+        }
+
+        for(int i = 0; i < mediaList.size(); i++){
+            MediaItem mediaItem1 = mediaList.get(i);
+            if(mediaItem.getName().equals(mediaItem1.getName())){
+                mediaList.set(i,mediaItem);
+                break;
+            }
+        }
+    }
 }

@@ -15,10 +15,12 @@ public interface MediaItem {
 //    private long downloadFinishedDate;
 
     String getDisplayName();
+    String getName();
     int getProgress();
     String getBackgroundUrl();
     boolean isAvailable();
     String getFileLocation();
     long getTimeDownloaded();
+
 
 }

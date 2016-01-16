@@ -1,5 +1,7 @@
 package com.doglandia.medialoader.content;
 
+import android.util.Log;
+
 import com.doglandia.medialoader.localStore.MediaRecord;
 import com.doglandia.medialoader.model.BTDownloadWrapper;
 import com.doglandia.medialoader.model.mediaItem.BTMediaItem;
@@ -14,6 +16,8 @@ import java.util.List;
  * saves and loads media records to content manager
  */
 public class PersistenceManager {
+
+    private static final String TAG = PersistenceManager.class.getSimpleName();
 
     public PersistenceManager(){
 
@@ -62,4 +66,17 @@ public class PersistenceManager {
         return mediaItems;
     }
 
+    public MediaRecord finishTorrent(BTMediaItem btMediaItem) {
+        List<MediaRecord> mediaRecords = MediaRecord.find(MediaRecord.class, "name = ?",btMediaItem.getName());
+
+        if(mediaRecords == null || mediaRecords.size() != 1){
+//            Log.e(TAG, "error finishing torrent");
+            throw new RuntimeException("no media record to finish");
+        }
+        MediaRecord mediaRecord = mediaRecords.get(0);
+        mediaRecord.setComplete(true);
+        mediaRecord.setDownloadFinishTime(System.currentTimeMillis());
+        mediaRecord.save();
+        return mediaRecord;
+    }
 }

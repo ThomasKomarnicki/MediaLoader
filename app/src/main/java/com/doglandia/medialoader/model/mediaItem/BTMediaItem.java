@@ -2,6 +2,7 @@ package com.doglandia.medialoader.model.mediaItem;
 
 import com.doglandia.medialoader.model.BTDownloadWrapper;
 import com.frostwire.bittorrent.BTDownload;
+import com.frostwire.jlibtorrent.TorrentHandle;
 
 /**
  * represents media item currently being downloaded and managed by BTEngine
@@ -57,8 +58,12 @@ public class BTMediaItem implements MediaItem {
         return dateStarted;
     }
 
-
+    @Override
     public String getName() {
         return btDownloadWrapper.getName();
+    }
+
+    public boolean containsTorrentHandle(TorrentHandle torrentHandle){
+        return btDownloadWrapper.getInfoHash().equals(torrentHandle.getInfoHash());
     }
 }
