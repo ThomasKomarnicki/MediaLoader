@@ -12,4 +12,5 @@ public interface MainVideosView {
     void showMediaItems(List<MediaItem> mediaItemList);
     void updateMediaItem(MediaItem mediaItem);
     void playVideo(MediaItem mediaItem);
+    void refreshMediaItems();
 }

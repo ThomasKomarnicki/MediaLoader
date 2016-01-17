@@ -1,13 +1,9 @@
 package com.doglandia.medialoader.content;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.frostwire.bittorrent.BTEngine;
-import com.frostwire.jlibtorrent.AlertListener;
 import com.frostwire.jlibtorrent.TorrentInfo;
-import com.frostwire.jlibtorrent.alerts.Alert;
-import com.frostwire.jlibtorrent.alerts.AlertType;
 import com.frostwire.util.HttpClientFactory;
 
 import java.util.Timer;

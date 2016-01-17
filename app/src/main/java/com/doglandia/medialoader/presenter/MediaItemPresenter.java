@@ -37,6 +37,7 @@ public class MediaItemPresenter extends Presenter {
         ImageCardView cardView = (ImageCardView) viewHolder.view;
 
         cardView.setTitleText(mediaItem.getDisplayName());
+        cardView.setContentText(String.valueOf(mediaItem.getProgress()));
         cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
         Glide.with(viewHolder.view.getContext())
                 .load(mediaItem.getBackgroundUrl())

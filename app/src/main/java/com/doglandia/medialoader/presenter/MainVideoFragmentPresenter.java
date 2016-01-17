@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.doglandia.medialoader.content.ContentManager;
 import com.doglandia.medialoader.event.BTMediaUpdateEvent;
+import com.doglandia.medialoader.event.MediaItemsRefreshEvent;
 import com.doglandia.medialoader.event.MediaUpdateEvent;
 import com.doglandia.medialoader.model.mediaItem.MediaItem;
 import com.doglandia.medialoader.view.MainVideosView;
@@ -46,4 +47,8 @@ public class MainVideoFragmentPresenter {
         view.updateMediaItem(event.getMediaItem());
     }
 
+    @Subscribe
+    public void onMediaItemsRefreshEvent(MediaItemsRefreshEvent mediaItemsRefreshEvent){
+        view.showMediaItems(mediaItemsRefreshEvent.getMediaItemList());
+    }
 }

@@ -176,7 +176,13 @@ public class ContentManager implements BTEngineListener, DownloadCallback {
             Log.d(TAG, "torrent: " + torrentHandle.getInfoHash().toString() + ", state = " + torrentHandle.getStatus().getState().toString() + ", progress = " + torrentHandle.getStatus().getProgress());
             onDownloadUpdate(torrentHandle, torrentHandle.getStatus().getState());
         }
-        getBus().post(new MediaItemsRefreshEvent());
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getBus().post(new MediaItemsRefreshEvent(mediaList));
+            }
+        });
 
     }
 

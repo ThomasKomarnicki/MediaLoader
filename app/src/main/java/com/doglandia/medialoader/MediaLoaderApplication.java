@@ -1,13 +1,8 @@
 package com.doglandia.medialoader;
 
-import android.app.Application;
-import android.content.Intent;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
-import com.doglandia.medialoader.content.ContentManager;
 import com.doglandia.medialoader.media.MediaScannerTask;
 import com.frostwire.bittorrent.BTContext;
 import com.frostwire.bittorrent.BTEngine;
