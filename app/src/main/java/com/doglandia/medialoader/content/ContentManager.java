@@ -93,7 +93,7 @@ public class ContentManager implements BTEngineListener, DownloadCallback {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                getBus().post(new MediaUpdateEvent(mediaItem));
+//                getBus().post(new MediaUpdateEvent(mediaItem));
             }
         });
     }
@@ -139,7 +139,7 @@ public class ContentManager implements BTEngineListener, DownloadCallback {
                         BTMediaItem btMediaItem = (BTMediaItem) mediaItem;
                         if (btMediaItem.getName().equals(dl.getName())) {
                             btMediaItem.update(dl);
-                            getBus().post(new BTMediaUpdateEvent(btMediaItem));
+//                            getBus().post(new BTMediaUpdateEvent(btMediaItem));
                         }
                     }
                 }
@@ -162,7 +162,7 @@ public class ContentManager implements BTEngineListener, DownloadCallback {
                         onDownloadFinish(btMediaItem, torrentHandle);
 
                     }else if(state.equals(TorrentStatus.State.DOWNLOADING)){
-                        getBus().post(new BTMediaUpdateEvent(btMediaItem));
+//                        getBus().post(new BTMediaUpdateEvent(btMediaItem));
                     }
                 }
             }
@@ -180,7 +180,7 @@ public class ContentManager implements BTEngineListener, DownloadCallback {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                getBus().post(new MediaItemsRefreshEvent(mediaList));
+//                getBus().post(new MediaItemsRefreshEvent(mediaList));
             }
         });
 

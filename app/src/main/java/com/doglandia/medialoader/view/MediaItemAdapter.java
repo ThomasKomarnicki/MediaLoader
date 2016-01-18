@@ -3,8 +3,10 @@ package com.doglandia.medialoader.view;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
 import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ListRow;
+import android.support.v17.leanback.widget.ListRowPresenter;
 import android.support.v17.leanback.widget.ObjectAdapter;
 import android.support.v17.leanback.widget.Presenter;
+import android.support.v17.leanback.widget.RowHeaderPresenter;
 import android.util.Log;
 
 import com.doglandia.medialoader.model.MediaItemCollection;
@@ -26,6 +28,7 @@ public class MediaItemAdapter extends ObjectAdapter {
     private List<ListRow> listRows;
 
     public MediaItemAdapter(MediaItemCollection mediaItemCollection, Presenter presenter){
+        super(new ListRowPresenter());
         this.mediaItemCollection = mediaItemCollection;
         this.presenter = presenter;
 
@@ -33,12 +36,14 @@ public class MediaItemAdapter extends ObjectAdapter {
         setData();
     }
 
-    public void update(List<MediaItem> mediaItemList){
-        mediaItemCollection.update(mediaItemList);
-        listRows.clear();
-        setData();
-        Log.d(TAG, "mediaItemCollection = "+mediaItemCollection.toString());
-        notifyChanged();
+    public void update(){
+//        mediaItemCollection.update(mediaItemList);
+//        listRows.clear();
+//        setData();
+//        updateData(mediaItemList);
+        Log.d(TAG, "mediaItemCollection = " + mediaItemCollection.toString());
+        updateData();
+
     }
 
     @Override
@@ -67,5 +72,41 @@ public class MediaItemAdapter extends ObjectAdapter {
             i++;
         }
         Log.d(TAG, "kee");
+    }
+
+    // update adapters to represent underlying mediaItemCollection
+    private void updateData(){
+
+        for(int i = 0; i < mediaItemCollection.getMediaRows().size(); i++){
+            if(listRows.size()-1 <  i){
+                ListRow listRow = new ListRow(new HeaderItem(mediaItemCollection.getHeaderAt(i)),new ArrayObjectAdapter(presenter));
+                listRows.add(listRow);
+            }
+            ListRow listRow = listRows.get(i);
+            List<MediaItem> mediaItems = mediaItemCollection.getMediaRowAt(i);
+
+            for(int j = 0; j < mediaItems.size(); j++){
+                if(listRow.getAdapter().size() > j){
+                    MediaItem rowMediaItem = (MediaItem) listRow.getAdapter().get(j);
+                    MediaItem mediaItem = mediaItems.get(j);
+                    if(!rowMediaItem.getName().equals(mediaItem.getName())){
+                        ArrayObjectAdapter arrayObjectAdapter = (ArrayObjectAdapter) listRow.getAdapter();
+                        arrayObjectAdapter.replace(j,mediaItem);
+                    }
+                    // else if they are equal do nothing
+                }else{
+                    ArrayObjectAdapter arrayObjectAdapter = (ArrayObjectAdapter) listRow.getAdapter();
+                    arrayObjectAdapter.add(mediaItems.get(j));
+                }
+            }
+        }
+        notifyChanged();
+    }
+
+    public void update(MediaItem mediaItem) {
+        if(!mediaItemCollection.contains(mediaItem)){
+            mediaItemCollection.addItem(mediaItem);
+        }
+        updateData();
     }
 }

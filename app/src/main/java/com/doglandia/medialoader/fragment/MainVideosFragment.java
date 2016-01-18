@@ -7,6 +7,8 @@ import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.ListRowPresenter;
 import android.support.v17.leanback.widget.ObjectAdapter;
+import android.support.v17.leanback.widget.Presenter;
+import android.support.v17.leanback.widget.PresenterSelector;
 import android.util.Log;
 
 import com.doglandia.medialoader.content.ContentDownloader;
@@ -33,6 +35,13 @@ public class MainVideosFragment extends BrowseFragment implements MainVideosView
 
     private MainVideoFragmentPresenter mainVideoFragmentPresenter;
 
+    MediaItemPresenter presenter = new MediaItemPresenter(){
+        @Override
+        public void onMediaItemClick(MediaItem mediaItem) {
+            mainVideoFragmentPresenter.onMediaItemClick(mediaItem);
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,30 +57,8 @@ public class MainVideosFragment extends BrowseFragment implements MainVideosView
     }
 
     private void loadRows() {
-//        mRowsAdapter = new ArrayObjectAdapter(new ListRowPresenter());
 
-        MediaItemPresenter presenter = new MediaItemPresenter(){
-            @Override
-            public void onMediaItemClick(MediaItem mediaItem) {
-                mainVideoFragmentPresenter.onMediaItemClick(mediaItem);
-            }
-        };
         mediaItemAdapter = new MediaItemAdapter(mMediaItemCollection, presenter);
-
-//        int i = 0;
-//        for (List<MediaItem> mediaItems : mMediaItemCollection) {
-////            if (i != 0) {
-////                Collections.shuffle(list);
-////            }
-//            ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(presenter);
-//            for (MediaItem mediaItem : mediaItems) {
-////                listRowAdapter.add(list.get(j % 5));
-//                listRowAdapter.add(mediaItem);
-//            }
-//            HeaderItem header = new HeaderItem(i, mMediaItemCollection.getHeaderAt(i));
-//            mRowsAdapter.add(new ListRow(header, listRowAdapter));
-//            i++;
-//        }
 
         setAdapter(mediaItemAdapter);
 
@@ -80,18 +67,22 @@ public class MainVideosFragment extends BrowseFragment implements MainVideosView
     @Override
     public void showMediaItems(List<MediaItem> mediaItemList) {
         if(mediaItemAdapter == null){
+            Log.d(TAG, "creating mediaItem Adapter");
             mMediaItemCollection = new MediaItemCollection(mediaItemList);
             loadRows();
         }else{
-            mediaItemAdapter.update(mediaItemList);
+            Log.d(TAG, "updating all media items");
+            mediaItemAdapter.update();
+
         }
     }
 
     @Override
     public void updateMediaItem(MediaItem mediaItem) {
         // todo update
-        Log.d(TAG, mediaItem.getDisplayName() +"  update, progress = "+mediaItem.getProgress());
-        getView().invalidate();
+
+        mediaItemAdapter.update(mediaItem);
+        Log.d(TAG, mediaItem.getDisplayName() + "  update, progress = " + mediaItem.getProgress());
     }
 
     @Override

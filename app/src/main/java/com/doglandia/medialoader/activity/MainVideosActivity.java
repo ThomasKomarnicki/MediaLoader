@@ -46,6 +46,13 @@ public class MainVideosActivity extends Activity {
                     sendRefreshEvent(mediaItemList);
                     Thread.sleep(5000);
                     mediaItemList.add(new TestMediaItem(0));
+                    sendRefreshEvent(mediaItemList.get(0));
+                    for(int i = 0; i < 5; i++) {
+                        sendRefreshEvent(mediaItemList);
+                        Thread.sleep(5000);
+                    }
+                    mediaItemList.add(new TestMediaItem(1));
+                    sendRefreshEvent(mediaItemList.get(1));
                     for(int i = 0; i < 5; i++) {
                         sendRefreshEvent(mediaItemList);
                         Thread.sleep(5000);

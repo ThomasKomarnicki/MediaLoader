@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class MediaItemCollection implements Iterable<List<MediaItem>> {
 
+    private static final String TAG = MediaItemCollection.class.getSimpleName();
     List<List<MediaItem>> mediaRows;
     List<String> headers;
 
@@ -83,5 +84,31 @@ public class MediaItemCollection implements Iterable<List<MediaItem>> {
         headers.clear();
 
         setData(mediaItemList);
+    }
+
+    public boolean contains(MediaItem mediaItem) {
+        for(List<MediaItem> mediaItems : mediaRows){
+            for(MediaItem mediaItem1 : mediaItems){
+                if(mediaItem.getName().equals(mediaItem1.getName())){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void addItem(MediaItem mediaItem) {
+        Log.d(TAG, "adding media item "+mediaItem.getName());
+        if(mediaRows.size() == 0){
+            mediaRows.add(new ArrayList<MediaItem>());
+            headers.add("Header "+mediaRows.size());
+        }
+        List<MediaItem> row = mediaRows.get(mediaRows.size() - 1);
+        if(row.size() >= 5){
+            row = new ArrayList<>();
+            mediaRows.add(row);
+            headers.add("Header "+mediaRows.size());
+        }
+        row.add(mediaItem);
     }
 }
