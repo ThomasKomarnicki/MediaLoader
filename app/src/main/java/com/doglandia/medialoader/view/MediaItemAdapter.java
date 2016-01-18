@@ -43,6 +43,7 @@ public class MediaItemAdapter extends ObjectAdapter {
 //        updateData(mediaItemList);
         Log.d(TAG, "mediaItemCollection = " + mediaItemCollection.toString());
         updateData();
+        notifyChanged();
 
     }
 
@@ -100,13 +101,18 @@ public class MediaItemAdapter extends ObjectAdapter {
                 }
             }
         }
-        notifyChanged();
     }
 
     public void update(MediaItem mediaItem) {
+        boolean added = false;
         if(!mediaItemCollection.contains(mediaItem)){
             mediaItemCollection.addItem(mediaItem);
+            added = true;
         }
         updateData();
+
+        if(added){
+            notifyChanged();
+        }
     }
 }
