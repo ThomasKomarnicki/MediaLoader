@@ -1,12 +1,22 @@
 package com.doglandia.medialoader.activity;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.media.MediaMetadata;
 import android.media.MediaPlayer;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.doglandia.medialoader.R;
 import com.doglandia.medialoader.model.mediaItem.MediaItem;
 
@@ -18,7 +28,7 @@ public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnP
 
     private VideoView mVideoView;
     private LeanbackPlaybackState mPlaybackState = LeanbackPlaybackState.IDLE;
-    private MediaSession mSession;
+    private MediaSessionCompat mSession;
 
     private MediaItem mediaItem;
     /**
@@ -31,15 +41,20 @@ public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnP
         mediaItem = getIntent().getParcelableExtra("media_item");
         loadViews();
         setupCallbacks();
-        mSession = new MediaSession(this, "LeanbackSampleApp");
+        mSession = new MediaSessionCompat(this, "MediaLoader");
         mSession.setCallback(new MediaSessionCallback());
-        mSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
-                MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+        mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
         mSession.setActive(true);
 
         mVideoView.setVideoPath(mediaItem.getFileLocation());
         mVideoView.start();
+
+    }
+
+    public MediaControllerCompat getMediaControllerCompat(){
+        return mSession.getController();
     }
 
 
@@ -97,54 +112,54 @@ public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnP
     }
 
     private void updatePlaybackState(int position) {
-        PlaybackState.Builder stateBuilder = new PlaybackState.Builder()
+        PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder()
                 .setActions(getAvailableActions());
-        int state = PlaybackState.STATE_PLAYING;
+        int state = PlaybackStateCompat.STATE_PLAYING;
         if (mPlaybackState == LeanbackPlaybackState.PAUSED) {
-            state = PlaybackState.STATE_PAUSED;
+            state = PlaybackStateCompat.STATE_PAUSED;
         }
         stateBuilder.setState(state, position, 1.0f);
         mSession.setPlaybackState(stateBuilder.build());
     }
 
     private long getAvailableActions() {
-        long actions = PlaybackState.ACTION_PLAY |
-                PlaybackState.ACTION_PLAY_FROM_MEDIA_ID |
-                PlaybackState.ACTION_PLAY_FROM_SEARCH;
+        long actions = PlaybackStateCompat.ACTION_PLAY |
+                PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID |
+                PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH;
 
         if (mPlaybackState == LeanbackPlaybackState.PLAYING) {
-            actions |= PlaybackState.ACTION_PAUSE;
+            actions |= PlaybackStateCompat.ACTION_PAUSE;
         }
 
         return actions;
     }
 
-//    private void updateMetadata(final MediaItem mediaItem) {
-//        final MediaMetadata.Builder metadataBuilder = new MediaMetadata.Builder();
-//
-//        String title = movie.getTitle().replace("_", " -");
-//
-//        metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE, title);
+    private void updateMetadata(final MediaItem mediaItem) {
+        final MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
+
+        String title = mediaItem.getDisplayName();
+
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title);
 //        metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_SUBTITLE,
 //                movie.getDescription());
-//        metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI,
-//                movie.getCardImageUrl());
-//
-//        // And at minimum the title and artist for legacy support
-//        metadataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, title);
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI,
+                mediaItem.getBackgroundUrl());
+
+        // And at minimum the title and artist for legacy support
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, title);
 //        metadataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, movie.getStudio());
-//
-//        Glide.with(this)
-//                .load(Uri.parse(movie.getCardImageUrl()))
-//                .asBitmap()
-//                .into(new SimpleTarget<Bitmap>(500, 500) {
-//                    @Override
-//                    public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
-//                        metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ART, bitmap);
-//                        mSession.setMetadata(metadataBuilder.build());
-//                    }
-//                });
-//    }
+
+        Glide.with(this)
+                .load(Uri.parse(mediaItem.getBackgroundUrl()))
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>(500, 500) {
+                    @Override
+                    public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
+                        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap);
+                        mSession.setMetadata(metadataBuilder.build());
+                    }
+                });
+    }
 
     private void loadViews() {
         mVideoView = (VideoView) findViewById(R.id.videoView);
@@ -234,6 +249,6 @@ public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnP
         PLAYING, PAUSED, BUFFERING, IDLE;
     }
 
-    private class MediaSessionCallback extends MediaSession.Callback {
+    private class MediaSessionCallback extends MediaSessionCompat.Callback {
     }
 }
