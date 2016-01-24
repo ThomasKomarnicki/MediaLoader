@@ -25,7 +25,7 @@ public class ContentDownloader {
     }
 
     public void initiateDownload(final String url){
-        startThread = new Thread(new FetcherRunnable(url), "Torrent-Fetcher - " + "Start: " + url);
+        startThread = new Thread(new FetcherRunnable(url, false), "Torrent-Fetcher - " + "Start: " + url);
         startThread.setDaemon(true);
         startThread.start();
 
@@ -34,7 +34,7 @@ public class ContentDownloader {
             public void run() {
                 startThread.interrupt();
 
-                resumeThread = new Thread(new FetcherRunnable(url), "Torrent-Fetcher - " + "Resume: " + url);
+                resumeThread = new Thread(new FetcherRunnable(url, true), "Torrent-Fetcher - " + "Resume: " + url);
                 resumeThread.setDaemon(true);
                 resumeThread.start();
             }
@@ -46,8 +46,10 @@ public class ContentDownloader {
     private class FetcherRunnable implements Runnable {
 
         private String url;
+        private Boolean force;
 
-        FetcherRunnable(String url){
+        FetcherRunnable(String url, boolean force){
+            this.force = force;
             this.url = url;
         }
 
@@ -59,7 +61,8 @@ public class ContentDownloader {
 
                 TorrentInfo ti = TorrentInfo.bdecode(data);
 
-                BTEngine.getInstance().download(ti, null, null);
+                ContentManager.getInstance().downloadTorrent(ti, force);
+//                BTEngine.getInstance().download(ti, null, null);
 
             } catch (Throwable e) {
                 Log.e(TAG, "Error downloading torrent", e);

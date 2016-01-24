@@ -64,6 +64,9 @@ public class BTMediaItem implements MediaItem {
     }
 
     public boolean containsTorrentHandle(TorrentHandle torrentHandle){
-        return btDownloadWrapper.getInfoHash().equals(torrentHandle.getInfoHash());
+        String btDownloadInfoHash = btDownloadWrapper.getInfoHash();
+        String torrentHandleInfoHash = torrentHandle.getInfoHash().toString();
+        return btDownloadInfoHash.equals(torrentHandleInfoHash);
+//        return btDownloadWrapper.getInfoHash().equals(torrentHandle.getInfoHash().toString());
     }
 }

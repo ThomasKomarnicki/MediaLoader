@@ -79,4 +79,9 @@ public class PersistenceManager {
         mediaRecord.save();
         return mediaRecord;
     }
+
+    public boolean torrentExists(String name) {
+        List<MediaRecord> recordList = MediaRecord.find(MediaRecord.class, "name = ?", new String[]{name});
+        return recordList != null && recordList.size() > 0;
+    }
 }

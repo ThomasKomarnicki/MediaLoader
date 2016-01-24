@@ -1,9 +1,11 @@
 package com.doglandia.medialoader.presenter;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Parcelable;
 
+import com.doglandia.medialoader.activity.PlaybackActivity;
 import com.doglandia.medialoader.content.ContentManager;
-import com.doglandia.medialoader.event.BTMediaUpdateEvent;
 import com.doglandia.medialoader.event.MediaItemsRefreshEvent;
 import com.doglandia.medialoader.event.MediaUpdateEvent;
 import com.doglandia.medialoader.model.mediaItem.MediaItem;
@@ -30,8 +32,10 @@ public class MainVideoFragmentPresenter {
         view.showMediaItems(contentManager.getMediaItems());
     }
 
-    public void onMediaItemClick(MediaItem mediaItem){
-
+    public void onMediaItemClick(Activity activity, MediaItem mediaItem){
+        Intent intent = new Intent(activity, PlaybackActivity.class);
+        intent.putExtra("media_item", (Parcelable) mediaItem);
+        activity.startActivity(intent);
     }
 
     public void registerEventListeners(){

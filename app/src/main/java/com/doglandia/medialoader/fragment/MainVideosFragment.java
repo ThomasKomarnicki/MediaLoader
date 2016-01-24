@@ -7,8 +7,11 @@ import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.ListRowPresenter;
 import android.support.v17.leanback.widget.ObjectAdapter;
+import android.support.v17.leanback.widget.OnItemViewClickedListener;
 import android.support.v17.leanback.widget.Presenter;
 import android.support.v17.leanback.widget.PresenterSelector;
+import android.support.v17.leanback.widget.Row;
+import android.support.v17.leanback.widget.RowPresenter;
 import android.util.Log;
 
 import com.doglandia.medialoader.content.ContentDownloader;
@@ -38,7 +41,7 @@ public class MainVideosFragment extends BrowseFragment implements MainVideosView
     MediaItemPresenter presenter = new MediaItemPresenter(){
         @Override
         public void onMediaItemClick(MediaItem mediaItem) {
-            mainVideoFragmentPresenter.onMediaItemClick(mediaItem);
+            mainVideoFragmentPresenter.onMediaItemClick(getActivity(), mediaItem);
         }
     };
 
@@ -54,6 +57,13 @@ public class MainVideosFragment extends BrowseFragment implements MainVideosView
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mainVideoFragmentPresenter = new MainVideoFragmentPresenter(getActivity(),this);
+
+        setOnItemViewClickedListener(new OnItemViewClickedListener() {
+            @Override
+            public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item, RowPresenter.ViewHolder rowViewHolder, Row row) {
+                mainVideoFragmentPresenter.onMediaItemClick(getActivity(), (MediaItem) item);
+            }
+        });
     }
 
     private void loadRows() {
@@ -72,6 +82,7 @@ public class MainVideosFragment extends BrowseFragment implements MainVideosView
             loadRows();
         }else{
             Log.d(TAG, "updating all media items");
+            mMediaItemCollection.update(mediaItemList);
             mediaItemAdapter.update();
 
         }

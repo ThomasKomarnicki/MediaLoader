@@ -1,47 +1,26 @@
-/*
- * Copyright (C) 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
- */
-
-package com.doglandia.medialoader.sample;
+package com.doglandia.medialoader.activity;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.media.MediaMetadata;
 import android.media.MediaPlayer;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.widget.VideoView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.doglandia.medialoader.R;
+import com.doglandia.medialoader.model.mediaItem.MediaItem;
 
 /**
- * PlaybackOverlayActivity for video playback that loads PlaybackOverlayFragment
+ * Created by Thomas on 1/23/2016.
  */
-public class PlaybackOverlayActivity extends Activity implements
-        PlaybackOverlayFragment.OnPlayPauseClickedListener {
-    private static final String TAG = "PlaybackOverlayActivity";
+public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnPlayPauseClickedListener*/ {
+    private static final String TAG = "PlaybackActivity";
 
     private VideoView mVideoView;
     private LeanbackPlaybackState mPlaybackState = LeanbackPlaybackState.IDLE;
     private MediaSession mSession;
 
-
+    private MediaItem mediaItem;
     /**
      * Called when the activity is first created.
      */
@@ -49,6 +28,7 @@ public class PlaybackOverlayActivity extends Activity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.playback_controls);
+        mediaItem = getIntent().getParcelableExtra("media_item");
         loadViews();
         setupCallbacks();
         mSession = new MediaSession(this, "LeanbackSampleApp");
@@ -57,6 +37,9 @@ public class PlaybackOverlayActivity extends Activity implements
                 MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
         mSession.setActive(true);
+
+        mVideoView.setVideoPath(mediaItem.getFileLocation());
+        mVideoView.start();
     }
 
 
@@ -91,8 +74,8 @@ public class PlaybackOverlayActivity extends Activity implements
     /**
      * Implementation of OnPlayPauseClickedListener
      */
-    public void onFragmentPlayPause(Movie movie, int position, Boolean playPause) {
-        mVideoView.setVideoPath(movie.getVideoUrl());
+    public void onFragmentPlayPause(MediaItem mediaItem, int position, Boolean playPause) {
+        mVideoView.setVideoPath(mediaItem.getFileLocation());
 
         if (position == 0 || mPlaybackState == LeanbackPlaybackState.IDLE) {
             setupCallbacks();
@@ -110,7 +93,7 @@ public class PlaybackOverlayActivity extends Activity implements
             mVideoView.pause();
         }
         updatePlaybackState(position);
-        updateMetadata(movie);
+//        updateMetadata(movie);
     }
 
     private void updatePlaybackState(int position) {
@@ -136,32 +119,32 @@ public class PlaybackOverlayActivity extends Activity implements
         return actions;
     }
 
-    private void updateMetadata(final Movie movie) {
-        final MediaMetadata.Builder metadataBuilder = new MediaMetadata.Builder();
-
-        String title = movie.getTitle().replace("_", " -");
-
-        metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE, title);
-        metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_SUBTITLE,
-                movie.getDescription());
-        metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI,
-                movie.getCardImageUrl());
-
-        // And at minimum the title and artist for legacy support
-        metadataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, title);
-        metadataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, movie.getStudio());
-
-        Glide.with(this)
-                .load(Uri.parse(movie.getCardImageUrl()))
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>(500, 500) {
-                    @Override
-                    public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
-                        metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ART, bitmap);
-                        mSession.setMetadata(metadataBuilder.build());
-                    }
-                });
-    }
+//    private void updateMetadata(final MediaItem mediaItem) {
+//        final MediaMetadata.Builder metadataBuilder = new MediaMetadata.Builder();
+//
+//        String title = movie.getTitle().replace("_", " -");
+//
+//        metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_TITLE, title);
+//        metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_SUBTITLE,
+//                movie.getDescription());
+//        metadataBuilder.putString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI,
+//                movie.getCardImageUrl());
+//
+//        // And at minimum the title and artist for legacy support
+//        metadataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, title);
+//        metadataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, movie.getStudio());
+//
+//        Glide.with(this)
+//                .load(Uri.parse(movie.getCardImageUrl()))
+//                .asBitmap()
+//                .into(new SimpleTarget<Bitmap>(500, 500) {
+//                    @Override
+//                    public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
+//                        metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ART, bitmap);
+//                        mSession.setMetadata(metadataBuilder.build());
+//                    }
+//                });
+//    }
 
     private void loadViews() {
         mVideoView = (VideoView) findViewById(R.id.videoView);

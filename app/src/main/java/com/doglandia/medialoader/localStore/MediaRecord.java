@@ -1,12 +1,15 @@
 package com.doglandia.medialoader.localStore;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.orm.SugarRecord;
 
 
 /**
  * Created by Thomas on 1/10/2016.
  */
-public class MediaRecord extends SugarRecord {
+public class MediaRecord extends SugarRecord implements Parcelable {
 
     String displayName;
     String name;
@@ -20,6 +23,29 @@ public class MediaRecord extends SugarRecord {
     public MediaRecord(){
 
     }
+
+    protected MediaRecord(Parcel in) {
+        displayName = in.readString();
+        name = in.readString();
+        torrentLocation = in.readString();
+        mediaFileLocation = in.readString();
+        backgroundUrl = in.readString();
+        complete = in.readByte() != 0;
+        downloadStartTime = in.readLong();
+        downloadFinishTime = in.readLong();
+    }
+
+    public static final Creator<MediaRecord> CREATOR = new Creator<MediaRecord>() {
+        @Override
+        public MediaRecord createFromParcel(Parcel in) {
+            return new MediaRecord(in);
+        }
+
+        @Override
+        public MediaRecord[] newArray(int size) {
+            return new MediaRecord[size];
+        }
+    };
 
     public String getDisplayName() {
         return displayName;
@@ -83,5 +109,22 @@ public class MediaRecord extends SugarRecord {
 
     public void setDownloadFinishTime(long downloadFinishTime) {
         this.downloadFinishTime = downloadFinishTime;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(displayName);
+        dest.writeString(name);
+        dest.writeString(torrentLocation);
+        dest.writeString(mediaFileLocation);
+        dest.writeString(backgroundUrl);
+        dest.writeByte((byte) (complete ? 1 : 0));
+        dest.writeLong(downloadStartTime);
+        dest.writeLong(downloadFinishTime);
     }
 }

@@ -41,7 +41,7 @@ public class BTDownloadWrapper {
     }
 
     public String getFilePath() {
-        return btDownload.getSavePath().getPath();
+        return btDownload.getContentSavePath().getPath();
     }
 
     public String getBackgroundImageUrl(){

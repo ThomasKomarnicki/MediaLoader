@@ -31,8 +31,10 @@ public class MainVideosActivity extends Activity {
         mainVideoFragmentPresenter = new MainVideoFragmentPresenter(this, fragment);
         mainVideoFragmentPresenter.showMediaItems();
 
-        ContentDownloader contentDownloader = new ContentDownloader();
-        contentDownloader.initiateDownload("http://torcache.net/torrent/0F155777D1B5165D911854E305BE786588AB2B64.torrent");
+//        ContentDownloader contentDownloader = new ContentDownloader();
+//        contentDownloader.initiateDownload("http://torcache.net/torrent/0F155777D1B5165D911854E305BE786588AB2B64.torrent");
+
+
         // "http://torcache.net/torrent/0F155777D1B5165D911854E305BE786588AB2B64.torrent" -- archer episode
         // "http://torcache.net/torrent/302BB06718B3979F94B7EC9BE3B4AD4EAF7C061C.torrent" -- in for the kill skream
 

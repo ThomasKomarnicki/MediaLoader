@@ -10,6 +10,7 @@ import com.doglandia.medialoader.event.MediaItemsRefreshEvent;
 import com.doglandia.medialoader.event.MediaUpdateEvent;
 import com.doglandia.medialoader.fragment.MainVideosFragment;
 import com.doglandia.medialoader.localStore.MediaRecord;
+import com.doglandia.medialoader.media.MediaScannerTask;
 import com.doglandia.medialoader.model.BTDownloadWrapper;
 import com.doglandia.medialoader.model.mediaItem.BTMediaItem;
 import com.doglandia.medialoader.model.mediaItem.FileMediaItem;
@@ -19,6 +20,7 @@ import com.frostwire.bittorrent.BTDownload;
 import com.frostwire.bittorrent.BTEngine;
 import com.frostwire.bittorrent.BTEngineListener;
 import com.frostwire.jlibtorrent.TorrentHandle;
+import com.frostwire.jlibtorrent.TorrentInfo;
 import com.frostwire.jlibtorrent.TorrentStatus;
 import com.squareup.otto.Bus;
 
@@ -51,6 +53,8 @@ public class ContentManager implements BTEngineListener, DownloadCallback {
     }
 
     private List<MediaItem> mediaList;
+    private List<Integer> mediaItemStates;
+    private List<Integer> newMediaItemStates;
 
     private Activity activity;
     private PersistenceManager persistenceManager;
@@ -65,10 +69,17 @@ public class ContentManager implements BTEngineListener, DownloadCallback {
         downloadUpdater = new DownloadUpdater(this, this);
 
         loadMediaItems();
+
+        // at this point mediaItems should have all completed mediaItems
     }
 
     private void loadMediaItems(){
         mediaList.addAll(persistenceManager.loadRecords(this));
+        mediaItemStates = new ArrayList<>();
+        newMediaItemStates = new ArrayList<>();
+        for(MediaItem mediaItem : mediaList){
+            mediaItemStates.add(0);
+        }
 
     }
 
@@ -102,9 +113,17 @@ public class ContentManager implements BTEngineListener, DownloadCallback {
         return mediaList;
     }
 
+    public void downloadTorrent(TorrentInfo torrentInfo, boolean force){
+        if(!persistenceManager.torrentExists(torrentInfo.getName()) || force){
+            BTEngine.getInstance().download(torrentInfo, null, null);
+        }
+
+
+    }
+
     @Override
     public void started(BTEngine engine) {
-        Log.d(TAG,"started");
+        Log.d(TAG, "started");
     }
 
     @Override
@@ -152,15 +171,21 @@ public class ContentManager implements BTEngineListener, DownloadCallback {
         return BTEngine.getInstance().getSession().getTorrents();
     }
 
+    /**
+     * called when a torrent handle is polled for an update
+     * could be a different state than previously or could have a progress update or no state change.
+     * @param torrentHandle
+     * @param state
+     */
     @Override
     public void onDownloadUpdate(TorrentHandle torrentHandle, TorrentStatus.State state) {
+
         for(MediaItem mediaItem : mediaList){
             if(mediaItem instanceof BTMediaItem){
                 BTMediaItem btMediaItem = (BTMediaItem) mediaItem;
                 if(btMediaItem.containsTorrentHandle(torrentHandle)){
                     if(state.equals(TorrentStatus.State.FINISHED) || state.equals(TorrentStatus.State.SEEDING)){
                         onDownloadFinish(btMediaItem, torrentHandle);
-
                     }else if(state.equals(TorrentStatus.State.DOWNLOADING)){
 //                        getBus().post(new BTMediaUpdateEvent(btMediaItem));
                     }
@@ -171,22 +196,62 @@ public class ContentManager implements BTEngineListener, DownloadCallback {
 
     @Override
     public void onDownloadUpdate() {
+        newMediaItemStates.clear();
         List<TorrentHandle> torrents = getAllBtDownloads();
+        int i = 0;
         for (TorrentHandle torrentHandle : torrents) {
             Log.d(TAG, "torrent: " + torrentHandle.getInfoHash().toString() + ", state = " + torrentHandle.getStatus().getState().toString() + ", progress = " + torrentHandle.getStatus().getProgress());
             onDownloadUpdate(torrentHandle, torrentHandle.getStatus().getState());
+            if( i >= newMediaItemStates.size()){
+                newMediaItemStates.add(torrentHandle.getStatus().getState().ordinal());
+            }else{
+                newMediaItemStates.set(i, torrentHandle.getStatus().getState().ordinal());
+            }
         }
 
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-//                getBus().post(new MediaItemsRefreshEvent(mediaList));
-            }
-        });
+        // if state of a media item has changed, update media items
+        if(mediaItemsStateChanged()) {
+            updateMediaItemsUi();
+        }
 
     }
 
+    private void updateMediaItemsUi(){
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getBus().post(new MediaItemsRefreshEvent(mediaList));
+            }
+        });
+    }
+
+    /**
+     * compare newMediaItemStates to mediaItemStates to see if anything has changed, if so, refresh
+     * @return
+     */
+    private boolean mediaItemsStateChanged(){
+        boolean result = false;
+        if(mediaItemStates.size() != newMediaItemStates.size()){
+            result = true;
+        }else{
+            for(int i = 0; i < mediaItemStates.size(); i++){
+                if(mediaItemStates.get(i) != newMediaItemStates.get(i)){
+                    result = true;
+                    break;
+                }
+            }
+        }
+
+        mediaItemStates.clear();
+        mediaItemStates.addAll(newMediaItemStates);
+
+        Log.d(TAG, "mediaItemsStateChanged() returned "+result);
+
+        return result;
+    }
+
     private void onDownloadFinish(BTMediaItem btMediaItem, TorrentHandle torrentHandle){
+        Log.i(TAG, "download finished: "+torrentHandle.getName());
         BTEngine.getInstance().getSession().removeTorrent(torrentHandle);
         BTDownload btDownload = new BTDownload(BTEngine.getInstance(),torrentHandle);
         btMediaItem.update(btDownload);
@@ -196,6 +261,10 @@ public class ContentManager implements BTEngineListener, DownloadCallback {
         replaceMediaItem(mediaRecord);
 
 //        getBus().post(new BTMediaUpdateEvent(btMediaItem));
+
+        MediaScannerTask mediaScannerTask = new MediaScannerTask(activity, torrentHandle.getSavePath());
+
+//        updateMediaItemsUi();
 
     }
 
