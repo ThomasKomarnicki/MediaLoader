@@ -12,12 +12,15 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.view.KeyEvent;
+import android.widget.MediaController;
 import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.doglandia.medialoader.R;
+import com.doglandia.medialoader.fragment.PlaybackControlsFragment;
 import com.doglandia.medialoader.model.mediaItem.MediaItem;
 
 /**
@@ -64,7 +67,15 @@ public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnP
         mVideoView.suspend();
     }
 
-//    @Override
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+
+        PlaybackControlsFragment fragment = (PlaybackControlsFragment) getFragmentManager().findFragmentById(R.id.playback_fragment);
+        fragment.onKeyUp(keyCode, event);
+        return super.onKeyUp(keyCode, event);
+    }
+
+    //    @Override
 //    public boolean onKeyUp(int keyCode, KeyEvent event) {
 //        PlaybackOverlayFragment playbackOverlayFragment = (PlaybackOverlayFragment) getFragmentManager().findFragmentById(R.id.playback_controls_fragment);
 //        switch (keyCode) {
@@ -240,6 +251,24 @@ public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnP
         if (mVideoView != null) {
             mVideoView.stopPlayback();
         }
+
+
+    }
+
+    public boolean togglePlayback() {
+        if(mVideoView.isPlaying()){
+            mVideoView.pause();
+            return false;
+        }else{
+            mVideoView.start();
+            return true;
+        }
+//        if(play){
+////            mVideoView.resume();
+//            mVideoView.start();
+//        }else {
+//
+//        }
     }
 
     /*
@@ -250,5 +279,6 @@ public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnP
     }
 
     private class MediaSessionCallback extends MediaSessionCompat.Callback {
+
     }
 }

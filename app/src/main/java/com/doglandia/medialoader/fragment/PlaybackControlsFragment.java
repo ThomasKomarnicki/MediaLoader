@@ -1,14 +1,19 @@
 package com.doglandia.medialoader.fragment;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v17.leanback.app.MediaControllerGlue;
 import android.support.v17.leanback.app.PlaybackControlGlue;
-import android.support.v17.leanback.app.PlaybackOverlayFragment;
+import android.support.v17.leanback.widget.Action;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
+import android.support.v17.leanback.widget.ControlButtonPresenterSelector;
+import android.support.v17.leanback.widget.OnActionClickedListener;
 import android.support.v17.leanback.widget.PlaybackControlsRow;
 import android.support.v17.leanback.widget.PlaybackControlsRowPresenter;
+import android.support.v17.leanback.widget.PresenterSelector;
+import android.support.v17.leanback.widget.SparseArrayObjectAdapter;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.widget.Toast;
 
 import com.doglandia.medialoader.activity.PlaybackActivity;
 import com.doglandia.medialoader.model.mediaItem.MediaItem;
@@ -18,11 +23,20 @@ import com.doglandia.medialoader.model.mediaItem.MediaItem;
  */
 public class PlaybackControlsFragment extends android.support.v17.leanback.app.PlaybackOverlayFragment {
 
-    private PlaybackControlGlue playbackGlue;
+    private static final String TAG = "PlaybackControlsFrag";
+
+//    private PlaybackControlGlue playbackGlue;
 
     private PlaybackActivity playbackActivity;
 
+    private MediaControllerGlue mediaControllerGlue;
+
     private MediaItem mediaItem;
+
+    private PlaybackControlsRow.PlayPauseAction playPauseAction;
+    private PlaybackControlsRow.RewindAction rewindAction;
+    private PlaybackControlsRow.FastForwardAction fastForwardAction;
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -33,99 +47,58 @@ public class PlaybackControlsFragment extends android.support.v17.leanback.app.P
 
         mediaItem = getActivity().getIntent().getParcelableExtra("media_item");
 
-        PlaybackActivity playbackActivity = (PlaybackActivity) getActivity();
+        playbackActivity = (PlaybackActivity) getActivity();
 
-        ArrayObjectAdapter arrayObjectAdapter = new ArrayObjectAdapter(new PlaybackControlsRowPresenter());
-        arrayObjectAdapter.add(new PlaybackControlsRow(mediaItem));
-        setAdapter(arrayObjectAdapter);
 
-        MediaControllerGlue mediaControllerGlue = new MediaControllerGlue(getActivity(),this, playbackSpeeds, playbackSpeeds) {
+        ControlButtonPresenterSelector presenterSelector = new ControlButtonPresenterSelector();
+        final SparseArrayObjectAdapter controlsAdapter = new SparseArrayObjectAdapter(presenterSelector);
+        playPauseAction = new PlaybackControlsRow.PlayPauseAction(playbackActivity);
+        rewindAction = new PlaybackControlsRow.RewindAction(playbackActivity);
+        fastForwardAction = new PlaybackControlsRow.FastForwardAction(playbackActivity);
+
+        controlsAdapter.set(0,rewindAction);
+        controlsAdapter.set(1, playPauseAction);
+        controlsAdapter.set(2, fastForwardAction);
+
+        PlaybackControlsRow controlsRow = new PlaybackControlsRow();
+        controlsRow.setPrimaryActionsAdapter(controlsAdapter);
+
+        PlaybackControlsRowPresenter playbackControlsRowPresenter = new PlaybackControlsRowPresenter();
+        playbackControlsRowPresenter.setOnActionClickedListener(new OnActionClickedListener() {
             @Override
-            protected void onRowChanged(PlaybackControlsRow row) {
+            public void onActionClicked(Action action) {
+                Log.i(TAG, "action "+action.getId() + " clicked: "+action);
+                if (action.getId() == playPauseAction.getId()) {
+//                    boolean playing = playPauseAction.getIndex() == PlaybackControlsRow.PlayPauseAction.PLAY;
+
+                    boolean playing = playbackActivity.togglePlayback();
+                    Log.i(TAG, "playing = "+playing);
+                    if(playing) {
+                        playPauseAction.setIcon(playPauseAction.getDrawable(PlaybackControlsRow.PlayPauseAction.PAUSE));
+                    }else{
+                        playPauseAction.setIcon(playPauseAction.getDrawable(PlaybackControlsRow.PlayPauseAction.PLAY));
+                    }
+                    controlsAdapter.notifyArrayItemRangeChanged(1,1);
+
+
+                } else if (action.getId() == fastForwardAction.getId()) {
+
+                } else if (action.getId() == rewindAction.getId()) {
+
+                }
 
             }
-        };
-        mediaControllerGlue.attachToMediaController(playbackActivity.getMediaControllerCompat());
+        });
+
+        ArrayObjectAdapter arrayObjectAdapter = new ArrayObjectAdapter(playbackControlsRowPresenter);
+        arrayObjectAdapter.add(controlsRow);
+        setAdapter(arrayObjectAdapter);
+
+        playPauseAction.setIcon(playPauseAction.getDrawable(PlaybackControlsRow.PlayPauseAction.PAUSE));
+
     }
 
-
-
-
-    class PlaybackGlue extends PlaybackControlGlue{
-
-        public PlaybackGlue(Context context, PlaybackOverlayFragment fragment, int[] fastForwardSpeeds, int[] rewindSpeeds) {
-            super(context, fragment, fastForwardSpeeds, rewindSpeeds);
-
-        }
-
-        @Override
-        public boolean hasValidMedia() {
-            return true;
-        }
-
-        @Override
-        public boolean isMediaPlaying() {
-            return false;
-        }
-
-        @Override
-        public CharSequence getMediaTitle() {
-            return mediaItem.getDisplayName();
-        }
-
-        @Override
-        public CharSequence getMediaSubtitle() {
-            return null;
-        }
-
-        @Override
-        public int getMediaDuration() {
-            return 0;
-        }
-
-        @Override
-        public Drawable getMediaArt() {
-            return null;
-        }
-
-        @Override
-        public long getSupportedActions() {
-            return 0;
-        }
-
-        @Override
-        public int getCurrentSpeedId() {
-            return 0;
-        }
-
-        @Override
-        public int getCurrentPosition() {
-            return 0;
-        }
-
-        @Override
-        protected void startPlayback(int speed) {
-
-        }
-
-        @Override
-        protected void pausePlayback() {
-
-        }
-
-        @Override
-        protected void skipToNext() {
-
-        }
-
-        @Override
-        protected void skipToPrevious() {
-
-        }
-
-        @Override
-        protected void onRowChanged(PlaybackControlsRow row) {
-
-        }
+    public void onKeyUp(int keyCode, KeyEvent event) {
+//        mediaControllerGlue.onKey(null, keyCode,event);
     }
 }
