@@ -82,9 +82,9 @@ public class PlaybackControlsFragment extends android.support.v17.leanback.app.P
 
 
                 } else if (action.getId() == fastForwardAction.getId()) {
-
+                    playbackActivity.seekForward();
                 } else if (action.getId() == rewindAction.getId()) {
-
+                    playbackActivity.seekBackward();
                 }
 
             }

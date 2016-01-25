@@ -271,6 +271,18 @@ public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnP
 //        }
     }
 
+    public void seekForward(){
+        if(mVideoView.canSeekForward()) {
+            mVideoView.seekTo(mVideoView.getCurrentPosition()+(60000 * 2)); // seek forward 2 minutes
+        }
+    }
+
+    public void seekBackward(){
+        if(mVideoView.canSeekBackward()) {
+            mVideoView.seekTo(mVideoView.getCurrentPosition()-(60000 * 2)); // seek forward 2 minutes
+        }
+    }
+
     /*
      * List of various states that we can be in
      */
