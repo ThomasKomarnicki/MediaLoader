@@ -9,11 +9,8 @@ import android.support.v17.leanback.widget.ControlButtonPresenterSelector;
 import android.support.v17.leanback.widget.OnActionClickedListener;
 import android.support.v17.leanback.widget.PlaybackControlsRow;
 import android.support.v17.leanback.widget.PlaybackControlsRowPresenter;
-import android.support.v17.leanback.widget.PresenterSelector;
 import android.support.v17.leanback.widget.SparseArrayObjectAdapter;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.widget.Toast;
 
 import com.doglandia.medialoader.activity.PlaybackActivity;
 import com.doglandia.medialoader.model.mediaItem.MediaItem;
@@ -36,6 +33,8 @@ public class PlaybackControlsFragment extends android.support.v17.leanback.app.P
     private PlaybackControlsRow.PlayPauseAction playPauseAction;
     private PlaybackControlsRow.RewindAction rewindAction;
     private PlaybackControlsRow.FastForwardAction fastForwardAction;
+
+    private PlaybackControlsRow controlsRow;
 
 
     @Override
@@ -60,7 +59,7 @@ public class PlaybackControlsFragment extends android.support.v17.leanback.app.P
         controlsAdapter.set(1, playPauseAction);
         controlsAdapter.set(2, fastForwardAction);
 
-        PlaybackControlsRow controlsRow = new PlaybackControlsRow();
+        controlsRow = new PlaybackControlsRow();
         controlsRow.setPrimaryActionsAdapter(controlsAdapter);
 
         PlaybackControlsRowPresenter playbackControlsRowPresenter = new PlaybackControlsRowPresenter();
@@ -98,7 +97,13 @@ public class PlaybackControlsFragment extends android.support.v17.leanback.app.P
 
     }
 
-    public void onKeyUp(int keyCode, KeyEvent event) {
-//        mediaControllerGlue.onKey(null, keyCode,event);
+    public void setPlayDuration(int millis){
+        controlsRow.setCurrentTime(millis);
+    }
+
+    public void setTotalPlayDuration(int millis){
+        controlsRow.setTotalTime(millis);
+        controlsRow.setBufferedProgress(millis);
+        controlsRow.setCurrentTime(0);
     }
 }

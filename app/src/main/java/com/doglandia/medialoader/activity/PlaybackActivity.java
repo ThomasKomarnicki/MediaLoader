@@ -23,6 +23,9 @@ import com.doglandia.medialoader.R;
 import com.doglandia.medialoader.fragment.PlaybackControlsFragment;
 import com.doglandia.medialoader.model.mediaItem.MediaItem;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by Thomas on 1/23/2016.
  */
@@ -34,6 +37,23 @@ public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnP
     private MediaSessionCompat mSession;
 
     private MediaItem mediaItem;
+
+    private Timer timer;
+    private TimerTask playBackTimerTask = new TimerTask() {
+        @Override
+        public void run() {
+            if(mVideoView.isPlaying() && playbackControlsFragment != null){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updatePlaybackPosition();
+                    }
+                });
+            }
+        }
+    };
+
+    private PlaybackControlsFragment playbackControlsFragment;
     /**
      * Called when the activity is first created.
      */
@@ -54,6 +74,11 @@ public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnP
         mVideoView.setVideoPath(mediaItem.getFileLocation());
         mVideoView.start();
 
+        playbackControlsFragment = (PlaybackControlsFragment) getFragmentManager().findFragmentById(R.id.playback_fragment);
+
+        timer = new Timer();
+        timer.scheduleAtFixedRate(playBackTimerTask, 1000,1000);
+
     }
 
     public MediaControllerCompat getMediaControllerCompat(){
@@ -67,13 +92,13 @@ public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnP
         mVideoView.suspend();
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-
-        PlaybackControlsFragment fragment = (PlaybackControlsFragment) getFragmentManager().findFragmentById(R.id.playback_fragment);
-        fragment.onKeyUp(keyCode, event);
-        return super.onKeyUp(keyCode, event);
-    }
+//    @Override
+//    public boolean onKeyUp(int keyCode, KeyEvent event) {
+//
+//        PlaybackControlsFragment fragment = (PlaybackControlsFragment) getFragmentManager().findFragmentById(R.id.playback_fragment);
+//        fragment.onKeyUp(keyCode, event);
+//        return super.onKeyUp(keyCode, event);
+//    }
 
     //    @Override
 //    public boolean onKeyUp(int keyCode, KeyEvent event) {
@@ -203,6 +228,7 @@ public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnP
             public void onPrepared(MediaPlayer mp) {
                 if (mPlaybackState == LeanbackPlaybackState.PLAYING) {
                     mVideoView.start();
+                    playbackControlsFragment.setTotalPlayDuration(mVideoView.getDuration());
                 }
             }
         });
@@ -274,13 +300,20 @@ public class PlaybackActivity extends Activity /*implements PlaybackFragment.OnP
     public void seekForward(){
         if(mVideoView.canSeekForward()) {
             mVideoView.seekTo(mVideoView.getCurrentPosition()+(60000 * 2)); // seek forward 2 minutes
+            updatePlaybackPosition();
         }
     }
 
     public void seekBackward(){
         if(mVideoView.canSeekBackward()) {
-            mVideoView.seekTo(mVideoView.getCurrentPosition()-(60000 * 2)); // seek forward 2 minutes
+            mVideoView.seekTo(mVideoView.getCurrentPosition() - (60000 * 2)); // seek forward 2 minutes
+            updatePlaybackPosition();
         }
+
+    }
+
+    private void updatePlaybackPosition(){
+        playbackControlsFragment.setPlayDuration(mVideoView.getCurrentPosition());
     }
 
     /*
