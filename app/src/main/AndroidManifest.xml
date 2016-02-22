@@ -4,8 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-feature
         android:name="android.hardware.touchscreen"
@@ -15,59 +13,41 @@
         android:required="true" />
 
     <application
-        android:name=".MediaLoaderApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Leanback">
+        android:theme="@style/Theme.Leanback"
+        android:name=".MediaLoaderApplication">
+        <!--<activity-->
+            <!--android:name=".sample.MainActivity"-->
+            <!--android:banner="@drawable/app_icon_your_company"-->
+            <!--android:icon="@drawable/app_icon_your_company"-->
+            <!--android:label="@string/app_name"-->
+            <!--android:logo="@drawable/app_icon_your_company"-->
+            <!--android:screenOrientation="landscape">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-        <meta-data android:name="DATABASE" android:value="media_loader.db" />
-        <meta-data android:name="VERSION" android:value="1" />
-        <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.doglandia.medialoader.localStore" />
+                <!--<category android:name="android.intent.category.LEANBACK_LAUNCHER" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+        <!--<activity android:name=".sample.DetailsActivity" />-->
+        <!--<activity android:name=".sample.PlaybackOverlayActivity" />-->
+        <!--<activity android:name=".sample.BrowseErrorActivity" />-->
 
-        <!-- <activity -->
-        <!-- android:name=".sample.ViewContentActivity" -->
-        <!-- android:banner="@drawable/app_icon_your_company" -->
-        <!-- android:icon="@drawable/app_icon_your_company" -->
-        <!-- android:label="@string/app_name" -->
-        <!-- android:logo="@drawable/app_icon_your_company" -->
-        <!-- android:screenOrientation="landscape"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <activity android:name=".playmedia.PlayMediaActivity">
+        </activity>
 
-
-        <!-- <category android:name="android.intent.category.LEANBACK_LAUNCHER" /> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
-
-        <activity
-            android:name=".activity.MainVideosActivity"
-            android:banner="@drawable/app_icon_your_company"
-            android:icon="@drawable/app_icon_your_company"
-            android:label="@string/app_name"
-            android:logo="@drawable/app_icon_your_company"
-            android:screenOrientation="landscape">
+        <activity android:name=".videolib.VideoLibraryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".sample.ContentDetailsActivity" />
-        <activity android:name=".sample.PlaybackOverlayActivity" />
-        <activity android:name=".sample.BrowseErrorActivity" />
-        <activity
-            android:name=".test.PhoneTestActivity"
-            android:label="@string/title_activity_phone_test">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".activity.PlaybackActivity"/>
+
     </application>
 
 </manifest>

@@ -1,82 +1,36 @@
 package com.doglandia.medialoader;
 
-import android.os.Environment;
-import android.util.Log;
+import android.app.Application;
 
-import com.doglandia.medialoader.media.MediaScannerTask;
-import com.frostwire.bittorrent.BTContext;
-import com.frostwire.bittorrent.BTEngine;
-import com.frostwire.jlibtorrent.DHT;
-import com.orm.SugarApp;
-
-import java.io.File;
+import com.doglandia.medialoader.resourceserver.ResourceServer;
+import com.doglandia.medialoader.thumbnail.ThumbnailManager;
 
 /**
- * Created by Thomas on 1/8/2016.
+ * Created by tdk10 on 2/21/2016.
  */
-public class MediaLoaderApplication extends SugarApp {
+public class MediaLoaderApplication extends Application {
 
-    private static final String TAG = "MediaLoaderApp";
+    private ResourceServer resourceServer;
+
+    private ThumbnailManager thumbnailManager;
+
+
+    public ResourceServer getResourceServer() {
+//        if(resourceServer == null){
+//            resourceServer = new ResourceServer();
+//        }
+        return resourceServer;
+    }
+
+    public ThumbnailManager getThumbnailManager() {
+        return thumbnailManager;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        setupBTEngine();
+        resourceServer = new ResourceServer();
+        thumbnailManager = new ThumbnailManager(resourceServer, getFilesDir());
     }
-
-    private void setupBTEngine() {
-        BTEngine.ctx = new BTContext();
-        BTEngine.getInstance().reloadBTContext(getTorrentsFile(),
-                getMediaFile(),
-                getLibTorrent(),
-                0,0,"0.0.0.0",false,false);
-        BTEngine.ctx.optimizeMemory = true;
-//        BTEngine.getInstance().setMaxConnections(4);
-        BTEngine.getInstance().setDownloadSpeedLimit(5000);
-        BTEngine.getInstance().setUploadSpeedLimit(50);
-        BTEngine.getInstance().start();
-
-
-//        boolean enable_dht = ConfigurationManager.instance().getBoolean(Constants.PREF_KEY_NETWORK_ENABLE_DHT);
-        DHT dht = new DHT(BTEngine.getInstance().getSession());
-//        if (!enable_dht) {
-//            dht.stop();
-//        } else {
-            // just make sure it's started otherwise.
-            // (we could be coming back from a crash on an unstable state)
-            dht.start();
-//        }
-
-        new MediaScannerTask(getApplicationContext(), Environment.getExternalStorageDirectory().getPath() + File.separator + "MediaLoader");
-
-    }
-
-    public static File getTorrentsFile(){
-        File torrentFile = new File(Environment.getExternalStorageDirectory().getPath() +
-                File.separator + "MediaLoader"
-                +File.separator+"torrents");
-        boolean madeFile = torrentFile.mkdirs();
-        Log.d(TAG, "made torrent file =" + madeFile + ", " + torrentFile.isDirectory());
-        return torrentFile;
-    }
-
-    public static File getMediaFile(){
-        File mediaFile = new File(Environment.getExternalStorageDirectory().getPath() +
-                File.separator + "MediaLoader"
-                +File.separator+"media");
-        boolean madeMediaFile = mediaFile.mkdirs();
-        mediaFile.setReadable(true);
-        Log.d(TAG, "made media file =" + madeMediaFile + ", " + mediaFile.isDirectory());
-        return mediaFile;
-    }
-
-    public static File getLibTorrent() {
-        File file = new File(getTorrentsFile().getPath() + File.separator + "TorrentData");
-        boolean madeFile = file.mkdirs();
-        Log.d(TAG, "made libtorrent file =" + madeFile + ", " + file.isDirectory());
-        return file;
-    }
-
-
 }
