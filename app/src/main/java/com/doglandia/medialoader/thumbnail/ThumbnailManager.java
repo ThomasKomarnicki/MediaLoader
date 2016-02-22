@@ -22,6 +22,8 @@ public class ThumbnailManager {
     private File localRoot;
     private ResourceServer server;
 
+    private MetaFile metaFile;
+
     private ThumbnailRetrievedListener listener;
 
     /**
@@ -31,6 +33,7 @@ public class ThumbnailManager {
     public ThumbnailManager(ResourceServer resourceServer, File localRoot){
         this.localRoot = localRoot;
         this.server = resourceServer;
+        metaFile = new MetaFile(new File(localRoot.getPath()+File.separator+"meta.json"));
     }
 
     public void setListener(ThumbnailRetrievedListener listener) {
@@ -61,9 +64,6 @@ public class ThumbnailManager {
 
         String path = localRoot.getPath() + File.separator;
 
-
-
-
         String[] split = resource.getLocation().split("\\.");
         String fileName = split[0]+".jpg";
         fileName = replaceSeparators(fileName, "-");
@@ -75,10 +75,6 @@ public class ThumbnailManager {
         path += fileName;
 //        path = localRoot.getPath() + File.separator + "dogs1.jpg";
         return path;
-//        File thumbnailFile = new File(path);
-//
-//
-//        return thumbnailFile;
     }
 
     private static String replaceSeparators(String s, String replacement){
