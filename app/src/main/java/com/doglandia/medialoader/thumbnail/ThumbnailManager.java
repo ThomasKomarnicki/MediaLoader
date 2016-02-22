@@ -5,7 +5,6 @@ import com.doglandia.medialoader.model.ResourceGroup;
 import com.doglandia.medialoader.resourceserver.ResourceServer;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,16 +59,15 @@ public class ThumbnailManager {
 
     public String getThumbnailFileForResource(Resource resource){
 
-        String path = localRoot.getPath() + File.separator + resource.getLocation();
-        String[] split = path.split("\\.");
-        path =  "";
-//        path = split[0] + ".jpg";
-        for(int i = 0; i < split.length-1; i++){
-            path += split[i]+".";
-        }
-        path += "jpg";
-//        return path;
-        return localRoot.getPath() + File.separator + "dogs1.jpg";
+        String path = localRoot.getPath() + File.separator;
+        String[] split = resource.getLocation().split("\\.");
+//        path =  "";
+//        for(int i = 0; i < split.length-1; i++){
+//            path += split[i]+".";
+//        }
+        path += split[0]+".jpg";
+//        path = localRoot.getPath() + File.separator + "dogs1.jpg";
+        return path;
 //        File thumbnailFile = new File(path);
 //
 //
