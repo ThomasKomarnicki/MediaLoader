@@ -60,18 +60,29 @@ public class ThumbnailManager {
     public String getThumbnailFileForResource(Resource resource){
 
         String path = localRoot.getPath() + File.separator;
+
+
+
+
         String[] split = resource.getLocation().split("\\.");
+        String fileName = split[0]+".jpg";
+        fileName = replaceSeparators(fileName, "-");
 //        path =  "";
 //        for(int i = 0; i < split.length-1; i++){
 //            path += split[i]+".";
 //        }
-        path += split[0]+".jpg";
+//        path += split[0]+".jpg";
+        path += fileName;
 //        path = localRoot.getPath() + File.separator + "dogs1.jpg";
         return path;
 //        File thumbnailFile = new File(path);
 //
 //
 //        return thumbnailFile;
+    }
+
+    private static String replaceSeparators(String s, String replacement){
+        return s.replace("/", replacement);
     }
 
 }
