@@ -13,9 +13,6 @@ import android.support.v17.leanback.widget.Presenter;
 import android.support.v17.leanback.widget.Row;
 import android.support.v17.leanback.widget.RowPresenter;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.test.mock.MockApplication;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.R;
@@ -25,14 +22,9 @@ import com.doglandia.medialoader.model.ResourcesResponse;
 import com.doglandia.medialoader.playmedia.PlayMediaActivity;
 import com.doglandia.medialoader.resourceserver.ResourceServer;
 import com.doglandia.medialoader.thumbnail.ThumbnailManager;
-import com.doglandia.medialoader.zsample.BrowseErrorActivity;
-import com.doglandia.medialoader.zsample.CardPresenter;
 import com.doglandia.medialoader.zsample.DetailsActivity;
-import com.doglandia.medialoader.zsample.Movie;
-import com.doglandia.medialoader.zsample.MovieList;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 
 import retrofit.Callback;
@@ -52,8 +44,6 @@ public class VideoLibraryFragment extends BrowseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
-        setTitle(getString(R.string.browse_title)); // Badge, when set, takes precedent
         // over title
         setHeadersState(HEADERS_ENABLED);
         setHeadersTransitionOnBackEnabled(true);

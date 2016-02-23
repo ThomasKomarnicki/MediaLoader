@@ -6,9 +6,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
-import com.doglandia.medialoader.R;
 import com.doglandia.medialoader.model.Resource;
-import com.doglandia.medialoader.zsample.Movie;
 
 import java.io.File;
 
@@ -17,8 +15,8 @@ import java.io.File;
  */
 public class VideoPresenter extends Presenter {
 
-    private static final int CARD_WIDTH = 313;
-    private static final int CARD_HEIGHT = 176;
+    private static final int CARD_WIDTH = (int) (313 * 1.5);
+    private static final int CARD_HEIGHT = (int) (176 * 1.5);
 
     private static final String TAG = "VideoPresenter";
 

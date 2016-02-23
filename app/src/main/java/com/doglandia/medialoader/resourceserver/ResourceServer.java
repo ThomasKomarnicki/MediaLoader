@@ -1,5 +1,7 @@
 package com.doglandia.medialoader.resourceserver;
 
+import android.content.Context;
+
 import com.doglandia.medialoader.model.Resource;
 import com.doglandia.medialoader.model.ResourcesResponse;
 import com.google.gson.FieldNamingPolicy;
@@ -17,7 +19,7 @@ public class ResourceServer implements ServerInterface{
 
     private ServerInterface instance;
 
-    public ResourceServer(){
+    public ResourceServer(Context context){
         RestAdapter.Builder builder = new RestAdapter.Builder();
         builder.setEndpoint("http://192.168.0.9:8080/");
         builder.setLogLevel(RestAdapter.LogLevel.FULL);

@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
@@ -39,7 +40,8 @@ public class MetaDataTask extends AsyncTask<Resource, Void, File> {
             mmr.setDataSource(resourceServer.getMediaUrl(resource));
             mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_ALBUM);
             mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_ARTIST);
-            Bitmap b = mmr.getFrameAtTime(10 * (1000) * (1000), FFmpegMediaMetadataRetriever.OPTION_CLOSEST); // frame at 2 seconds
+            HashMap<String,String> metaData = mmr.getMetadata().getAll();
+            Bitmap b = mmr.getFrameAtTime(8 * (1000) * (1000), FFmpegMediaMetadataRetriever.OPTION_CLOSEST); // frame at 8 seconds
 
             String thumbnailFile = thumbnailManager.getThumbnailFileForResource(resource);
             try {
