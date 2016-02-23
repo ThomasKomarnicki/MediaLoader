@@ -30,7 +30,7 @@ public class MediaLoaderApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        resourceServer = new ResourceServer();
+        resourceServer = new ResourceServer(getApplicationContext());
         thumbnailManager = new ThumbnailManager(resourceServer, getFilesDir());
     }
 }
