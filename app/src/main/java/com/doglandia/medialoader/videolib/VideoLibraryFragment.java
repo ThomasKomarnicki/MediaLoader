@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 
 import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.R;
+import com.doglandia.medialoader.event.ResourceServerConnected;
 import com.doglandia.medialoader.model.Resource;
 import com.doglandia.medialoader.model.ResourceGroup;
 import com.doglandia.medialoader.model.ResourcesResponse;
@@ -23,6 +24,7 @@ import com.doglandia.medialoader.playmedia.PlayMediaActivity;
 import com.doglandia.medialoader.resourceserver.ResourceServer;
 import com.doglandia.medialoader.thumbnail.ThumbnailManager;
 import com.doglandia.medialoader.zsample.DetailsActivity;
+import com.squareup.otto.Subscribe;
 
 import java.io.File;
 import java.util.List;
@@ -53,9 +55,15 @@ public class VideoLibraryFragment extends BrowseFragment {
         // set search icon color
         setSearchAffordanceColor(getResources().getColor(R.color.search_opaque));
 
-        getResourceData();
-
         setOnItemViewClickedListener(new ItemViewClickedListener());
+
+        MediaLoaderApplication.getBus().register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        MediaLoaderApplication.getBus().unregister(this);
     }
 
     private void getResourceData(){
@@ -139,5 +147,10 @@ public class VideoLibraryFragment extends BrowseFragment {
                 getActivity().startActivity(intent, bundle);
             }
         }
+    }
+
+    @Subscribe
+    public void onResourceServerConnected(ResourceServerConnected resourceServerConnected){
+        getResourceData();
     }
 }

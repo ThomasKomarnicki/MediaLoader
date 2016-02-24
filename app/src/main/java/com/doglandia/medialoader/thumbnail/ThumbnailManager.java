@@ -61,21 +61,17 @@ public class ThumbnailManager {
     }
 
     public String getThumbnailFileForResource(Resource resource){
-
+        // todo optimize with string builder
         String path = localRoot.getPath() + File.separator;
 
         String[] split = resource.getLocation().split("\\.");
-        String fileName;// = split[0]+".jpg";
-
-        fileName =  "";
+        String fileName =  "";
         for(int i = 0; i < split.length-1; i++){
             fileName += split[i]+".";
         }
         fileName += "jpg";
         fileName = replaceSeparators(fileName, "-");
-//        path += split[0]+".jpg";
         path += fileName;
-//        path = localRoot.getPath() + File.separator + "dogs1.jpg";
         return path;
     }
 

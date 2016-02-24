@@ -2,7 +2,9 @@ package com.doglandia.medialoader.resourceserver;
 
 import android.content.Context;
 
+import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.clientdiscovery.ClientDiscoverer;
+import com.doglandia.medialoader.event.ResourceServerConnected;
 import com.doglandia.medialoader.model.Resource;
 import com.doglandia.medialoader.model.ResourcesResponse;
 import com.google.gson.FieldNamingPolicy;
@@ -18,6 +20,8 @@ import retrofit.converter.GsonConverter;
  */
 public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostFoundListener{
 
+    public static final String PORT = "8989";
+
     private ServerInterface instance;
 
     private ClientDiscoverer clientDiscoverer;
@@ -32,7 +36,7 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
     private void createRestAdapter(){
         RestAdapter.Builder builder = new RestAdapter.Builder();
 //        builder.setEndpoint("http://192.168.0.9:8080/");
-        builder.setEndpoint(discoveredHost+"/");
+        builder.setEndpoint(getResourceServerEndpoint());
         builder.setLogLevel(RestAdapter.LogLevel.FULL);
 
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -40,6 +44,10 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
 
         builder.setConverter(new GsonConverter(gsonBuilder.create()));
         instance = builder.build().create(ServerInterface.class); // possible to switch to testable instance
+    }
+
+    private String getResourceServerEndpoint(){
+        return "http://"+discoveredHost+":"+PORT;
     }
 
 
@@ -50,13 +58,15 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
 
     public String getMediaUrl(Resource resource) {
         // todo
-        return discoveredHost + "/" + resource.getLocation();
+        return getResourceServerEndpoint() + "/" + resource.getLocation();
     }
 
     @Override
     public void onHostFound(String host) {
         discoveredHost = host;
         createRestAdapter();
+
+        MediaLoaderApplication.getBus().post(new ResourceServerConnected());
     }
 
     @Override

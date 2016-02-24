@@ -4,11 +4,18 @@ import android.app.Application;
 
 import com.doglandia.medialoader.resourceserver.ResourceServer;
 import com.doglandia.medialoader.thumbnail.ThumbnailManager;
+import com.squareup.otto.Bus;
 
 /**
  * Created by tdk10 on 2/21/2016.
  */
 public class MediaLoaderApplication extends Application {
+
+    private static final Bus bus = new Bus();
+
+    public static Bus getBus() {
+        return bus;
+    }
 
     private ResourceServer resourceServer;
 

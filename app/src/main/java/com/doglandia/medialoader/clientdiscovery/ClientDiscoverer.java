@@ -81,16 +81,16 @@ public class ClientDiscoverer {
 
         DiscoveryTask(){
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.connectTimeout(2, TimeUnit.SECONDS);
+            builder.connectTimeout(500, TimeUnit.MILLISECONDS);
             client = builder.build();
         }
 
         @Override
         protected String doInBackground(Void... params) {
 
-            String hostName = scanSubNet("192.168.1.");
+            String hostName = scanSubNet("192.168.0.");
 
-            
+
 
             return hostName;
         }
@@ -102,24 +102,25 @@ public class ClientDiscoverer {
         }
 
         private String scanSubNet(String subnet){
-            ArrayList<String> hosts = new ArrayList<>();
+//            ArrayList<String> hosts = new ArrayList<>();
 
             InetAddress inetAddress = null;
             for(int i=1; i<254; i++){
                 Log.d(TAG, "Trying: " + subnet + String.valueOf(i));
                 try {
                     inetAddress = InetAddress.getByName(subnet + String.valueOf(i));
-                    if(inetAddress.isReachable(200)){
-                        hosts.add(inetAddress.getHostName());
-                        Log.d(TAG, inetAddress.getHostName() + "is reachable");
+//                    if(inetAddress.isReachable(200)){
+//                        hosts.add(inetAddress.getHostName());
+//                        Log.d(TAG, inetAddress.getHostName() + "is reachable");
                         if(hostAcceptsRequest(inetAddress.getHostName())){
                             return inetAddress.getHostName();
                         }
-                    }
+//                    }
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.d(TAG, "IO exception, failed on address "+inetAddress.getHostName());
+//                    e.printStackTrace();
                 }
             }
 
@@ -129,7 +130,7 @@ public class ClientDiscoverer {
         private boolean hostAcceptsRequest(String hostName) throws IOException {
 
             Request request = new Request.Builder()
-                    .url(hostName+":8080")
+                    .url("http://"+hostName+":8989/ping")
                     .build();
             Response response = client.newCall(request).execute();
             String body = response.body().string();

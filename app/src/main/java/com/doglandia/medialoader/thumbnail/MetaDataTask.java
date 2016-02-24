@@ -46,7 +46,7 @@ public class MetaDataTask extends AsyncTask<Resource, Void, File> {
             String thumbnailFile = thumbnailManager.getThumbnailFileForResource(resource);
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(thumbnailFile);
-                b.compress(Bitmap.CompressFormat.JPEG, 50,fileOutputStream);
+                b.compress(Bitmap.CompressFormat.JPEG, 30,fileOutputStream);
                 fileOutputStream.close();
                 b.recycle();
 
