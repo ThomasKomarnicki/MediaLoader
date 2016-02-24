@@ -1,6 +1,8 @@
 package com.doglandia.medialoader.resourceserver;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.clientdiscovery.ClientDiscoverer;
@@ -28,8 +30,10 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
 
     private String discoveredHost;
 
-    public ResourceServer(Context context){
+    private Context context;
 
+    public ResourceServer(Context context){
+        this.context = context;
         clientDiscoverer = new ClientDiscoverer(context, this);
     }
 
@@ -71,6 +75,11 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
         createRestAdapter();
 
         MediaLoaderApplication.getBus().post(new ResourceServerConnected());
+    }
+
+    @Override
+    public void onNoHostFound() {
+        // host not found message
     }
 
     @Override

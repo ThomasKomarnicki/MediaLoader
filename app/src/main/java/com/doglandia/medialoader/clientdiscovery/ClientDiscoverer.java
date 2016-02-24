@@ -1,9 +1,12 @@
 package com.doglandia.medialoader.clientdiscovery;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.doglandia.medialoader.resourceserver.ResourceServer;
@@ -25,80 +28,107 @@ public class ClientDiscoverer {
 
     private static final String TAG = "ClientDiscoverer";
 
+    private static final String LAST_DISCOVERED_HOST = "last_discovered_host";
+
     public interface OnHostFoundListener{
         void onHostFound(String host);
+        void onNoHostFound();
         void onProgressUpdate(int progress);
+
     }
 
 //    private ResourceServer resourceServer;
 
     private OnHostFoundListener listener;
 
+    private Context context;
+
+    private OkHttpClient client;
+
     public ClientDiscoverer(Context context, OnHostFoundListener onHostFoundListener){
+        this.context = context;
         this.listener = onHostFoundListener;
 
-        DiscoveryTask discoveryTask = new DiscoveryTask();
-        discoveryTask.execute(new Void[0]);
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.connectTimeout(500, TimeUnit.MILLISECONDS);
+        client = builder.build();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if(prefs.contains(LAST_DISCOVERED_HOST)){
+            HostCheckTask hostCheckTask = new HostCheckTask();
+            hostCheckTask.execute(prefs.getString(LAST_DISCOVERED_HOST,""));
+        }else {
+            DiscoveryTask discoveryTask = new DiscoveryTask();
+            discoveryTask.execute(new Void[0]);
+        }
 
 //       NsdManager nsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
-//        nsdManager.discoverServices("media_loader", NsdManager.PROTOCOL_DNS_SD, new NsdManager.DiscoveryListener() {
-//            @Override
-//            public void onStartDiscoveryFailed(String serviceType, int errorCode) {
-//
-//            }
-//
-//            @Override
-//            public void onStopDiscoveryFailed(String serviceType, int errorCode) {
-//
-//            }
-//
-//            @Override
-//            public void onDiscoveryStarted(String serviceType) {
-//
-//            }
-//
-//            @Override
-//            public void onDiscoveryStopped(String serviceType) {
-//
-//            }
-//
-//            @Override
-//            public void onServiceFound(NsdServiceInfo serviceInfo) {
-//                serviceInfo.
-//            }
-//
-//            @Override
-//            public void onServiceLost(NsdServiceInfo serviceInfo) {
-//
-//            }
-//        });
+    }
+
+    boolean hostAcceptsRequest(String hostName) throws IOException {
+
+        Request request = new Request.Builder()
+                .url("http://"+hostName+":8989/ping")
+                .build();
+        Response response = client.newCall(request).execute();
+        String body = response.body().string();
+        if(body.contains("\"status\":200")){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    class HostCheckTask extends AsyncTask<String, Integer, String>{
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                if(hostAcceptsRequest(params[0])){
+                    return params[0];
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String host) {
+            super.onPostExecute(host);
+            if(host != null){
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                prefs.edit().putString(LAST_DISCOVERED_HOST,host).commit();
+                listener.onHostFound(host);
+            }else{
+                DiscoveryTask discoveryTask = new DiscoveryTask();
+                discoveryTask.execute(new Void[0]);
+            }
+        }
     }
 
 
     class DiscoveryTask extends AsyncTask<Void, Integer, String>{
 
-        private OkHttpClient client;
-
-        DiscoveryTask(){
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.connectTimeout(500, TimeUnit.MILLISECONDS);
-            client = builder.build();
-        }
-
         @Override
         protected String doInBackground(Void... params) {
 
-            String hostName = scanSubNet("192.168.0.");
-
-
+            String hostName = scanSubNet("192.168.0."); // todo
 
             return hostName;
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            listener.onHostFound(s);
+        protected void onPostExecute(String host) {
+            super.onPostExecute(host);
+            if(host != null) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                prefs.edit().putString(LAST_DISCOVERED_HOST, host).commit();
+                listener.onHostFound(host);
+            }else{
+                listener.onNoHostFound();
+            }
         }
 
         private String scanSubNet(String subnet){
@@ -127,18 +157,7 @@ public class ClientDiscoverer {
             return null;
         }
 
-        private boolean hostAcceptsRequest(String hostName) throws IOException {
-
-            Request request = new Request.Builder()
-                    .url("http://"+hostName+":8989/ping")
-                    .build();
-            Response response = client.newCall(request).execute();
-            String body = response.body().string();
-            if(body.contains("\"status\":200")){
-                return true;
-            }else{
-                return false;
-            }
-        }
     }
+
+
 }
