@@ -50,6 +50,10 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
         return "http://"+discoveredHost+":"+PORT;
     }
 
+    public boolean isConnected(){
+        return discoveredHost != null;
+    }
+
 
     @Override
     public void getResourceGroups(Callback<ResourcesResponse> callback) {

@@ -58,6 +58,10 @@ public class VideoLibraryFragment extends BrowseFragment {
         setOnItemViewClickedListener(new ItemViewClickedListener());
 
         MediaLoaderApplication.getBus().register(this);
+
+        if(((MediaLoaderApplication) getActivity().getApplication()).getResourceServer().isConnected()){
+            getResourceData();
+        }
     }
 
     @Override
