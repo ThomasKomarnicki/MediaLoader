@@ -22,7 +22,7 @@ import retrofit.converter.GsonConverter;
  */
 public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostFoundListener{
 
-    public static final String PORT = "8989";
+    public static final String PORT = "8988";
 
     private ServerInterface instance;
 
