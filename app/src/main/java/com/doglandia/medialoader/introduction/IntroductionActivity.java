@@ -18,7 +18,8 @@ public class IntroductionActivity extends Activity {
         setContentView(R.layout.activity_introduction);
 
         IntroductionFragment introductionFragment = new IntroductionFragment();
+        getFragmentManager().beginTransaction().add(R.id.intro_content, introductionFragment).commit();
 
-        GuidedStepFragment.addAsRoot(this, introductionFragment, R.id.intro_content);
+//        GuidedStepFragment.addAsRoot(this, introductionFragment, R.id.intro_content);
     }
 }
