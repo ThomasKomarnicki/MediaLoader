@@ -15,6 +15,7 @@ public class Resource implements Parcelable{
     protected Resource(Parcel in) {
         name = in.readString();
         location = in.readString();
+        thumbnailPath = in.readString();
     }
 
     public static final Creator<Resource> CREATOR = new Creator<Resource>() {
@@ -54,5 +55,6 @@ public class Resource implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(location);
+        dest.writeString(thumbnailPath);
     }
 }

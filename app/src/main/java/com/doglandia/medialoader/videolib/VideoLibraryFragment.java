@@ -134,6 +134,18 @@ public class VideoLibraryFragment extends BrowseFragment {
         setAdapter(mRowsAdapter);
     }
 
+    private ResourceGroup getResourceGroupForResource(Resource resource){
+        for(ResourceGroup resourceGroup : resourceGroups){
+            for(Resource resource1 : resourceGroup.getResourceList()){
+                if(resource.getLocation().equals(resource1.getLocation())){
+                    return resourceGroup;
+                }
+            }
+        }
+
+        return null;
+    }
+
 
     private final class ItemViewClickedListener implements OnItemViewClickedListener {
         @Override
@@ -143,6 +155,7 @@ public class VideoLibraryFragment extends BrowseFragment {
                 Resource resource = (Resource) item;
                 Intent intent = new Intent(getActivity(), PlayMediaActivity.class);
                 intent.putExtra("resource", resource);
+                intent.putExtra("resource_group",getResourceGroupForResource(resource));
 
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
                         getActivity(),

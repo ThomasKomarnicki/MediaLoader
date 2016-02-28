@@ -7,14 +7,24 @@ import android.support.v17.leanback.app.PlaybackControlGlue;
 import android.support.v17.leanback.app.PlaybackOverlayFragment;
 import android.support.v17.leanback.widget.Action;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
+import android.support.v17.leanback.widget.ClassPresenterSelector;
 import android.support.v17.leanback.widget.ControlButtonPresenterSelector;
+import android.support.v17.leanback.widget.HeaderItem;
+import android.support.v17.leanback.widget.ListRow;
+import android.support.v17.leanback.widget.ListRowPresenter;
 import android.support.v17.leanback.widget.OnActionClickedListener;
+import android.support.v17.leanback.widget.OnItemViewClickedListener;
 import android.support.v17.leanback.widget.PlaybackControlsRow;
 import android.support.v17.leanback.widget.PlaybackControlsRowPresenter;
+import android.support.v17.leanback.widget.Presenter;
+import android.support.v17.leanback.widget.Row;
+import android.support.v17.leanback.widget.RowPresenter;
 import android.support.v17.leanback.widget.SparseArrayObjectAdapter;
 import android.util.Log;
 
 import com.doglandia.medialoader.model.Resource;
+import com.doglandia.medialoader.model.ResourceGroup;
+import com.doglandia.medialoader.videolib.VideoPresenter;
 
 /**
  * Created by tdk10 on 2/26/2016.
@@ -38,6 +48,7 @@ public class PlaybackControlsFragment extends PlaybackOverlayFragment {
 //        playbackGlue = new PlaybackGlue(getActivity(), this, playbackSpeeds, playbackSpeeds);
 
         Resource resource = getActivity().getIntent().getParcelableExtra("resource");
+        ResourceGroup resourceGroup = getActivity().getIntent().getParcelableExtra("resource_group");
 
         Activity activity = getActivity();
 
@@ -54,6 +65,7 @@ public class PlaybackControlsFragment extends PlaybackOverlayFragment {
 
         controlsRow = new PlaybackControlsRow();
         controlsRow.setPrimaryActionsAdapter(controlsAdapter);
+
 
         PlaybackControlsRowPresenter playbackControlsRowPresenter = new PlaybackControlsRowPresenter();
         playbackControlsRowPresenter.setOnActionClickedListener(new OnActionClickedListener() {
@@ -88,12 +100,37 @@ public class PlaybackControlsFragment extends PlaybackOverlayFragment {
             }
         });
 
-        ArrayObjectAdapter arrayObjectAdapter = new ArrayObjectAdapter(playbackControlsRowPresenter);
+        ClassPresenterSelector ps = new ClassPresenterSelector();
+
+        ps.addClassPresenter(PlaybackControlsRow.class, playbackControlsRowPresenter);
+        ps.addClassPresenter(ListRow.class, new ListRowPresenter());
+
+        ArrayObjectAdapter arrayObjectAdapter = new ArrayObjectAdapter(ps);
         arrayObjectAdapter.add(controlsRow);
+
+        HeaderItem header = new HeaderItem(0, resourceGroup.getName());
+        ListRow otherVideosRow = new ListRow(header,createOtherVideosRow(resourceGroup));
+        arrayObjectAdapter.add(otherVideosRow);
         setAdapter(arrayObjectAdapter);
 
         playPauseAction.setIcon(playPauseAction.getDrawable(PlaybackControlsRow.PlayPauseAction.PAUSE));
 
+        setOnItemViewClickedListener(new OnItemViewClickedListener() {
+            @Override
+            public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item, RowPresenter.ViewHolder rowViewHolder, Row row) {
+                // todo change video
+            }
+        });
+    }
+
+    private ArrayObjectAdapter createOtherVideosRow(ResourceGroup resourceGroup){
+        VideoPresenter presenter = new VideoPresenter();
+        ArrayObjectAdapter adapter = new ArrayObjectAdapter(presenter);
+
+            for (int i = 0; i < resourceGroup.getResourceList().size(); i++) {
+                adapter.add(resourceGroup.getResourceList().get(i));
+            }
+        return adapter;
     }
 
     public void setMediaPlaybackListener(MediaPlaybackListener mediaPlaybackListener) {

@@ -57,6 +57,7 @@ public class MetaDataTask extends AsyncTask<Resource, Void, File> {
             }
 
             resource.setThumbnailPath(thumbnailFile);
+            thumbnailManager.getMetaFile().addMetaForThumbnail(resource, thumbnailFile);
 
 //            byte[] artwork = mmr.getEmbeddedPicture();
 

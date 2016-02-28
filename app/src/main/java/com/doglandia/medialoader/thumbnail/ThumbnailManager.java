@@ -5,6 +5,7 @@ import com.doglandia.medialoader.model.ResourceGroup;
 import com.doglandia.medialoader.resourceserver.ResourceServer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,10 @@ public class ThumbnailManager {
         metaFile = new MetaFile(new File(localRoot.getPath()+File.separator+"meta.json"));
     }
 
+    public MetaFile getMetaFile() {
+        return metaFile;
+    }
+
     public void setListener(ThumbnailRetrievedListener listener) {
         this.listener = listener;
     }
@@ -44,7 +49,11 @@ public class ThumbnailManager {
         List<Resource> flattened = new ArrayList<>();
         for(ResourceGroup resourceGroup : resourceGroups){
             for(Resource resource : resourceGroup.getResourceList()){
-                flattened.add(resource);
+                if(metaFile.noThumbnailFor(resource)) {
+                    flattened.add(resource);
+                }else{
+                    resource.setThumbnailPath(metaFile.getThumbnailFor(resource));
+                }
             }
         }
 
@@ -52,6 +61,11 @@ public class ThumbnailManager {
             @Override
             protected void onPostExecute(File file) {
                 super.onPostExecute(file);
+                try {
+                    metaFile.saveFile();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 if(listener != null){
                     listener.onAllThumbnailsRetrieved(ThumbnailManager.this);
                 }

@@ -40,7 +40,9 @@
         <activity android:name=".playmedia.PlayMediaActivity">
         </activity>
 
-        <activity android:name=".videolib.VideoLibraryActivity">
+        <activity android:name=".videolib.VideoLibraryActivity"/>
+
+        <activity android:name=".introduction.IntroductionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
