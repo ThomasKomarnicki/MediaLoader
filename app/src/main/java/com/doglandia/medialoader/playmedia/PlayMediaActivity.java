@@ -27,6 +27,8 @@ public class PlayMediaActivity extends Activity{
 
     private PlaybackControlsFragment playbackControlsFragment;
 
+    private ResourceServer server;
+
     private Timer timer;
     private TimerTask playBackTimerTask = new TimerTask() {
         @Override
@@ -49,8 +51,8 @@ public class PlayMediaActivity extends Activity{
 
         Resource resource = getIntent().getParcelableExtra("resource");
 
-        ResourceServer resourceServer = ((MediaLoaderApplication) getApplication()).getResourceServer();
-        String videoPath = resourceServer.getMediaUrl(resource);
+        server = ((MediaLoaderApplication) getApplication()).getResourceServer();
+        String videoPath = server.getMediaUrl(resource);
 
         mVideoView = (VideoView) findViewById(R.id.videoView);
         mVideoView.setFocusable(false);
@@ -91,6 +93,11 @@ public class PlayMediaActivity extends Activity{
             @Override
             public void onRewind() {
                 seekBackward();
+            }
+
+            @Override
+            public void onVideoChange(Resource resource) {
+                changeVideo(resource);
             }
         });
 
@@ -168,6 +175,13 @@ public class PlayMediaActivity extends Activity{
 //            updatePlaybackPosition();
 //        }
 
+    }
+
+    public void changeVideo(Resource resource){
+        mVideoView.stopPlayback();
+        String videoPath = server.getMediaUrl(resource);
+        mVideoView.setVideoPath(videoPath);
+        mVideoView.start();
     }
 
     private void updatePlaybackPosition(){

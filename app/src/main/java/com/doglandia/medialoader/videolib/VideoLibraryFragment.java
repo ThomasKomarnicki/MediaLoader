@@ -65,7 +65,7 @@ public class VideoLibraryFragment extends BrowseFragment {
     }
 
     public void initViews(List<ResourceGroup> resourceGroups){
-
+        this.resourceGroups = resourceGroups;
 
         mRowsAdapter = new ArrayObjectAdapter(new ListRowPresenter());
         VideoPresenter presenter = new VideoPresenter();
