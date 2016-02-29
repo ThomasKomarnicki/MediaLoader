@@ -13,15 +13,24 @@ import android.view.ViewGroup;
 
 import com.doglandia.medialoader.R;
 
-import java.util.List;
-
 /**
  * Created by tdk10 on 2/27/2016.
  */
 public class IntroductionFragment extends OnboardingFragment {
 
+    public interface OnOnboardingFinishedListener{
+        void onOnboardingFinished();
+    }
+
     private static final long NEXT = 1;
     private static final long MORE_INFO = 2;
+
+    private OnOnboardingFinishedListener listener;
+
+    @Override
+    public int onProvideTheme() {
+        return R.style.Theme_Leanback_Onboarding;
+    }
 
     @Override
     protected int getPageCount() {
@@ -35,7 +44,7 @@ public class IntroductionFragment extends OnboardingFragment {
 
     @Override
     protected String getPageDescription(int pageIndex) {
-        return "Description "+1;
+        return "Description "+pageIndex;
     }
 
     @Nullable
@@ -59,8 +68,18 @@ public class IntroductionFragment extends OnboardingFragment {
         return null;
     }
 
+    @Override
+    protected void onFinishFragment() {
+        super.onFinishFragment();
+        listener.onOnboardingFinished();
 
-//    @NonNull
+    }
+
+    public void setOnboardingFinishedListener(OnOnboardingFinishedListener listener) {
+        this.listener = listener;
+    }
+
+    //    @NonNull
 //    @Override
 //    public GuidanceStylist.Guidance onCreateGuidance(Bundle savedInstanceState) {
 //        return new GuidanceStylist.Guidance("Get Started","To stream videos from your PC, download the PC app at doglandia.com/pc",

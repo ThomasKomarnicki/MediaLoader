@@ -3,4 +3,9 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:id="@+id/intro_content">
 
+    <!--<fragment-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:name="com.doglandia.medialoader.introduction.fragment.IntroductionFragment"/>-->
+
 </FrameLayout>

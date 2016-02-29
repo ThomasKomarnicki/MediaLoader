@@ -43,6 +43,8 @@ public class MetaFile {
                 data = parser.parse(readFile(file.getPath())).getAsJsonObject();
             } catch (IOException e) {
                 e.printStackTrace();
+            }catch (IllegalStateException e){
+                data = new JsonObject();
             }
         }
 

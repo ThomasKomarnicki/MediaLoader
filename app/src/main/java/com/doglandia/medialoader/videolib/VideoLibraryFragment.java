@@ -57,55 +57,14 @@ public class VideoLibraryFragment extends BrowseFragment {
 
         setOnItemViewClickedListener(new ItemViewClickedListener());
 
-        MediaLoaderApplication.getBus().register(this);
+//        MediaLoaderApplication.getBus().register(this);
 
-        if(((MediaLoaderApplication) getActivity().getApplication()).getResourceServer().isConnected()){
-            getResourceData();
-        }
+//        if(((MediaLoaderApplication) getActivity().getApplication()).getResourceServer().isConnected()){
+//            getResourceData();
+//        }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        MediaLoaderApplication.getBus().unregister(this);
-    }
-
-    private void getResourceData(){
-        ResourceServer server = ((MediaLoaderApplication) getActivity().getApplication()).getResourceServer();
-        server.getResourceGroups(new Callback<ResourcesResponse>() {
-            @Override
-            public void success(ResourcesResponse resourcesResponse, Response response) {
-                resourceGroups = resourcesResponse.getResourceGroups();
-//                initViews(resourceGroups);
-
-                loadThumbnails(resourceGroups);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                error.printStackTrace();
-            }
-        });
-    }
-
-    private void loadThumbnails(List<ResourceGroup> resourceGroups){
-        ThumbnailManager thumbnailManager = ((MediaLoaderApplication) getActivity().getApplication()).getThumbnailManager();
-        thumbnailManager.setListener(new ThumbnailManager.ThumbnailRetrievedListener() {
-            @Override
-            public void onThumbnailRetrieved(Resource resource, File file) {
-
-            }
-
-            @Override
-            public void onAllThumbnailsRetrieved(ThumbnailManager thumbnailManager) {
-                initViews(VideoLibraryFragment.this.resourceGroups);
-            }
-        });
-        thumbnailManager.addThumbnails(resourceGroups);
-
-    }
-
-    private void initViews(List<ResourceGroup> resourceGroups){
+    public void initViews(List<ResourceGroup> resourceGroups){
 
 
         mRowsAdapter = new ArrayObjectAdapter(new ListRowPresenter());
@@ -166,8 +125,5 @@ public class VideoLibraryFragment extends BrowseFragment {
         }
     }
 
-    @Subscribe
-    public void onResourceServerConnected(ResourceServerConnected resourceServerConnected){
-        getResourceData();
-    }
+
 }

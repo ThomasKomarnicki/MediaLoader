@@ -42,7 +42,8 @@
 
         <activity android:name=".videolib.VideoLibraryActivity"/>
 
-        <activity android:name=".introduction.IntroductionActivity">
+        <activity android:name=".introduction.IntroductionActivity"
+            android:theme="@style/Theme.Leanback.Onboarding">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

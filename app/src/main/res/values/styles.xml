@@ -2,4 +2,8 @@
 <resources>
 
     <style name="AppTheme" parent="@style/Theme.Leanback"></style>
+
+    <style name="OnboardingTheme" parent="@style/Theme.Leanback.Onboarding">
+
+    </style>
 </resources>

@@ -34,7 +34,11 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
 
     public ResourceServer(Context context){
         this.context = context;
-        clientDiscoverer = new ClientDiscoverer(context, this);
+//        clientDiscoverer = new ClientDiscoverer(context, this);
+    }
+
+    public void startClientDiscovery(){
+        clientDiscoverer = new ClientDiscoverer(context,this);
     }
 
     private void createRestAdapter(){
