@@ -23,6 +23,12 @@
         android:layout_height="match_parent"
         android:id="@+id/video_frame">
 
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.doglandia.medialoader.playmedia.ExoPlayerFragment"
+            android:id="@+id/media_player_fragment"/>
+
     </FrameLayout>
 
     <fragment
