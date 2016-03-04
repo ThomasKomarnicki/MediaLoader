@@ -18,11 +18,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <VideoView
-        android:id="@+id/videoView"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center" />
+        android:id="@+id/video_frame">
+
+    </FrameLayout>
 
     <fragment
         android:id="@+id/playback_controls_fragment"

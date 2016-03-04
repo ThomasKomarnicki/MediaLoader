@@ -120,7 +120,7 @@ public class PlaybackControlsFragment extends PlaybackOverlayFragment {
             public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item, RowPresenter.ViewHolder rowViewHolder, Row row) {
                 // todo change video
                 mediaPlaybackListener.onVideoChange((Resource) item);
-                
+
             }
         });
     }

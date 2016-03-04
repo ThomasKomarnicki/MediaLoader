@@ -21,7 +21,7 @@ import java.util.TimerTask;
  */
 public class PlayMediaActivity extends Activity{
 
-    private VideoView mVideoView;
+//    private VideoView mVideoView;
 
     private MediaSession mSession;
 
@@ -33,14 +33,15 @@ public class PlayMediaActivity extends Activity{
     private TimerTask playBackTimerTask = new TimerTask() {
         @Override
         public void run() {
-            if(mVideoView.isPlaying() && playbackControlsFragment != null){
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        updatePlaybackPosition();
-                    }
-                });
-            }
+            // todo
+//            if(mVideoView.isPlaying() && playbackControlsFragment != null){
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        updatePlaybackPosition();
+//                    }
+//                });
+//            }
         }
     };
 
@@ -54,14 +55,14 @@ public class PlayMediaActivity extends Activity{
         server = ((MediaLoaderApplication) getApplication()).getResourceServer();
         String videoPath = server.getMediaUrl(resource);
 
-        mVideoView = (VideoView) findViewById(R.id.videoView);
-        mVideoView.setFocusable(false);
-        mVideoView.setFocusableInTouchMode(false);
+//        mVideoView = (VideoView) findViewById(R.id.videoView);
+//        mVideoView.setFocusable(false);
+//        mVideoView.setFocusableInTouchMode(false);
 
         setupCallbacks();
 
-        mVideoView.setVideoPath(videoPath);
-        mVideoView.start();
+//        mVideoView.setVideoPath(videoPath);
+//        mVideoView.start();
 
 
         mSession = new MediaSession(this, "MediaLoader");
@@ -77,12 +78,12 @@ public class PlayMediaActivity extends Activity{
         playbackControlsFragment.setMediaPlaybackListener(new MediaPlaybackListener() {
             @Override
             public void onPlay() {
-                mVideoView.start();
+//                mVideoView.start();
             }
 
             @Override
             public void onPause() {
-                mVideoView.pause();
+//                mVideoView.pause();
             }
 
             @Override
@@ -108,7 +109,7 @@ public class PlayMediaActivity extends Activity{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mVideoView.suspend();
+//        mVideoView.suspend();
     }
 
     @Override
@@ -120,14 +121,15 @@ public class PlayMediaActivity extends Activity{
     @Override
     public void onPause() {
         super.onPause();
-        if (mVideoView.isPlaying()) {
-            if (!requestVisibleBehind(true)) {
-                // Try to play behind launcher, but if it fails, stop playback.
-                stopPlayback();
-            }
-        } else {
-            requestVisibleBehind(false);
-        }
+        // todo
+//        if (mVideoView.isPlaying()) {
+//            if (!requestVisibleBehind(true)) {
+//                // Try to play behind launcher, but if it fails, stop playback.
+//                stopPlayback();
+//            }
+//        } else {
+//            requestVisibleBehind(false);
+//        }
     }
 
     @Override
@@ -137,25 +139,20 @@ public class PlayMediaActivity extends Activity{
     }
 
     private void stopPlayback() {
-        if (mVideoView != null) {
-            mVideoView.stopPlayback();
-        }
+//        if (mVideoView != null) {
+//            mVideoView.stopPlayback();
+//        }
     }
 
     public boolean togglePlayback() {
-        if(mVideoView.isPlaying()){
-            mVideoView.pause();
-            return false;
-        }else{
-            mVideoView.start();
-            return true;
-        }
-//        if(play){
-////            mVideoView.resume();
+//        if(mVideoView.isPlaying()){
+//            mVideoView.pause();
+//            return false;
+//        }else{
 //            mVideoView.start();
-//        }else {
-//
+//            return true;
 //        }
+
     }
 
     public void seekForward(){
@@ -178,49 +175,51 @@ public class PlayMediaActivity extends Activity{
     }
 
     public void changeVideo(Resource resource){
-        mVideoView.stopPlayback();
-        String videoPath = server.getMediaUrl(resource);
-        mVideoView.setVideoPath(videoPath);
-        mVideoView.start();
+        // todo
+//        mVideoView.stopPlayback();
+//        String videoPath = server.getMediaUrl(resource);
+//        mVideoView.setVideoPath(videoPath);
+//        mVideoView.start();
     }
 
     private void updatePlaybackPosition(){
-        playbackControlsFragment.setPlayDuration(mVideoView.getCurrentPosition());
+        // todo
+//        playbackControlsFragment.setPlayDuration(mVideoView.getCurrentPosition());
     }
 
     private void setupCallbacks() {
 
-        mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+//        mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+//
+//            @Override
+//            public boolean onError(MediaPlayer mp, int what, int extra) {
+//                String msg = "";
+//                if (extra == MediaPlayer.MEDIA_ERROR_TIMED_OUT) {
+//                    msg = getString(R.string.video_error_media_load_timeout);
+//                } else if (what == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
+//                    msg = getString(R.string.video_error_server_inaccessible);
+//                } else {
+//                    msg = getString(R.string.video_error_unknown_error);
+//                }
+//                mVideoView.stopPlayback();
+//                return false;
+//            }
+//        });
 
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                String msg = "";
-                if (extra == MediaPlayer.MEDIA_ERROR_TIMED_OUT) {
-                    msg = getString(R.string.video_error_media_load_timeout);
-                } else if (what == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
-                    msg = getString(R.string.video_error_server_inaccessible);
-                } else {
-                    msg = getString(R.string.video_error_unknown_error);
-                }
-                mVideoView.stopPlayback();
-                return false;
-            }
-        });
-
-        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                    mVideoView.start();
-                    playbackControlsFragment.setTotalPlayDuration(mVideoView.getDuration());
-            }
-        });
-
-        mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-
-            }
-        });
+//        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//            @Override
+//            public void onPrepared(MediaPlayer mp) {
+//                    mVideoView.start();
+//                    playbackControlsFragment.setTotalPlayDuration(mVideoView.getDuration());
+//            }
+//        });
+//
+//        mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//            @Override
+//            public void onCompletion(MediaPlayer mp) {
+//
+//            }
+//        });
 
     }
 }
