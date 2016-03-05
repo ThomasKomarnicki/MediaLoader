@@ -55,6 +55,7 @@ public class PlayMediaActivity extends Activity{
 
         server = ((MediaLoaderApplication) getApplication()).getResourceServer();
         String videoPath = server.getMediaUrl(resource);
+        mediaPlayerFragment.setVideo(Uri.parse(videoPath));
 
 //        mVideoView = (VideoView) findViewById(R.id.videoView);
 //        mVideoView.setFocusable(false);

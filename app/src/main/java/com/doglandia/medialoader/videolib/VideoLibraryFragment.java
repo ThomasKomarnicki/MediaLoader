@@ -14,24 +14,12 @@ import android.support.v17.leanback.widget.Row;
 import android.support.v17.leanback.widget.RowPresenter;
 import android.support.v4.app.ActivityOptionsCompat;
 
-import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.R;
-import com.doglandia.medialoader.event.ResourceServerConnected;
 import com.doglandia.medialoader.model.Resource;
 import com.doglandia.medialoader.model.ResourceGroup;
-import com.doglandia.medialoader.model.ResourcesResponse;
 import com.doglandia.medialoader.playmedia.PlayMediaActivity;
-import com.doglandia.medialoader.resourceserver.ResourceServer;
-import com.doglandia.medialoader.thumbnail.ThumbnailManager;
-import com.doglandia.medialoader.zsample.DetailsActivity;
-import com.squareup.otto.Subscribe;
 
-import java.io.File;
 import java.util.List;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by tdk10 on 2/21/2016.
@@ -119,7 +107,7 @@ public class VideoLibraryFragment extends BrowseFragment {
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
                         getActivity(),
                         ((ImageCardView) itemViewHolder.view).getMainImageView(),
-                        DetailsActivity.SHARED_ELEMENT_NAME).toBundle();
+                        "dog").toBundle();
                 getActivity().startActivity(intent, bundle);
             }
         }

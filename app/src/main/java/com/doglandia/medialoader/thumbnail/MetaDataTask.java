@@ -37,7 +37,8 @@ public class MetaDataTask extends AsyncTask<Resource, Void, File> {
 
         for(Resource resource : params) {
 
-            mmr.setDataSource(resourceServer.getMediaUrl(resource));
+            String mediaResource = resourceServer.getMediaUrl(resource);
+            mmr.setDataSource(mediaResource);
             mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_ALBUM);
             mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_ARTIST);
             HashMap<String,String> metaData = mmr.getMetadata().getAll();

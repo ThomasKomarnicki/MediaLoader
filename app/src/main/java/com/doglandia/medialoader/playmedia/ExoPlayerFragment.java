@@ -19,7 +19,6 @@ import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
 import com.google.android.exoplayer.SampleSource;
 import com.google.android.exoplayer.TrackRenderer;
 import com.google.android.exoplayer.extractor.ExtractorSampleSource;
-import com.google.android.exoplayer.upstream.Allocation;
 import com.google.android.exoplayer.upstream.Allocator;
 import com.google.android.exoplayer.upstream.DataSource;
 import com.google.android.exoplayer.upstream.DefaultAllocator;
@@ -27,11 +26,15 @@ import com.google.android.exoplayer.upstream.DefaultHttpDataSource;
 
 public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment {
 
+    private static final int BUFFER_SEGMENT_SIZE = 64 * 1024;
+
     final int numRenderers = 2;
 
     private Surface surface;
 
     private ExoPlayer exoPlayer;
+
+    private Uri videoUri;
 
     @Nullable
     @Override
@@ -39,6 +42,11 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initPlayer();
+    }
 
     @Override
     public void play() {
@@ -52,10 +60,24 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment {
 
     @Override
     public void setVideo(Uri uri) {
+        this.videoUri = uri;
+    }
+
+    @Override
+    public void seekForward() {
+
+    }
+
+    @Override
+    public void seekBackward() {
+
+    }
+
+    private void initPlayer(){
         Context context = getActivity();
         DataSource dataSource = new DefaultHttpDataSource("android",null);
-        Allocator allocator = new DefaultAllocator(1024/*todo*/);
-        SampleSource sampleSource = new ExtractorSampleSource(uri, dataSource, allocator, 1024, null);
+        Allocator allocator = new DefaultAllocator(BUFFER_SEGMENT_SIZE);
+        SampleSource sampleSource = new ExtractorSampleSource(videoUri, dataSource, allocator, BUFFER_SEGMENT_SIZE, null);
 
         TrackRenderer videoRenderer = new MediaCodecVideoTrackRenderer(context,sampleSource, MediaCodecSelector.DEFAULT, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
         TrackRenderer audioRenderer = new MediaCodecAudioTrackRenderer(sampleSource, MediaCodecSelector.DEFAULT);
@@ -67,15 +89,5 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment {
         exoPlayer.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
 
         exoPlayer.setPlayWhenReady(true);
-    }
-
-    @Override
-    public void seekForward() {
-
-    }
-
-    @Override
-    public void seekBackward() {
-
     }
 }
