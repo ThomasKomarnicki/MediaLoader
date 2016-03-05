@@ -1,5 +1,7 @@
 package com.doglandia.medialoader.thumbnail;
 
+import android.os.AsyncTask;
+
 import com.doglandia.medialoader.model.Resource;
 import com.doglandia.medialoader.model.ResourceGroup;
 import com.doglandia.medialoader.resourceserver.ResourceServer;
@@ -26,6 +28,8 @@ public class ThumbnailManager {
     private MetaFile metaFile;
 
     private ThumbnailRetrievedListener listener;
+
+    private int metaDataTasksCount = -1;
 
     /**
      *
@@ -57,21 +61,32 @@ public class ThumbnailManager {
             }
         }
 
-        MetaDataTask metaDataTask = new MetaDataTask(server, this){
-            @Override
-            protected void onPostExecute(File file) {
-                super.onPostExecute(file);
-                try {
-                    metaFile.saveFile();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+        metaDataTasksCount = flattened.size();
+
+        for(Resource resource : flattened) {
+            MetaDataTask metaDataTask = new MetaDataTask(server, this) {
+                @Override
+                protected void onPostExecute(File file) {
+                    super.onPostExecute(file);
+                    try {
+                        metaFile.saveFile();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    metaDataTasksCount = metaDataTasksCount -1;
+
+                    if(metaDataTasksCount <= 0){
+                        if (listener != null) {
+                            listener.onAllThumbnailsRetrieved(ThumbnailManager.this);
+                        }
+                    }
                 }
-                if(listener != null){
-                    listener.onAllThumbnailsRetrieved(ThumbnailManager.this);
-                }
-            }
-        };
-        metaDataTask.execute(flattened.toArray(new Resource[flattened.size()]));
+            };
+            metaDataTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, resource);
+        }
+//        metaDataTask.execute(flattened.toArray(new Resource[flattened.size()]));
+//        metaDataTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, flattened.toArray(new Resource[flattened.size()]));
     }
 
     public String getThumbnailFileForResource(Resource resource){

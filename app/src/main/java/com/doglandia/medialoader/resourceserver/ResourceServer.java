@@ -70,7 +70,7 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
 
     public String getMediaUrl(Resource resource) {
         // todo
-        return getResourceServerEndpoint() + "/" + resource.getLocation();
+        return (getResourceServerEndpoint() + "/" + resource.getLocation()).replace(" ","%20");
     }
 
     @Override
