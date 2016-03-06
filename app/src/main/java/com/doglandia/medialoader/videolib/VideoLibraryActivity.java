@@ -77,21 +77,6 @@ public class VideoLibraryActivity extends Activity {
 
     private void loadThumbnails(final List<ResourceGroup> resourceGroups){
         ThumbnailManager thumbnailManager = ((MediaLoaderApplication) getApplication()).getThumbnailManager();
-//        thumbnailManager.setListener(new ThumbnailManager.ThumbnailRetrievedListener() {
-//            @Override
-//            public void onThumbnailRetrieved(Resource resource, File file) {
-////                resource.setThumbnailPath(file.getPath());
-//            }
-//
-//            @Override
-//            public void onAllThumbnailsRetrieved(ThumbnailManager thumbnailManager) {
-//                // show videos with VideoLibraryFragment
-//                getFragmentManager().beginTransaction().replace(R.id.video_lib_content, videoLibraryFragment).commitAllowingStateLoss();
-//                videoLibraryFragment.initViews(resourceGroups);
-//
-////                initViews(VideoLibraryFragment.this.resourceGroups);
-//            }
-//        });
         thumbnailManager.addThumbnails(resourceGroups);
 
     }

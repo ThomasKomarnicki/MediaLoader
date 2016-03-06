@@ -17,17 +17,10 @@ import java.util.List;
  */
 public class ThumbnailManager {
 
-//    public interface ThumbnailRetrievedListener{
-//        void onThumbnailRetrieved(Resource resource, File file);
-//        void onAllThumbnailsRetrieved(ThumbnailManager thumbnailManager);
-//    }
-
     private File localRoot;
     private ResourceServer server;
 
     private MetaFile metaFile;
-
-//    private ThumbnailRetrievedListener listener;
 
     private int metaDataTasksCount = -1;
 
@@ -44,10 +37,6 @@ public class ThumbnailManager {
     public MetaFile getMetaFile() {
         return metaFile;
     }
-
-//    public void setListener(ThumbnailRetrievedListener listener) {
-//        this.listener = listener;
-//    }
 
     public void addThumbnails(List<ResourceGroup> resourceGroups){
         List<Resource> flattened = new ArrayList<>();
@@ -74,15 +63,6 @@ public class ThumbnailManager {
                         e.printStackTrace();
                     }
 
-//                    listener.onThumbnailRetrieved(resource, file);
-
-                    metaDataTasksCount = metaDataTasksCount -1;
-
-                    if(metaDataTasksCount <= 0){
-                        if (listener != null) {
-                            listener.onAllThumbnailsRetrieved(ThumbnailManager.this);
-                        }
-                    }
                 }
             };
             metaDataTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, resource);
