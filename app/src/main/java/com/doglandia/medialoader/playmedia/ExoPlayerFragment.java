@@ -2,14 +2,11 @@ package com.doglandia.medialoader.playmedia;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.media.MediaCodec;
-import android.media.MediaDrm;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,27 +69,43 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, 
 
     @Override
     public void play() {
-
+        player.getPlayerControl().start();
     }
 
     @Override
     public void pause() {
-
+        if(player != null) {
+            player.getPlayerControl().pause();
+        }
     }
 
     @Override
     public void setVideo(Uri uri) {
         this.videoUri = uri;
+
+        if(player != null){
+            preparePlayer(true);
+        }
     }
 
     @Override
     public void seekForward() {
 
+        player.getPlayerControl().seekTo((int) (getCurrentPlayPosition() + getSeekChange()));
     }
 
     @Override
     public void seekBackward() {
+        player.getPlayerControl().seekTo((int) (getCurrentPlayPosition() - getSeekChange()));
+    }
 
+    @Override
+    public long getCurrentPlayPosition() {
+        return player.getPlayerControl().getCurrentPosition();
+    }
+
+    private long getSeekChange(){
+        return 1000 * 10;
     }
 
     private void initPlayer(){
@@ -103,8 +116,11 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, 
         Context context = getActivity();
         String userAgent = Util.getUserAgent(context, "MediaLoader");
         DemoPlayer.RendererBuilder rendererBuilder = new ExtractorRendererBuilder(context, userAgent, videoUri);
+        if(player != null) {
+            player.release();
+        }
 
-        if (player == null) {
+//        if (player == null) {
             player = new DemoPlayer(rendererBuilder);
 //            player.addListener(this);
 //            player.setCaptionListener(this);
@@ -120,11 +136,11 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, 
             player.setInternalErrorListener(eventLogger);
 //            debugViewHelper = new DebugTextViewHelper(player, debugTextView);
 //            debugViewHelper.start();
-        }
-        if (playerNeedsPrepare) {
+//        }
+//        if (playerNeedsPrepare) {
             player.prepare();
             playerNeedsPrepare = false;
-        }
+//        }
         player.setSurface(surfaceView.getHolder().getSurface());
         player.setPlayWhenReady(playWhenReady);
     }

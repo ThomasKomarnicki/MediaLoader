@@ -8,4 +8,6 @@ public interface MediaPlayerFragment {
     void setVideo(Uri uri);
     void seekForward();
     void seekBackward();
+    long getCurrentPlayPosition();
+//    void setDuration(PlaybackControlsFragment playbackControlsFragment);
 }
