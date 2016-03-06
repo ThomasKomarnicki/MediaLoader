@@ -119,7 +119,9 @@ public class PlaybackControlsFragment extends PlaybackOverlayFragment {
             @Override
             public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item, RowPresenter.ViewHolder rowViewHolder, Row row) {
                 // todo change video
-                mediaPlaybackListener.onVideoChange((Resource) item);
+                if(item instanceof Resource) {
+                    mediaPlaybackListener.onVideoChange((Resource) item);
+                }
 
             }
         });

@@ -3,49 +3,71 @@ package com.doglandia.medialoader.playmedia;
 import android.app.Fragment;
 import android.content.Context;
 import android.media.MediaCodec;
+import android.media.MediaDrm;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.doglandia.medialoader.R;
+import com.doglandia.medialoader.playmedia.demoplayer.DemoPlayer;
+import com.doglandia.medialoader.playmedia.demoplayer.EventLogger;
+import com.doglandia.medialoader.playmedia.demoplayer.ExtractorRendererBuilder;
+import com.google.android.exoplayer.ExoPlaybackException;
 import com.google.android.exoplayer.ExoPlayer;
-import com.google.android.exoplayer.FrameworkSampleSource;
-import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
-import com.google.android.exoplayer.MediaCodecSelector;
-import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
-import com.google.android.exoplayer.SampleSource;
-import com.google.android.exoplayer.TrackRenderer;
-import com.google.android.exoplayer.extractor.ExtractorSampleSource;
-import com.google.android.exoplayer.upstream.Allocator;
-import com.google.android.exoplayer.upstream.DataSource;
-import com.google.android.exoplayer.upstream.DefaultAllocator;
-import com.google.android.exoplayer.upstream.DefaultHttpDataSource;
+import com.google.android.exoplayer.MediaCodecTrackRenderer;
+import com.google.android.exoplayer.MediaCodecUtil;
+import com.google.android.exoplayer.drm.UnsupportedDrmException;
+import com.google.android.exoplayer.util.Util;
 
-public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment {
+public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, DemoPlayer.Listener {
 
-    private static final int BUFFER_SEGMENT_SIZE = 64 * 1024;
+    private static final String TAG = "ExoPlayerFragment";
 
-    final int numRenderers = 2;
-
-    private Surface surface;
-
-    private ExoPlayer exoPlayer;
-
+    private SurfaceView surfaceView;
     private Uri videoUri;
+    private DemoPlayer player;
+
+    private EventLogger eventLogger;
+
+    private long playerPosition;
+    private boolean playerNeedsPrepare;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.exo_player, null);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        surfaceView = (SurfaceView) view.findViewById(R.id.surface);
+
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initPlayer();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        releasePlayer();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
     }
 
     @Override
@@ -74,20 +96,111 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment {
     }
 
     private void initPlayer(){
+        preparePlayer(true);
+    }
+
+    private void preparePlayer(boolean playWhenReady) {
         Context context = getActivity();
-        DataSource dataSource = new DefaultHttpDataSource("android",null);
-        Allocator allocator = new DefaultAllocator(BUFFER_SEGMENT_SIZE);
-        SampleSource sampleSource = new ExtractorSampleSource(videoUri, dataSource, allocator, BUFFER_SEGMENT_SIZE, null);
+        String userAgent = Util.getUserAgent(context, "MediaLoader");
+        DemoPlayer.RendererBuilder rendererBuilder = new ExtractorRendererBuilder(context, userAgent, videoUri);
 
-        TrackRenderer videoRenderer = new MediaCodecVideoTrackRenderer(context,sampleSource, MediaCodecSelector.DEFAULT, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
-        TrackRenderer audioRenderer = new MediaCodecAudioTrackRenderer(sampleSource, MediaCodecSelector.DEFAULT);
+        if (player == null) {
+            player = new DemoPlayer(rendererBuilder);
+//            player.addListener(this);
+//            player.setCaptionListener(this);
+//            player.setMetadataListener(this);
+            player.seekTo(0);
+            playerNeedsPrepare = true;
+//            mediaController.setMediaPlayer(player.getPlayerControl());
+//            mediaController.setEnabled(true);
+            eventLogger = new EventLogger();
+            eventLogger.startSession();
+            player.addListener(eventLogger);
+            player.setInfoListener(eventLogger);
+            player.setInternalErrorListener(eventLogger);
+//            debugViewHelper = new DebugTextViewHelper(player, debugTextView);
+//            debugViewHelper.start();
+        }
+        if (playerNeedsPrepare) {
+            player.prepare();
+            playerNeedsPrepare = false;
+        }
+        player.setSurface(surfaceView.getHolder().getSurface());
+        player.setPlayWhenReady(playWhenReady);
+    }
 
-        exoPlayer = ExoPlayer.Factory.newInstance(numRenderers);
-        exoPlayer.prepare(videoRenderer, audioRenderer);
+    @Override
+    public void onStateChanged(boolean playWhenReady, int playbackState) {
 
-        // Pass the surface to the video renderer.
-        exoPlayer.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
+        String text = "playWhenReady=" + playWhenReady + ", playbackState=";
+        switch(playbackState) {
+            case ExoPlayer.STATE_BUFFERING:
+                text += "buffering";
+                break;
+            case ExoPlayer.STATE_ENDED:
+                text += "ended";
+                break;
+            case ExoPlayer.STATE_IDLE:
+                text += "idle";
+                break;
+            case ExoPlayer.STATE_PREPARING:
+                text += "preparing";
+                break;
+            case ExoPlayer.STATE_READY:
+                text += "ready";
+                break;
+            default:
+                text += "unknown";
+                break;
+        }
+        Log.i(TAG, text);
+    }
 
-        exoPlayer.setPlayWhenReady(true);
+    @Override
+    public void onError(Exception e) {
+        String errorString = null;
+        playerNeedsPrepare = true;
+        if (e instanceof UnsupportedDrmException) {
+            // Special case DRM failures.
+            UnsupportedDrmException unsupportedDrmException = (UnsupportedDrmException) e;
+            e.printStackTrace();
+        } else if (e instanceof ExoPlaybackException
+                && e.getCause() instanceof MediaCodecTrackRenderer.DecoderInitializationException) {
+            // Special case for decoder initialization failures.
+            MediaCodecTrackRenderer.DecoderInitializationException decoderInitializationException =
+                    (MediaCodecTrackRenderer.DecoderInitializationException) e.getCause();
+            if (decoderInitializationException.decoderName == null) {
+                if (decoderInitializationException.getCause() instanceof MediaCodecUtil.DecoderQueryException) {
+                    errorString = "error querying decoders" ;
+                } else if (decoderInitializationException.secureDecoderRequired) {
+                    errorString = "error no secure decoder "+
+                            decoderInitializationException.mimeType;
+                } else {
+                    errorString = "error no decoder "+ decoderInitializationException.mimeType;
+                }
+            } else {
+                errorString = "error instantiating decoder "+ decoderInitializationException.decoderName;
+            }
+        }
+        if (errorString != null) {
+            Toast.makeText(getActivity(), errorString, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
+
+    }
+
+    private void releasePlayer() {
+        if (player != null) {
+//            debugViewHelper.stop();
+//            debugViewHelper = null;
+            playerPosition = player.getCurrentPosition();
+            player.release();
+            player = null;
+            eventLogger.endSession();
+            eventLogger = null;
+        }
     }
 }

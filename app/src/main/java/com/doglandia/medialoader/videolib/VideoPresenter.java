@@ -23,7 +23,6 @@ public class VideoPresenter extends Presenter {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
-        Log.d(TAG, "onCreateViewHolder");
 
 //        sDefaultBackgroundColor = parent.getResources().getColor(R.color.default_background);
 //        sSelectedBackgroundColor = parent.getResources().getColor(R.color.selected_background);
@@ -51,7 +50,6 @@ public class VideoPresenter extends Presenter {
         ResourceViewHolder resourceViewHolder = (ResourceViewHolder) viewHolder;
         resourceViewHolder.setResource(resource);
 
-        Log.d(TAG, "onBindViewHolder");
         cardView.setTitleText(resource.getName());
         cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
         if (resource.getThumbnailPath() != null) {
@@ -64,7 +62,6 @@ public class VideoPresenter extends Presenter {
 
     @Override
     public void onUnbindViewHolder(Presenter.ViewHolder viewHolder) {
-        Log.d(TAG, "onUnbindViewHolder");
         ImageCardView cardView = (ImageCardView) viewHolder.view;
         // Remove references to images so that the garbage collector can free up memory
         cardView.setBadgeImage(null);
