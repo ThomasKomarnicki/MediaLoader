@@ -2,6 +2,12 @@ package com.doglandia.medialoader.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v17.leanback.widget.ImageCardView;
+import android.support.v17.leanback.widget.Presenter;
+
+import com.bumptech.glide.Glide;
+
+import java.io.File;
 
 /**
  * Created by tdk10 on 2/21/2016.
@@ -11,6 +17,9 @@ public class Resource implements Parcelable{
     private String name;
     private String location;
     private String thumbnailPath;
+
+    // tightly coupled to the the video lib view
+    private transient Presenter.ViewHolder viewHolder;
 
     protected Resource(Parcel in) {
         name = in.readString();
@@ -44,6 +53,24 @@ public class Resource implements Parcelable{
 
     public void setThumbnailPath(String thumbnailPath) {
         this.thumbnailPath = thumbnailPath;
+
+        if(viewHolder != null){
+            setViewHolderImage();
+        }
+    }
+
+    public void setViewHolder(Presenter.ViewHolder viewHolder) {
+        this.viewHolder = viewHolder;
+    }
+
+    private void setViewHolderImage(){
+        ImageCardView cardView = (ImageCardView) viewHolder.view;
+        if(getThumbnailPath() != null) {
+            Glide.with(viewHolder.view.getContext())
+                    .load(new File(getThumbnailPath()))
+                    .centerCrop()
+                    .into(cardView.getMainImageView());
+        }
     }
 
     @Override

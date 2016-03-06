@@ -17,17 +17,17 @@ import java.util.List;
  */
 public class ThumbnailManager {
 
-    public interface ThumbnailRetrievedListener{
-        void onThumbnailRetrieved(Resource resource, File file);
-        void onAllThumbnailsRetrieved(ThumbnailManager thumbnailManager);
-    }
+//    public interface ThumbnailRetrievedListener{
+//        void onThumbnailRetrieved(Resource resource, File file);
+//        void onAllThumbnailsRetrieved(ThumbnailManager thumbnailManager);
+//    }
 
     private File localRoot;
     private ResourceServer server;
 
     private MetaFile metaFile;
 
-    private ThumbnailRetrievedListener listener;
+//    private ThumbnailRetrievedListener listener;
 
     private int metaDataTasksCount = -1;
 
@@ -45,9 +45,9 @@ public class ThumbnailManager {
         return metaFile;
     }
 
-    public void setListener(ThumbnailRetrievedListener listener) {
-        this.listener = listener;
-    }
+//    public void setListener(ThumbnailRetrievedListener listener) {
+//        this.listener = listener;
+//    }
 
     public void addThumbnails(List<ResourceGroup> resourceGroups){
         List<Resource> flattened = new ArrayList<>();
@@ -63,7 +63,7 @@ public class ThumbnailManager {
 
         metaDataTasksCount = flattened.size();
 
-        for(Resource resource : flattened) {
+        for(final Resource resource : flattened) {
             MetaDataTask metaDataTask = new MetaDataTask(server, this) {
                 @Override
                 protected void onPostExecute(File file) {
@@ -73,6 +73,8 @@ public class ThumbnailManager {
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
+
+//                    listener.onThumbnailRetrieved(resource, file);
 
                     metaDataTasksCount = metaDataTasksCount -1;
 

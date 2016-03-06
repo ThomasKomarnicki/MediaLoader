@@ -3,6 +3,7 @@ package com.doglandia.medialoader.videolib;
 import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.Presenter;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
@@ -39,7 +40,7 @@ public class VideoPresenter extends Presenter {
         cardView.setFocusable(true);
         cardView.setFocusableInTouchMode(true);
 //        updateCardBackgroundColor(cardView, false);
-        return new ViewHolder(cardView);
+        return new ResourceViewHolder(cardView);
     }
 
     @Override
@@ -47,11 +48,13 @@ public class VideoPresenter extends Presenter {
 //        Movie movie = (Movie) item;
         Resource resource = (Resource) item;
         ImageCardView cardView = (ImageCardView) viewHolder.view;
+        ResourceViewHolder resourceViewHolder = (ResourceViewHolder) viewHolder;
+        resourceViewHolder.setResource(resource);
 
         Log.d(TAG, "onBindViewHolder");
         cardView.setTitleText(resource.getName());
         cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
-        if(resource.getThumbnailPath() != null) {
+        if (resource.getThumbnailPath() != null) {
             Glide.with(viewHolder.view.getContext())
                     .load(new File(resource.getThumbnailPath()))
                     .centerCrop()
@@ -66,5 +69,31 @@ public class VideoPresenter extends Presenter {
         // Remove references to images so that the garbage collector can free up memory
         cardView.setBadgeImage(null);
         cardView.setMainImage(null);
+
+        ResourceViewHolder resourceViewHolder = (ResourceViewHolder) viewHolder;
+        resourceViewHolder.unbind();
+    }
+
+    public static class ResourceViewHolder extends Presenter.ViewHolder{
+
+        private Resource resource;
+
+        public ResourceViewHolder(View view) {
+            super(view);
+        }
+
+        public void setResource(Resource resource) {
+            resource.setViewHolder(this);
+            this.resource = resource;
+
+        }
+
+        public Resource getResouce() {
+            return resource;
+        }
+
+        public void unbind() {
+            resource.setViewHolder(null);
+        }
     }
 }

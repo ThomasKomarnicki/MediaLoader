@@ -2,6 +2,8 @@ package com.doglandia.medialoader.thumbnail;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.doglandia.medialoader.model.Resource;
@@ -24,9 +26,12 @@ public class MetaDataTask extends AsyncTask<Resource, Void, File> {
 
     private ThumbnailManager thumbnailManager;
 
+    private Handler handler;
+
     public MetaDataTask(ResourceServer resourceServer, ThumbnailManager thumbnailManager){
         this.resourceServer = resourceServer;
         this.thumbnailManager = thumbnailManager;
+        handler = new Handler(Looper.getMainLooper());
     }
 
     private static final String TAG = "MetaDataTask";
@@ -35,7 +40,7 @@ public class MetaDataTask extends AsyncTask<Resource, Void, File> {
         Log.d(TAG, "started metadata task for "+params.length + " items");
         FFmpegMediaMetadataRetriever mmr = new FFmpegMediaMetadataRetriever();
 
-        for(Resource resource : params) {
+        for(final Resource resource : params) {
 
             String mediaResource = resourceServer.getMediaUrl(resource);
             Log.i(TAG, "setting data source as "+mediaResource);
@@ -45,7 +50,7 @@ public class MetaDataTask extends AsyncTask<Resource, Void, File> {
             HashMap<String,String> metaData = mmr.getMetadata().getAll();
             Bitmap b = mmr.getFrameAtTime(8 * (1000) * (1000), FFmpegMediaMetadataRetriever.OPTION_CLOSEST); // frame at 8 seconds
 
-            String thumbnailFile = thumbnailManager.getThumbnailFileForResource(resource);
+            final String thumbnailFile = thumbnailManager.getThumbnailFileForResource(resource);
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(thumbnailFile);
                 b.compress(Bitmap.CompressFormat.JPEG, 30,fileOutputStream);
@@ -58,7 +63,13 @@ public class MetaDataTask extends AsyncTask<Resource, Void, File> {
                 e.printStackTrace();
             }
 
-            resource.setThumbnailPath(thumbnailFile);
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    resource.setThumbnailPath(thumbnailFile);
+                }
+            });
+
             thumbnailManager.getMetaFile().addMetaForThumbnail(resource, thumbnailFile);
 
 //            byte[] artwork = mmr.getEmbeddedPicture();

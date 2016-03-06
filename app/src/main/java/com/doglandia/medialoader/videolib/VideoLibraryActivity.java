@@ -40,7 +40,8 @@ public class VideoLibraryActivity extends Activity {
         loadingContentFragment = new LoadingVideosFragment();
         videoLibraryFragment = new VideoLibraryFragment();
 
-        getFragmentManager().beginTransaction().add(R.id.video_lib_content,loadingContentFragment).commit();
+//        getFragmentManager().beginTransaction().add(R.id.video_lib_content,loadingContentFragment).commit();
+
 
         MediaLoaderApplication.getBus().register(this);
 
@@ -61,7 +62,10 @@ public class VideoLibraryActivity extends Activity {
                 resourceGroups = resourcesResponse.getResourceGroups();
 //                initViews(resourceGroups);
 
+                getFragmentManager().beginTransaction().replace(R.id.video_lib_content, videoLibraryFragment).commitAllowingStateLoss();
+                videoLibraryFragment.initViews(resourceGroups);
                 loadThumbnails(resourceGroups);
+
             }
 
             @Override
@@ -73,21 +77,21 @@ public class VideoLibraryActivity extends Activity {
 
     private void loadThumbnails(final List<ResourceGroup> resourceGroups){
         ThumbnailManager thumbnailManager = ((MediaLoaderApplication) getApplication()).getThumbnailManager();
-        thumbnailManager.setListener(new ThumbnailManager.ThumbnailRetrievedListener() {
-            @Override
-            public void onThumbnailRetrieved(Resource resource, File file) {
-
-            }
-
-            @Override
-            public void onAllThumbnailsRetrieved(ThumbnailManager thumbnailManager) {
-                // show videos with VideoLibraryFragment
-                getFragmentManager().beginTransaction().replace(R.id.video_lib_content, videoLibraryFragment).commitAllowingStateLoss();
-                videoLibraryFragment.initViews(resourceGroups);
-
-//                initViews(VideoLibraryFragment.this.resourceGroups);
-            }
-        });
+//        thumbnailManager.setListener(new ThumbnailManager.ThumbnailRetrievedListener() {
+//            @Override
+//            public void onThumbnailRetrieved(Resource resource, File file) {
+////                resource.setThumbnailPath(file.getPath());
+//            }
+//
+//            @Override
+//            public void onAllThumbnailsRetrieved(ThumbnailManager thumbnailManager) {
+//                // show videos with VideoLibraryFragment
+//                getFragmentManager().beginTransaction().replace(R.id.video_lib_content, videoLibraryFragment).commitAllowingStateLoss();
+//                videoLibraryFragment.initViews(resourceGroups);
+//
+////                initViews(VideoLibraryFragment.this.resourceGroups);
+//            }
+//        });
         thumbnailManager.addThumbnails(resourceGroups);
 
     }
