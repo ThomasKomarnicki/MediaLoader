@@ -20,8 +20,13 @@ import com.google.android.exoplayer.ExoPlaybackException;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.MediaCodecTrackRenderer;
 import com.google.android.exoplayer.MediaCodecUtil;
+import com.google.android.exoplayer.TimeRange;
+import com.google.android.exoplayer.chunk.Format;
 import com.google.android.exoplayer.drm.UnsupportedDrmException;
+import com.google.android.exoplayer.metadata.id3.Id3Frame;
 import com.google.android.exoplayer.util.Util;
+
+import java.util.List;
 
 public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, DemoPlayer.Listener {
 
@@ -100,8 +105,13 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, 
     }
 
     @Override
-    public long getCurrentPlayPosition() {
+    public int getCurrentPlayPosition() {
         return player.getPlayerControl().getCurrentPosition();
+    }
+
+    @Override
+    public void setDuration(PlayMediaActivity playMediaActivity) {
+        playMediaActivity.setVideoDuration(player.getPlayerControl().getDuration());
     }
 
     private long getSeekChange(){
@@ -124,7 +134,47 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, 
             player = new DemoPlayer(rendererBuilder);
 //            player.addListener(this);
 //            player.setCaptionListener(this);
-//            player.setMetadataListener(this);
+        player.setInfoListener(new DemoPlayer.InfoListener() {
+            @Override
+            public void onVideoFormatEnabled(Format format, int trigger, long mediaTimeMs) {
+                Log.d(TAG, "video Format Enabled mediaTimeMs = "+mediaTimeMs);
+            }
+
+            @Override
+            public void onAudioFormatEnabled(Format format, int trigger, long mediaTimeMs) {
+
+            }
+
+            @Override
+            public void onDroppedFrames(int count, long elapsed) {
+
+            }
+
+            @Override
+            public void onBandwidthSample(int elapsedMs, long bytes, long bitrateEstimate) {
+
+            }
+
+            @Override
+            public void onLoadStarted(int sourceId, long length, int type, int trigger, Format format, long mediaStartTimeMs, long mediaEndTimeMs) {
+
+            }
+
+            @Override
+            public void onLoadCompleted(int sourceId, long bytesLoaded, int type, int trigger, Format format, long mediaStartTimeMs, long mediaEndTimeMs, long elapsedRealtimeMs, long loadDurationMs) {
+                Log.d(TAG, "dog");
+            }
+
+            @Override
+            public void onDecoderInitialized(String decoderName, long elapsedRealtimeMs, long initializationDurationMs) {
+
+            }
+
+            @Override
+            public void onAvailableRangeChanged(int sourceId, TimeRange availableRange) {
+
+            }
+        });
             player.seekTo(0);
             playerNeedsPrepare = true;
 //            mediaController.setMediaPlayer(player.getPlayerControl());
@@ -209,6 +259,7 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, 
     }
 
     private void releasePlayer() {
+
         if (player != null) {
 //            debugViewHelper.stop();
 //            debugViewHelper = null;

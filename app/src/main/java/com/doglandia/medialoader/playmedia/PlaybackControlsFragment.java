@@ -2,7 +2,6 @@ package com.doglandia.medialoader.playmedia;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v17.leanback.app.MediaControllerGlue;
 import android.support.v17.leanback.app.PlaybackControlGlue;
 import android.support.v17.leanback.app.PlaybackOverlayFragment;
 import android.support.v17.leanback.widget.Action;
@@ -26,6 +25,9 @@ import com.doglandia.medialoader.model.Resource;
 import com.doglandia.medialoader.model.ResourceGroup;
 import com.doglandia.medialoader.videolib.VideoPresenter;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by tdk10 on 2/26/2016.
  */
@@ -40,6 +42,35 @@ public class PlaybackControlsFragment extends PlaybackOverlayFragment {
 
     private MediaPlaybackListener mediaPlaybackListener;
 
+    private MediaPlayerFragment mediaPlayerFragment;
+
+    private Timer playbackTimer;
+    private TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+            final int playbackPosition = mediaPlayerFragment.getCurrentPlayPosition();
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    controlsRow.setCurrentTime(playbackPosition);
+                }
+            });
+        }
+    };
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        playbackTimer.cancel();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        playbackTimer = new Timer();
+        playbackTimer.schedule(timerTask, 1000, 1000);
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -50,7 +81,8 @@ public class PlaybackControlsFragment extends PlaybackOverlayFragment {
         Resource resource = getActivity().getIntent().getParcelableExtra("resource");
         ResourceGroup resourceGroup = getActivity().getIntent().getParcelableExtra("resource_group");
 
-        Activity activity = getActivity();
+        PlayMediaActivity activity = (PlayMediaActivity) getActivity();
+        mediaPlayerFragment = activity.getMediaPlayerFragment();
 
 
         ControlButtonPresenterSelector presenterSelector = new ControlButtonPresenterSelector();
@@ -63,6 +95,8 @@ public class PlaybackControlsFragment extends PlaybackOverlayFragment {
         controlsAdapter.set(1, playPauseAction);
         controlsAdapter.set(2, fastForwardAction);
 
+        playPauseAction.setIndex(PlaybackControlsRow.PlayPauseAction.PAUSE);
+
         controlsRow = new PlaybackControlsRow();
         controlsRow.setPrimaryActionsAdapter(controlsAdapter);
 
@@ -73,17 +107,19 @@ public class PlaybackControlsFragment extends PlaybackOverlayFragment {
             public void onActionClicked(Action action) {
                 Log.i(TAG, "action "+action.getId() + " clicked: "+action);
                 if (action.getId() == playPauseAction.getId()) {
-                    boolean playing = playPauseAction.getIndex() == PlaybackControlsRow.PlayPauseAction.PLAY;
+                    boolean playing = playPauseAction.getIndex() == PlaybackControlsRow.PlayPauseAction.PAUSE;
 
 //                    boolean playing = playbackActivity.togglePlayback();
                     Log.i(TAG, "playing = "+playing);
                     if(playing) {
-                        playPauseAction.setIcon(playPauseAction.getDrawable(PlaybackControlsRow.PlayPauseAction.PLAY));
-                        playPauseAction.setIndex(PlaybackControlsRow.PlayPauseAction.PAUSE);
+//                        playbackTimer.cancel();
+//                        playPauseAction.setIcon(playPauseAction.getDrawable(PlaybackControlsRow.PlayPauseAction.PAUSE));
+                        playPauseAction.setIndex(PlaybackControlsRow.PlayPauseAction.PLAY);
                         mediaPlaybackListener.onPause();
                     }else{
-                        playPauseAction.setIcon(playPauseAction.getDrawable(PlaybackControlsRow.PlayPauseAction.PAUSE));
-                        playPauseAction.setIndex(PlaybackControlsRow.PlayPauseAction.PLAY);
+//                        playbackTimer.schedule(timerTask, 1000, 1000);
+//                        playPauseAction.setIcon(playPauseAction.getDrawable(PlaybackControlsRow.PlayPauseAction.PLAY));
+                        playPauseAction.setIndex(PlaybackControlsRow.PlayPauseAction.PAUSE);
                         mediaPlaybackListener.onPlay();
                     }
                     controlsAdapter.notifyArrayItemRangeChanged(1,1);
@@ -96,6 +132,8 @@ public class PlaybackControlsFragment extends PlaybackOverlayFragment {
 //                    playbackActivity.seekBackward();
                     mediaPlaybackListener.onRewind();
                 }
+                final int playbackPosition = mediaPlayerFragment.getCurrentPlayPosition();
+                controlsRow.setCurrentTime(playbackPosition);
 
             }
         });

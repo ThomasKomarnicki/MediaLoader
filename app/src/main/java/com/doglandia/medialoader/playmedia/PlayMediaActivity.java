@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.media.session.MediaSessionCompat;
 
 import com.doglandia.medialoader.MediaLoaderApplication;
@@ -43,6 +45,10 @@ public class PlayMediaActivity extends Activity{
 //            }
         }
     };
+
+    public MediaPlayerFragment getMediaPlayerFragment() {
+        return mediaPlayerFragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,6 +125,13 @@ public class PlayMediaActivity extends Activity{
     public void onResume() {
         super.onResume();
         mSession.setActive(true);
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mediaPlayerFragment.setDuration(PlayMediaActivity.this);
+            }
+        },5000);
+
     }
 
     @Override
@@ -178,7 +191,8 @@ public class PlayMediaActivity extends Activity{
 
     private void updatePlaybackPosition(){
         // todo
-//        playbackControlsFragment.setPlayDuration(mVideoView.getCurrentPosition());
+
+        playbackControlsFragment.setPlayDuration(mediaPlayerFragment.getCurrentPlayPosition());
     }
 
     private void setupCallbacks() {
@@ -215,5 +229,9 @@ public class PlayMediaActivity extends Activity{
 //            }
 //        });
 
+    }
+
+    public void setVideoDuration(int duration) {
+        playbackControlsFragment.setTotalPlayDuration(duration);
     }
 }
