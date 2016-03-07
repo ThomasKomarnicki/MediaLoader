@@ -30,22 +30,6 @@ public class PlayMediaActivity extends Activity{
 
     private ResourceServer server;
 
-    private Timer timer;
-    private TimerTask playBackTimerTask = new TimerTask() {
-        @Override
-        public void run() {
-            // todo
-//            if(mVideoView.isPlaying() && playbackControlsFragment != null){
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        updatePlaybackPosition();
-//                    }
-//                });
-//            }
-        }
-    };
-
     public MediaPlayerFragment getMediaPlayerFragment() {
         return mediaPlayerFragment;
     }
@@ -62,16 +46,6 @@ public class PlayMediaActivity extends Activity{
         server = ((MediaLoaderApplication) getApplication()).getResourceServer();
         String videoPath = server.getMediaUrl(resource);
         mediaPlayerFragment.setVideo(Uri.parse(videoPath));
-
-//        mVideoView = (VideoView) findViewById(R.id.videoView);
-//        mVideoView.setFocusable(false);
-//        mVideoView.setFocusableInTouchMode(false);
-
-        setupCallbacks();
-
-//        mVideoView.setVideoPath(videoPath);
-//        mVideoView.start();
-
 
         mSession = new MediaSession(this, "MediaLoader");
         mSession.setCallback(new MediaSession.Callback() {
@@ -110,8 +84,6 @@ public class PlayMediaActivity extends Activity{
             }
         });
 
-        timer = new Timer();
-        timer.scheduleAtFixedRate(playBackTimerTask, 1000,1000);
     }
 
     @Override
@@ -125,20 +97,13 @@ public class PlayMediaActivity extends Activity{
     public void onResume() {
         super.onResume();
         mSession.setActive(true);
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mediaPlayerFragment.setDuration(PlayMediaActivity.this);
-            }
-        },5000);
-
+        mediaPlayerFragment.setDuration(PlayMediaActivity.this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        // todo
-//        if (mVideoView.isPlaying()) {
+//        if (mediaPlayerFragment.isPlaying()) {
 //            if (!requestVisibleBehind(true)) {
 //                // Try to play behind launcher, but if it fails, stop playback.
 //                stopPlayback();
@@ -156,79 +121,22 @@ public class PlayMediaActivity extends Activity{
 
     private void stopPlayback() {
         mediaPlayerFragment.pause();
-//        if (mVideoView != null) {
-//            mVideoView.stopPlayback();
-//        }
     }
 
     public void seekForward(){
         mediaPlayerFragment.seekForward();
-        // todo
-//        if(mVideoView.canSeekForward()) {
-//            mVideoView.seekTo(mVideoView.getCurrentPosition()+(60000 * 2)); // seek forward 2 minutes
-//            updatePlaybackPosition();
-//        }
     }
 
     public void seekBackward(){
         mediaPlayerFragment.seekBackward();
-        // todo
-//        if(mVideoView.canSeekBackward()) {
-//            mVideoView.seekTo(mVideoView.getCurrentPosition() - (60000 * 2)); // seek forward 2 minutes
-//            updatePlaybackPosition();
-//        }
-
     }
 
     public void changeVideo(Resource resource){
-        // todo
         mediaPlayerFragment.setVideo(Uri.parse(server.getMediaUrl(resource)));
-//        mVideoView.stopPlayback();
-//        String videoPath = server.getMediaUrl(resource);
-//        mVideoView.setVideoPath(videoPath);
-//        mVideoView.start();
     }
 
     private void updatePlaybackPosition(){
-        // todo
-
         playbackControlsFragment.setPlayDuration(mediaPlayerFragment.getCurrentPlayPosition());
-    }
-
-    private void setupCallbacks() {
-
-//        mVideoView.setOnErrorListener(new MediaPlayerFragment.OnErrorListener() {
-//
-//            @Override
-//            public boolean onError(MediaPlayerFragment mp, int what, int extra) {
-//                String msg = "";
-//                if (extra == MediaPlayerFragment.MEDIA_ERROR_TIMED_OUT) {
-//                    msg = getString(R.string.video_error_media_load_timeout);
-//                } else if (what == MediaPlayerFragment.MEDIA_ERROR_SERVER_DIED) {
-//                    msg = getString(R.string.video_error_server_inaccessible);
-//                } else {
-//                    msg = getString(R.string.video_error_unknown_error);
-//                }
-//                mVideoView.stopPlayback();
-//                return false;
-//            }
-//        });
-
-//        mVideoView.setOnPreparedListener(new MediaPlayerFragment.OnPreparedListener() {
-//            @Override
-//            public void onPrepared(MediaPlayerFragment mp) {
-//                    mVideoView.start();
-//                    playbackControlsFragment.setTotalPlayDuration(mVideoView.getDuration());
-//            }
-//        });
-//
-//        mVideoView.setOnCompletionListener(new MediaPlayerFragment.OnCompletionListener() {
-//            @Override
-//            public void onCompletion(MediaPlayerFragment mp) {
-//
-//            }
-//        });
-
     }
 
     public void setVideoDuration(int duration) {

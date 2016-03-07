@@ -1,6 +1,5 @@
 package com.doglandia.medialoader.playmedia;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v17.leanback.app.PlaybackControlGlue;
 import android.support.v17.leanback.app.PlaybackOverlayFragment;
@@ -8,6 +7,7 @@ import android.support.v17.leanback.widget.Action;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
 import android.support.v17.leanback.widget.ClassPresenterSelector;
 import android.support.v17.leanback.widget.ControlButtonPresenterSelector;
+import android.support.v17.leanback.widget.CursorObjectAdapter;
 import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.ListRowPresenter;
@@ -187,5 +187,6 @@ public class PlaybackControlsFragment extends PlaybackOverlayFragment {
         controlsRow.setTotalTime(millis);
         controlsRow.setBufferedProgress(millis);
         controlsRow.setCurrentTime(0);
+        ((ArrayObjectAdapter) getAdapter()).notifyArrayItemRangeChanged(0,getAdapter().size());
     }
 }

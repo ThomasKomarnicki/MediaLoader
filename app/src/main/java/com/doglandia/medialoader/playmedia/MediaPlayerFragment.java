@@ -10,4 +10,6 @@ public interface MediaPlayerFragment {
     void seekBackward();
     int getCurrentPlayPosition();
     void setDuration(PlayMediaActivity playMediaActivity);
+
+    boolean isPlaying();
 }

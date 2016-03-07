@@ -41,6 +41,10 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, 
     private long playerPosition;
     private boolean playerNeedsPrepare;
 
+    private boolean durationSet = false;
+
+    private PlayMediaActivity playMediaActivity;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -111,7 +115,13 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, 
 
     @Override
     public void setDuration(PlayMediaActivity playMediaActivity) {
-        playMediaActivity.setVideoDuration(player.getPlayerControl().getDuration());
+        this.playMediaActivity = playMediaActivity;
+
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return player.getPlaybackState() == 0; // todo
     }
 
     private long getSeekChange(){
@@ -130,67 +140,40 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, 
             player.release();
         }
 
-//        if (player == null) {
-            player = new DemoPlayer(rendererBuilder);
-//            player.addListener(this);
-//            player.setCaptionListener(this);
-        player.setInfoListener(new DemoPlayer.InfoListener() {
+        durationSet = false;
+
+        player = new DemoPlayer(rendererBuilder);
+        player.addListener(new DemoPlayer.Listener() {
             @Override
-            public void onVideoFormatEnabled(Format format, int trigger, long mediaTimeMs) {
-                Log.d(TAG, "video Format Enabled mediaTimeMs = "+mediaTimeMs);
+            public void onStateChanged(boolean playWhenReady, int playbackState) {
+                if(playbackState == ExoPlayer.STATE_READY && !durationSet) {
+                    playMediaActivity.setVideoDuration(player.getPlayerControl().getDuration());
+                    durationSet = true;
+                }
             }
 
             @Override
-            public void onAudioFormatEnabled(Format format, int trigger, long mediaTimeMs) {
-
-            }
-
-            @Override
-            public void onDroppedFrames(int count, long elapsed) {
-
-            }
-
-            @Override
-            public void onBandwidthSample(int elapsedMs, long bytes, long bitrateEstimate) {
+            public void onError(Exception e) {
 
             }
 
             @Override
-            public void onLoadStarted(int sourceId, long length, int type, int trigger, Format format, long mediaStartTimeMs, long mediaEndTimeMs) {
-
-            }
-
-            @Override
-            public void onLoadCompleted(int sourceId, long bytesLoaded, int type, int trigger, Format format, long mediaStartTimeMs, long mediaEndTimeMs, long elapsedRealtimeMs, long loadDurationMs) {
-                Log.d(TAG, "dog");
-            }
-
-            @Override
-            public void onDecoderInitialized(String decoderName, long elapsedRealtimeMs, long initializationDurationMs) {
-
-            }
-
-            @Override
-            public void onAvailableRangeChanged(int sourceId, TimeRange availableRange) {
+            public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
 
             }
         });
-            player.seekTo(0);
-            playerNeedsPrepare = true;
-//            mediaController.setMediaPlayer(player.getPlayerControl());
-//            mediaController.setEnabled(true);
-            eventLogger = new EventLogger();
-            eventLogger.startSession();
-            player.addListener(eventLogger);
-            player.setInfoListener(eventLogger);
-            player.setInternalErrorListener(eventLogger);
-//            debugViewHelper = new DebugTextViewHelper(player, debugTextView);
-//            debugViewHelper.start();
-//        }
-//        if (playerNeedsPrepare) {
-            player.prepare();
-            playerNeedsPrepare = false;
-//        }
+        player.seekTo(0);
+        playerNeedsPrepare = true;
+
+        eventLogger = new EventLogger();
+        eventLogger.startSession();
+        player.addListener(eventLogger);
+        player.setInfoListener(eventLogger);
+        player.setInternalErrorListener(eventLogger);
+
+        player.prepare();
+        playerNeedsPrepare = false;
+
         player.setSurface(surfaceView.getHolder().getSurface());
         player.setPlayWhenReady(playWhenReady);
     }
