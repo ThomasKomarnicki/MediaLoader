@@ -9,14 +9,11 @@ import android.view.ViewGroup;
 
 import com.doglandia.medialoader.R;
 
-/**
- * Created by tdk10 on 3/10/2016.
- */
-public class DownloadClientFragment extends Fragment {
+public class ApplicationInformationFragment extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_download_client, null);
+        return inflater.inflate(R.layout.fragment_application_information, null);
     }
 }

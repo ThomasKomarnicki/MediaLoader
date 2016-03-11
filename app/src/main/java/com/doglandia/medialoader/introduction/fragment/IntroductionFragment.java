@@ -37,6 +37,7 @@ public class IntroductionFragment extends OnboardingFragment {
     @Override
     protected void onPageChanged(int newPage, int previousPage) {
         super.onPageChanged(newPage, previousPage);
+        // todo change fragment
     }
 
     @Override
