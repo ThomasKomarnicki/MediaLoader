@@ -27,9 +27,16 @@ public class IntroductionFragment extends OnboardingFragment {
 
     private OnOnboardingFinishedListener listener;
 
+    private int foregroundContent = R.id.introduction_content;
+
     @Override
     public int onProvideTheme() {
         return R.style.Theme_Leanback_Onboarding;
+    }
+
+    @Override
+    protected void onPageChanged(int newPage, int previousPage) {
+        super.onPageChanged(newPage, previousPage);
     }
 
     @Override
@@ -50,21 +57,24 @@ public class IntroductionFragment extends OnboardingFragment {
     @Nullable
     @Override
     protected View onCreateBackgroundView(LayoutInflater inflater, ViewGroup container) {
-        getCurrentPageIndex();
+
         return null;
     }
 
     @Nullable
     @Override
     protected View onCreateContentView(LayoutInflater inflater, ViewGroup container) {
-        getCurrentPageIndex();
-        return null;
+        View view = inflater.inflate(R.layout.fragment_introduction, null);
+
+
+
+        return view;
     }
 
     @Nullable
     @Override
     protected View onCreateForegroundView(LayoutInflater inflater, ViewGroup container) {
-        getCurrentPageIndex();
+
         return null;
     }
 
