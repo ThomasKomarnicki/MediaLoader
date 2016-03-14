@@ -1,17 +1,17 @@
 package com.doglandia.medialoader.introduction.fragment;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v17.leanback.app.GuidedStepFragment;
 import android.support.v17.leanback.app.OnboardingFragment;
-import android.support.v17.leanback.widget.GuidanceStylist;
-import android.support.v17.leanback.widget.GuidedAction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.doglandia.medialoader.R;
+import com.doglandia.medialoader.introduction.fragment.intro.ApplicationInformationFragment;
+import com.doglandia.medialoader.introduction.fragment.intro.DownloadClientFragment;
 
 /**
  * Created by tdk10 on 2/27/2016.
@@ -29,6 +29,12 @@ public class IntroductionFragment extends OnboardingFragment {
 
     private int foregroundContent = R.id.introduction_content;
 
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
     @Override
     public int onProvideTheme() {
         return R.style.Theme_Leanback_Onboarding;
@@ -38,6 +44,18 @@ public class IntroductionFragment extends OnboardingFragment {
     protected void onPageChanged(int newPage, int previousPage) {
         super.onPageChanged(newPage, previousPage);
         // todo change fragment
+        Fragment fragment = null;
+        switch (newPage){
+            case 0:
+                fragment = new ApplicationInformationFragment();
+                break;
+            case 1:
+                fragment = new DownloadClientFragment();
+                break;
+        }
+        if(fragment != null){
+            getFragmentManager().beginTransaction().replace(foregroundContent,fragment).commit();
+        }
     }
 
     @Override
