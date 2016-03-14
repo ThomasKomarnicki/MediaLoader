@@ -6,4 +6,8 @@
     <style name="OnboardingTheme" parent="@style/Theme.Leanback.Onboarding">
 
     </style>
+
+    <style name="IntroTextAppearance" parent="Base.TextAppearance.AppCompat.Large">
+
+    </style>
 </resources>
