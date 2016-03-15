@@ -2,9 +2,11 @@ package com.doglandia.medialoader.introduction.fragment;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v17.leanback.app.OnboardingFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +14,14 @@ import android.view.ViewGroup;
 import com.doglandia.medialoader.R;
 import com.doglandia.medialoader.introduction.fragment.intro.ApplicationInformationFragment;
 import com.doglandia.medialoader.introduction.fragment.intro.DownloadClientFragment;
+import com.doglandia.medialoader.introduction.fragment.intro.SelectVideoLocationsFragment;
 
 /**
  * Created by tdk10 on 2/27/2016.
  */
 public class IntroductionFragment extends OnboardingFragment {
+
+    private static final String TAG = "IntroFragment";
 
     public interface OnOnboardingFinishedListener{
         void onOnboardingFinished();
@@ -42,7 +47,7 @@ public class IntroductionFragment extends OnboardingFragment {
 
     @Override
     protected void onPageChanged(int newPage, int previousPage) {
-        super.onPageChanged(newPage, previousPage);
+        Log.d(TAG, "new page = "+newPage);
         // todo change fragment
         Fragment fragment = null;
         switch (newPage){
@@ -52,9 +57,14 @@ public class IntroductionFragment extends OnboardingFragment {
             case 1:
                 fragment = new DownloadClientFragment();
                 break;
+            case 2:
+                fragment = new SelectVideoLocationsFragment();
         }
         if(fragment != null){
-            getFragmentManager().beginTransaction().replace(foregroundContent,fragment).commit();
+            getFragmentManager().beginTransaction()
+                    .replace(foregroundContent,fragment)
+//                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                    .commit();
         }
     }
 
@@ -65,12 +75,12 @@ public class IntroductionFragment extends OnboardingFragment {
 
     @Override
     protected String getPageTitle(int pageIndex) {
-        return "Page "+pageIndex;
+        return "";
     }
 
     @Override
     protected String getPageDescription(int pageIndex) {
-        return "Description "+pageIndex;
+        return "";
     }
 
     @Nullable
@@ -83,9 +93,10 @@ public class IntroductionFragment extends OnboardingFragment {
     @Nullable
     @Override
     protected View onCreateContentView(LayoutInflater inflater, ViewGroup container) {
+        Log.d(TAG, "created content");
         View view = inflater.inflate(R.layout.fragment_introduction, null);
 
-
+        onPageChanged(0,-1);
 
         return view;
     }

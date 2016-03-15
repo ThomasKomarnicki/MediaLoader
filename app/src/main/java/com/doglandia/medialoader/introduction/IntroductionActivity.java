@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.v17.leanback.app.GuidedStepFragment;
 import android.support.v17.leanback.app.OnboardingFragment;
 
+import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.R;
 import com.doglandia.medialoader.introduction.fragment.ConnectingToPcFragment;
 import com.doglandia.medialoader.introduction.fragment.IntroductionFragment;
@@ -19,6 +20,8 @@ import com.doglandia.medialoader.videolib.VideoLibraryActivity;
 public class IntroductionActivity extends Activity {
 
     public static final String FIRST_RUN_CONNECTED = "first_run_connected";
+
+    private boolean connecting = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +52,17 @@ public class IntroductionActivity extends Activity {
     }
 
     private void startConnectingFragment(){
+        connecting = true;
         ConnectingToPcFragment fragment = new ConnectingToPcFragment();
-        getFragmentManager().beginTransaction().replace(R.id.intro_content, fragment).addToBackStack(null).commit();
+        getFragmentManager().beginTransaction().replace(R.id.intro_content, fragment).commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        if(connecting) {
+            // cancel connecting
+            ((MediaLoaderApplication) getApplication()).getResourceServer().cancelConnectingTasks();
+        }
+        super.onBackPressed();
+    }
 }

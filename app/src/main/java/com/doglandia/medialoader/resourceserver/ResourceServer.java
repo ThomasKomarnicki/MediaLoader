@@ -1,8 +1,6 @@
 package com.doglandia.medialoader.resourceserver;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.clientdiscovery.ClientDiscoverer;
@@ -10,7 +8,6 @@ import com.doglandia.medialoader.event.ResourceServerConnected;
 import com.doglandia.medialoader.model.Resource;
 import com.doglandia.medialoader.model.ResourcesResponse;
 import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import retrofit.Callback;
@@ -89,5 +86,11 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
     @Override
     public void onProgressUpdate(int progress) {
 
+    }
+
+    public void cancelConnectingTasks() {
+        if(clientDiscoverer != null){
+            clientDiscoverer.cancelTasks();
+        }
     }
 }

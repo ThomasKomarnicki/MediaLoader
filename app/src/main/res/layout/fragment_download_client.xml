@@ -16,8 +16,7 @@
             android:text="Download and install Desktop Application from:"
             android:id="@+id/textView2"
             android:layout_gravity="center_vertical"
-            android:textAppearance="@style/IntroTextAppearance"
-            />
+            android:textAppearance="@style/IntroTextAppearance" />
     </FrameLayout>
 
     <LinearLayout

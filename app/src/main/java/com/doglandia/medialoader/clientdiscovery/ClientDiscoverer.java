@@ -47,6 +47,8 @@ public class ClientDiscoverer {
 
     private boolean found = false;
 
+    private boolean cancel = false;
+
     public ClientDiscoverer(Context context, OnHostFoundListener onHostFoundListener){
         this.context = context;
         this.listener = onHostFoundListener;
@@ -62,6 +64,10 @@ public class ClientDiscoverer {
         }else {
             startSubNetScan();
         }
+    }
+
+    public void cancelTasks(){
+        cancel = true;
     }
 
     boolean hostAcceptsRequest(String hostName) throws IOException {
@@ -141,7 +147,7 @@ public class ClientDiscoverer {
         private String scanSubNet(String subnet){
             InetAddress inetAddress = null;
             for(int i=1; i<255; i++){
-                if(found){
+                if(found || cancel){
                     cancel(true);
                     return null;
                 }

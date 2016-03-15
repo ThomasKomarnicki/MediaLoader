@@ -3,10 +3,10 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:id="@+id/introduction_content">
 
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.doglandia.medialoader.introduction.fragment.intro.DownloadClientFragment"
-        android:id="@+id/download_client_fragment"/>
+    <!--<fragment-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:name="com.doglandia.medialoader.introduction.fragment.intro.ApplicationInformationFragment"-->
+        <!--android:id="@+id/download_client_fragment"/>-->
 
 </FrameLayout>

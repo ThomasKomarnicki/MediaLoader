@@ -19,7 +19,6 @@
             android:text="@string/app_introduction1"
             android:layout_gravity="center_horizontal"
             android:textAppearance="@style/IntroTextAppearance"
-            android:textSize="28sp"
             android:gravity="center_horizontal" />
 
         <FrameLayout
@@ -59,7 +58,6 @@
             android:text="@string/app_intro_get_you_started"
             android:layout_gravity="center_horizontal"
             android:textAppearance="@style/IntroTextAppearance"
-            android:textSize="28sp"
             android:gravity="center_horizontal" />
     </LinearLayout>
 </FrameLayout>
