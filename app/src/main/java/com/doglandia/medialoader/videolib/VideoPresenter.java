@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.model.Resource;
 
 import java.io.File;
@@ -53,8 +54,10 @@ public class VideoPresenter extends Presenter {
         cardView.setTitleText(resource.getName());
         cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
         if (resource.getThumbnailPath() != null) {
+            MediaLoaderApplication application = (MediaLoaderApplication) viewHolder.view.getContext().getApplicationContext();
+            String thumbnailUrl = application.getResourceServer().getThumbnailUrl(resource);
             Glide.with(viewHolder.view.getContext())
-                    .load(new File(resource.getThumbnailPath()))
+                    .load(thumbnailUrl)
                     .centerCrop()
                     .into(cardView.getMainImageView());
         }

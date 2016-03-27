@@ -64,7 +64,7 @@ public class VideoLibraryActivity extends Activity {
 
                 getFragmentManager().beginTransaction().replace(R.id.video_lib_content, videoLibraryFragment).commitAllowingStateLoss();
                 videoLibraryFragment.initViews(resourceGroups);
-                loadThumbnails(resourceGroups);
+//                loadThumbnails(resourceGroups);
 
             }
 

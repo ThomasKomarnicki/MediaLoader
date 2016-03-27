@@ -54,7 +54,7 @@ public class ClientDiscoverer {
         this.listener = onHostFoundListener;
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.connectTimeout(500, TimeUnit.MILLISECONDS);
+        builder.connectTimeout(2000, TimeUnit.MILLISECONDS);
         client = builder.build();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -75,8 +75,10 @@ public class ClientDiscoverer {
         Request request = new Request.Builder()
                 .url("http://"+hostName+":"+ResourceServer.PORT+"/ping")
                 .build();
+//        Log.d(TAG, "calling "+request.url().toString());
         Response response = client.newCall(request).execute();
         String body = response.body().string();
+//        Log.d(TAG, "body of "+hostName + " = "+body);
         if(body.contains("\"status\":200")){
             return true;
         }else{
@@ -151,7 +153,7 @@ public class ClientDiscoverer {
                     cancel(true);
                     return null;
                 }
-                Log.d(TAG, "Trying: " + subnet + String.valueOf(i));
+//                Log.d(TAG, "Trying: " + subnet + String.valueOf(i));
                 try {
                     inetAddress = InetAddress.getByName(subnet + String.valueOf(i));
 //                    if(inetAddress.isReachable(200)){

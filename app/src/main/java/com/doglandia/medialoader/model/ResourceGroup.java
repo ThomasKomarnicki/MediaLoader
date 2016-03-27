@@ -10,13 +10,13 @@ import java.util.List;
  */
 public class ResourceGroup implements Parcelable{
 
-    private String name;
+//    private String name;
     private String groupName;
 
     private List<Resource> resourceList;
 
     protected ResourceGroup(Parcel in) {
-        name = in.readString();
+//        name = in.readString();
         groupName = in.readString();
         resourceList = in.createTypedArrayList(Resource.CREATOR);
     }
@@ -34,7 +34,7 @@ public class ResourceGroup implements Parcelable{
     };
 
     public String getName() {
-        return name;
+        return groupName;
     }
 
     public List<Resource> getResourceList() {
@@ -48,7 +48,7 @@ public class ResourceGroup implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
+//        dest.writeString(name);
         dest.writeString(groupName);
         dest.writeTypedList(resourceList);
     }

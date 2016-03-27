@@ -6,6 +6,7 @@ import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.Presenter;
 
 import com.bumptech.glide.Glide;
+import com.doglandia.medialoader.MediaLoaderApplication;
 
 import java.io.File;
 
@@ -55,7 +56,9 @@ public class Resource implements Parcelable{
         this.thumbnailPath = thumbnailPath;
 
         if(viewHolder != null){
-            setViewHolderImage();
+            MediaLoaderApplication application = (MediaLoaderApplication) viewHolder.view.getContext().getApplicationContext();
+            String thumbnailUrl = application.getResourceServer().getThumbnailUrl(this);
+            setViewHolderImage(thumbnailUrl);
         }
     }
 
@@ -63,11 +66,11 @@ public class Resource implements Parcelable{
         this.viewHolder = viewHolder;
     }
 
-    private void setViewHolderImage(){
+    private void setViewHolderImage(String url){
         ImageCardView cardView = (ImageCardView) viewHolder.view;
         if(getThumbnailPath() != null) {
             Glide.with(viewHolder.view.getContext())
-                    .load(new File(getThumbnailPath()))
+                    .load(url)
                     .centerCrop()
                     .into(cardView.getMainImageView());
         }

@@ -45,7 +45,6 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
         builder.setLogLevel(RestAdapter.LogLevel.FULL);
 
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
 
         builder.setConverter(new GsonConverter(gsonBuilder.create()));
         instance = builder.build().create(ServerInterface.class); // possible to switch to testable instance
@@ -67,7 +66,12 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
 
     public String getMediaUrl(Resource resource) {
         // todo
-        return (getResourceServerEndpoint() + "/" + resource.getLocation()).replace(" ","%20");
+        String url = (getResourceServerEndpoint() + "/media/" + resource.getLocation()).replace(" ","%20");
+        return url;
+    }
+
+    public String getThumbnailUrl(Resource resource){
+        return getResourceServerEndpoint()+"/"+resource.getThumbnailPath();
     }
 
     @Override

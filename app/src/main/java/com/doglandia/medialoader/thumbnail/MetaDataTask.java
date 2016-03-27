@@ -48,29 +48,33 @@ public class MetaDataTask extends AsyncTask<Resource, Void, File> {
             mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_ALBUM);
             mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_ARTIST);
             HashMap<String,String> metaData = mmr.getMetadata().getAll();
-            Bitmap b = mmr.getFrameAtTime(8 * (1000) * (1000), FFmpegMediaMetadataRetriever.OPTION_CLOSEST); // frame at 8 seconds
+            Bitmap b = mmr.getFrameAtTime(2 * (1000) * (1000), FFmpegMediaMetadataRetriever.OPTION_CLOSEST); // frame at 8 seconds
 
-            final String thumbnailFile = thumbnailManager.getThumbnailFileForResource(resource);
-            try {
-                FileOutputStream fileOutputStream = new FileOutputStream(thumbnailFile);
-                b.compress(Bitmap.CompressFormat.JPEG, 30,fileOutputStream);
-                fileOutputStream.close();
-                b.recycle();
+            if(b != null) {
+                final String thumbnailFile = thumbnailManager.getThumbnailFileForResource(resource);
+                try {
+                    FileOutputStream fileOutputStream = new FileOutputStream(thumbnailFile);
+                    b.compress(Bitmap.CompressFormat.JPEG, 30, fileOutputStream);
+                    fileOutputStream.close();
+                    b.recycle();
 
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    resource.setThumbnailPath(thumbnailFile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
 
-            thumbnailManager.getMetaFile().addMetaForThumbnail(resource, thumbnailFile);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        resource.setThumbnailPath(thumbnailFile);
+                    }
+                });
+
+                thumbnailManager.getMetaFile().addMetaForThumbnail(resource, thumbnailFile);
+            }else{
+                Log.d(TAG, "retrieved bitmap is null");
+            }
 
 //            byte[] artwork = mmr.getEmbeddedPicture();
 
