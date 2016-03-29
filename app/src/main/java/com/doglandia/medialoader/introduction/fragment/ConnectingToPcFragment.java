@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.test.mock.MockApplication;
@@ -32,6 +33,11 @@ import retrofit.client.Response;
  */
 public class ConnectingToPcFragment extends Fragment {
 
+    private CountDownTimer countDownTimer;
+
+    private boolean doneCountingDown = false;
+    private List<ResourceGroup> resourceGroups;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,7 +48,21 @@ public class ConnectingToPcFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // todo start connection and when connected advanced to media library activity
+        // wait atlesat 3 seconds before continuing to the next screen
+        countDownTimer = new CountDownTimer(3000,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                doneCountingDown = true;
+            }
+        };
+        countDownTimer.start();
+
+        //start connection and when connected advanced to media library activity
 
         MediaLoaderApplication.getBus().register(this);
 
@@ -57,7 +77,8 @@ public class ConnectingToPcFragment extends Fragment {
             server.getResourceGroups(new Callback<ResourcesResponse>() {
                 @Override
                 public void success(ResourcesResponse resourcesResponse, Response response) {
-                    onResourceGroupsRetrieved(resourcesResponse.getResourceGroups());
+                    resourceGroups = resourcesResponse.getResourceGroups();
+                    onResourceGroupsRetrieved();
                 }
 
                 @Override
@@ -69,7 +90,10 @@ public class ConnectingToPcFragment extends Fragment {
 
     }
 
-    private void onResourceGroupsRetrieved(List<ResourceGroup> resourceGroups){
+    private void onResourceGroupsRetrieved(){
+        if(resourceGroups == null || !doneCountingDown){
+            return;
+        }
 
         // if resource groups size == 0, set message for adding folders
 
