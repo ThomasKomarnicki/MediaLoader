@@ -13,6 +13,7 @@ import android.support.v17.leanback.widget.Presenter;
 import android.support.v17.leanback.widget.Row;
 import android.support.v17.leanback.widget.RowPresenter;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.view.View;
 
 import com.doglandia.medialoader.R;
 import com.doglandia.medialoader.model.Resource;
@@ -69,14 +70,17 @@ public class VideoLibraryFragment extends BrowseFragment {
             mRowsAdapter.add(new ListRow(header, listRowAdapter));
         }
 
-//        HeaderItem gridHeader = new HeaderItem(i, "PREFERENCES");
-//
-//        GridItemPresenter mGridPresenter = new GridItemPresenter();
-//        ArrayObjectAdapter gridRowAdapter = new ArrayObjectAdapter(mGridPresenter);
-//        gridRowAdapter.add(getResources().getString(R.string.grid_view));
-//        gridRowAdapter.add(getString(R.string.error_fragment));
-//        gridRowAdapter.add(getResources().getString(R.string.personal_settings));
-//        mRowsAdapter.add(new ListRow(gridHeader, gridRowAdapter));
+        HeaderItem gridHeader = new HeaderItem(i, "");
+
+        IconPresenter iconPresenter = new IconPresenter();
+        ArrayObjectAdapter gridRowAdapter = new ArrayObjectAdapter(iconPresenter);
+        gridRowAdapter.add(new ActionIcon(R.drawable.ic_refresh_black_24dp, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        }));
+        mRowsAdapter.add(new ListRow(gridHeader, gridRowAdapter));
 
         setAdapter(mRowsAdapter);
     }
