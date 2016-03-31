@@ -74,7 +74,8 @@ public class VideoLibraryFragment extends BrowseFragment {
 
         IconPresenter iconPresenter = new IconPresenter();
         ArrayObjectAdapter gridRowAdapter = new ArrayObjectAdapter(iconPresenter);
-        gridRowAdapter.add(new ActionIcon(R.drawable.ic_refresh_black_24dp, new View.OnClickListener() {
+        gridRowAdapter.add(new ActionIcon(R.drawable.ic_refresh_black_24dp, "Refresh",
+                new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

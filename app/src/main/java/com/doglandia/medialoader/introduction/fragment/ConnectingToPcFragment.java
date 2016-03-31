@@ -58,6 +58,7 @@ public class ConnectingToPcFragment extends Fragment {
             @Override
             public void onFinish() {
                 doneCountingDown = true;
+                onResourceGroupsRetrieved();
             }
         };
         countDownTimer.start();
