@@ -5,15 +5,14 @@ import android.os.Bundle;
 
 import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.R;
+import com.doglandia.medialoader.event.ResourceServerReconnectFailed;
 import com.doglandia.medialoader.event.ResourceServerConnected;
-import com.doglandia.medialoader.model.Resource;
 import com.doglandia.medialoader.model.ResourceGroup;
 import com.doglandia.medialoader.model.ResourcesResponse;
 import com.doglandia.medialoader.resourceserver.ResourceServer;
 import com.doglandia.medialoader.thumbnail.ThumbnailManager;
 import com.squareup.otto.Subscribe;
 
-import java.io.File;
 import java.util.List;
 
 import retrofit.Callback;
@@ -27,7 +26,7 @@ public class VideoLibraryActivity extends Activity {
 
     private VideoLibraryFragment videoLibraryFragment;
 
-    private LoadingVideosFragment loadingContentFragment;
+    private ReconnectingFragment loadingContentFragment;
 
     private List<ResourceGroup> resourceGroups;
 
@@ -37,7 +36,7 @@ public class VideoLibraryActivity extends Activity {
 
         setContentView(R.layout.activity_video_library);
 
-        loadingContentFragment = new LoadingVideosFragment();
+        loadingContentFragment = new ReconnectingFragment();
         videoLibraryFragment = new VideoLibraryFragment();
 
 //        getFragmentManager().beginTransaction().add(R.id.video_lib_content,loadingContentFragment).commit();
@@ -90,5 +89,11 @@ public class VideoLibraryActivity extends Activity {
     @Subscribe
     public void onResourceServerConnected(ResourceServerConnected resourceServerConnected){
         getResourceData();
+    }
+
+    @Subscribe
+    public void onResourceServerReconnectFailed(ResourceServerReconnectFailed event){
+        getFragmentManager().beginTransaction().replace(R.id.video_lib_content, loadingContentFragment).commitAllowingStateLoss();
+
     }
 }

@@ -11,6 +11,8 @@ import android.preference.PreferenceManager;
 import android.text.format.Formatter;
 import android.util.Log;
 
+import com.doglandia.medialoader.MediaLoaderApplication;
+import com.doglandia.medialoader.event.ResourceServerReconnectFailed;
 import com.doglandia.medialoader.resourceserver.ResourceServer;
 
 import java.io.IOException;
@@ -199,7 +201,8 @@ public class ClientDiscoverer {
                 prefs.edit().putString(LAST_DISCOVERED_HOST,host).commit();
                 listener.onHostFound(host);
             }else{
-
+                // notify that we failed to reconnect on last discovered host, try to rediscover host
+                MediaLoaderApplication.getBus().post(new ResourceServerReconnectFailed());
                 startSubNetScan();
             }
         }

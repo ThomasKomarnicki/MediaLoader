@@ -12,11 +12,17 @@ import com.doglandia.medialoader.R;
 /**
  * Created by tdk10 on 2/28/2016.
  */
-public class LoadingVideosFragment extends Fragment {
+public class ReconnectingFragment extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_loading_videos, null);
+        return inflater.inflate(R.layout.fragment_reconnecting, null);
     }
+
+    public void startReconnecting(){
+
+    }
+
+    
 }

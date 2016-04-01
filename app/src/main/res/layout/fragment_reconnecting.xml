@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Loading Your Videos..."
+            android:text="Reconnecting to your PC"
             android:id="@+id/textView" />
 
         <ProgressBar
