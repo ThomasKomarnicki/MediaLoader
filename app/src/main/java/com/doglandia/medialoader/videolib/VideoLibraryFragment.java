@@ -70,7 +70,7 @@ public class VideoLibraryFragment extends BrowseFragment {
             mRowsAdapter.add(new ListRow(header, listRowAdapter));
         }
 
-        HeaderItem gridHeader = new HeaderItem(i, "");
+        HeaderItem gridHeader = new HeaderItem(i, "More");
 
         IconPresenter iconPresenter = new IconPresenter();
         ArrayObjectAdapter gridRowAdapter = new ArrayObjectAdapter(iconPresenter);

@@ -2,13 +2,21 @@ package com.doglandia.medialoader.videolib;
 
 import android.content.Context;
 import android.support.v17.leanback.widget.BaseCardView;
+import android.support.v4.view.LayoutInflaterCompat;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.doglandia.medialoader.R;
 
 /**
  * Created by tdk10 on 3/30/2016.
  */
 public class IconCardView extends BaseCardView {
 
+    private ImageView icon;
+    private TextView title;
 
     public IconCardView(Context context) {
         super(context);
@@ -26,6 +34,16 @@ public class IconCardView extends BaseCardView {
     }
 
     private void init(){
+        LayoutInflater.from(getContext()).inflate(R.layout.icon_card_view, this);
+        icon = (ImageView) findViewById(R.id.icon);
+        title = (TextView) findViewById(R.id.title);
+    }
 
+    public ImageView getIcon() {
+        return icon;
+    }
+
+    public TextView getTitle() {
+        return title;
     }
 }
