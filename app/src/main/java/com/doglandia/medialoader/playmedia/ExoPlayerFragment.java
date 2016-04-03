@@ -16,6 +16,7 @@ import com.doglandia.medialoader.R;
 import com.doglandia.medialoader.playmedia.demoplayer.DemoPlayer;
 import com.doglandia.medialoader.playmedia.demoplayer.EventLogger;
 import com.doglandia.medialoader.playmedia.demoplayer.ExtractorRendererBuilder;
+import com.doglandia.medialoader.videolib.VideoLibraryFragment;
 import com.google.android.exoplayer.ExoPlaybackException;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.MediaCodecTrackRenderer;
@@ -24,6 +25,7 @@ import com.google.android.exoplayer.TimeRange;
 import com.google.android.exoplayer.chunk.Format;
 import com.google.android.exoplayer.drm.UnsupportedDrmException;
 import com.google.android.exoplayer.metadata.id3.Id3Frame;
+import com.google.android.exoplayer.upstream.HttpDataSource;
 import com.google.android.exoplayer.util.Util;
 
 import java.util.List;
@@ -154,7 +156,12 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, 
 
             @Override
             public void onError(Exception e) {
-
+                Log.d(TAG, "exo player listener error");
+                e.printStackTrace();
+                if(e.getCause() instanceof HttpDataSource.HttpDataSourceException){
+                    getActivity().setResult(VideoLibraryFragment.MEDIA_COULDNT_CONNECT);
+                    getActivity().finish();
+                }
             }
 
             @Override

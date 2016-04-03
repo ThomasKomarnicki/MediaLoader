@@ -7,13 +7,14 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.test.mock.MockApplication;
+import android.support.v17.leanback.widget.ItemBridgeAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.R;
+import com.doglandia.medialoader.event.ResourceServerConnectFailed;
 import com.doglandia.medialoader.event.ResourceServerConnected;
 import com.doglandia.medialoader.introduction.IntroductionActivity;
 import com.doglandia.medialoader.model.ResourceGroup;
@@ -38,6 +39,12 @@ public class ConnectingToPcFragment extends Fragment {
     private boolean doneCountingDown = false;
     private List<ResourceGroup> resourceGroups;
 
+//    private HorizontalGridView horizontalGridView;
+    private ItemBridgeAdapter bridgeAdapter;
+
+    private View errorView;
+    private View connectingView;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,9 +52,56 @@ public class ConnectingToPcFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        connectingView = view.findViewById(R.id.connecting_view);
+        errorView = view.findViewById(R.id.connection_error_view);
+        view.findViewById(R.id.try_again).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                retryConnection();
+            }
+        });
+        view.findViewById(R.id.go_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goBackToWalkThrough();
+            }
+        });
+
+        showConnectingView();
+
+//        horizontalGridView = (HorizontalGridView) view.findViewById(R.id.gridView);
+
+//        ArrayObjectAdapter arrayObjectAdapter = new ArrayObjectAdapter(new IconPresenter());
+//        arrayObjectAdapter.add(new ActionIcon(R.drawable.ic_refresh_black_24dp, "Go Back",
+//                new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                    }
+//                }));
+//        arrayObjectAdapter.add(new ActionIcon(R.drawable.ic_refresh_black_24dp, "Retry",
+//                new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                    }
+//                }));
+//        bridgeAdapter = new ItemBridgeAdapter(arrayObjectAdapter);
+//        horizontalGridView.setAdapter(bridgeAdapter);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        MediaLoaderApplication.getBus().register(this);
 
+        startClientDiscovery();
+
+    }
+
+    private void startClientDiscovery(){
         // wait atlesat 3 seconds before continuing to the next screen
         countDownTimer = new CountDownTimer(3000,1000) {
             @Override
@@ -62,10 +116,6 @@ public class ConnectingToPcFragment extends Fragment {
             }
         };
         countDownTimer.start();
-
-        //start connection and when connected advanced to media library activity
-
-        MediaLoaderApplication.getBus().register(this);
 
         ((MediaLoaderApplication) getActivity().getApplication()).getResourceServer().startClientDiscovery();
     }
@@ -88,15 +138,18 @@ public class ConnectingToPcFragment extends Fragment {
                 }
             });
         }
+    }
 
+    @Subscribe
+    public void onResourceServerConnectionFailed(ResourceServerConnectFailed event){
+        showConnectingErrorView();
     }
 
     private void onResourceGroupsRetrieved(){
         if(resourceGroups == null || !doneCountingDown){
             return;
         }
-
-        // if resource groups size == 0, set message for adding folders
+        // if resource groups size == 0, set message for adding folders, maybe should do this at video lib screen
 
         // else go to video library
 
@@ -115,5 +168,28 @@ public class ConnectingToPcFragment extends Fragment {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(IntroductionActivity.FIRST_RUN_CONNECTED,true);
         editor.commit();
+    }
+
+    private void showConnectingView(){
+        connectingView.setVisibility(View.VISIBLE);
+        errorView.setVisibility(View.GONE);
+    }
+
+    private void showConnectingErrorView(){
+        errorView.setVisibility(View.VISIBLE);
+        connectingView.setVisibility(View.GONE);
+//        horizontalGridView.setSelected(true);
+//        horizontalGridView.setSelectedPosition(0);
+    }
+
+    private void goBackToWalkThrough(){
+        Intent intent = new Intent(getActivity(), IntroductionActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    private void retryConnection(){
+        startClientDiscovery();
+        showConnectingView();
     }
 }

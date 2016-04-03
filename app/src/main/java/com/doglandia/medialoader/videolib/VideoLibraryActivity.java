@@ -5,12 +5,11 @@ import android.os.Bundle;
 
 import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.R;
-import com.doglandia.medialoader.event.ResourceServerReconnectFailed;
+import com.doglandia.medialoader.event.ResourceServerConnectFailed;
 import com.doglandia.medialoader.event.ResourceServerConnected;
 import com.doglandia.medialoader.model.ResourceGroup;
 import com.doglandia.medialoader.model.ResourcesResponse;
 import com.doglandia.medialoader.resourceserver.ResourceServer;
-import com.doglandia.medialoader.thumbnail.ThumbnailManager;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public class VideoLibraryActivity extends Activity {
 
     private VideoLibraryFragment videoLibraryFragment;
 
-    private ReconnectingFragment loadingContentFragment;
+    private ReconnectingFragment reconnectingFragment;
 
     private List<ResourceGroup> resourceGroups;
 
@@ -36,17 +35,17 @@ public class VideoLibraryActivity extends Activity {
 
         setContentView(R.layout.activity_video_library);
 
-        loadingContentFragment = new ReconnectingFragment();
+        reconnectingFragment = new ReconnectingFragment();
         videoLibraryFragment = new VideoLibraryFragment();
 
-//        getFragmentManager().beginTransaction().add(R.id.video_lib_content,loadingContentFragment).commit();
+//        getFragmentManager().beginTransaction().add(R.id.video_lib_content,reconnectingFragment).commit();
 
 
         MediaLoaderApplication.getBus().register(this);
 
         ResourceServer server = ((MediaLoaderApplication) getApplication()).getResourceServer();
         if(!server.isConnected()) {
-            server.startClientDiscovery();
+            onResourceServerReconnectFailed(new ResourceServerConnectFailed());
         }else{
             getResourceData();
         }
@@ -74,11 +73,10 @@ public class VideoLibraryActivity extends Activity {
         });
     }
 
-    private void loadThumbnails(final List<ResourceGroup> resourceGroups){
-        ThumbnailManager thumbnailManager = ((MediaLoaderApplication) getApplication()).getThumbnailManager();
-        thumbnailManager.addThumbnails(resourceGroups);
-
-    }
+//    private void loadThumbnails(final List<ResourceGroup> resourceGroups){
+//        ThumbnailManager thumbnailManager = ((MediaLoaderApplication) getApplication()).getThumbnailManager();
+//        thumbnailManager.addThumbnails(resourceGroups);
+//    }
 
     @Override
     public void onDestroy() {
@@ -92,8 +90,8 @@ public class VideoLibraryActivity extends Activity {
     }
 
     @Subscribe
-    public void onResourceServerReconnectFailed(ResourceServerReconnectFailed event){
-        getFragmentManager().beginTransaction().replace(R.id.video_lib_content, loadingContentFragment).commitAllowingStateLoss();
+    public void onResourceServerReconnectFailed(ResourceServerConnectFailed event){
+        getFragmentManager().beginTransaction().replace(R.id.video_lib_content, reconnectingFragment).commitAllowingStateLoss();
 
     }
 }

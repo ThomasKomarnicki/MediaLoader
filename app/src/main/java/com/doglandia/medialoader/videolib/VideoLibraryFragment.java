@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.view.View;
 
 import com.doglandia.medialoader.R;
+import com.doglandia.medialoader.event.ResourceServerConnectFailed;
 import com.doglandia.medialoader.model.Resource;
 import com.doglandia.medialoader.model.ResourceGroup;
 import com.doglandia.medialoader.playmedia.PlayMediaActivity;
@@ -26,6 +27,10 @@ import java.util.List;
  * Created by tdk10 on 2/21/2016.
  */
 public class VideoLibraryFragment extends BrowseFragment {
+
+    public static final int PLAY_MEDIA_REQUEST = 8;
+
+    public static final int MEDIA_COULDNT_CONNECT = 9;
 
     private ArrayObjectAdapter mRowsAdapter;
 
@@ -113,10 +118,18 @@ public class VideoLibraryFragment extends BrowseFragment {
                         getActivity(),
                         ((ImageCardView) itemViewHolder.view).getMainImageView(),
                         "dog").toBundle();
-                getActivity().startActivity(intent, bundle);
+                startActivityForResult(intent,PLAY_MEDIA_REQUEST, bundle);
             }
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if(requestCode == PLAY_MEDIA_REQUEST && resultCode == MEDIA_COULDNT_CONNECT){
+            VideoLibraryActivity activity = (VideoLibraryActivity) getActivity();
+            activity.onResourceServerReconnectFailed(new ResourceServerConnectFailed());
+        }
+    }
 }

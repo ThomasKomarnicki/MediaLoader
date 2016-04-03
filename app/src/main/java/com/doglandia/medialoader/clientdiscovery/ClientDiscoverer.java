@@ -1,10 +1,7 @@
 package com.doglandia.medialoader.clientdiscovery;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.nsd.NsdManager;
-import android.net.nsd.NsdServiceInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -12,14 +9,12 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import com.doglandia.medialoader.MediaLoaderApplication;
-import com.doglandia.medialoader.event.ResourceServerReconnectFailed;
+import com.doglandia.medialoader.event.ResourceServerConnectFailed;
 import com.doglandia.medialoader.resourceserver.ResourceServer;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -51,12 +46,14 @@ public class ClientDiscoverer {
 
     private boolean cancel = false;
 
+    private int discoveryTasksRunning = 0;
+
     public ClientDiscoverer(Context context, OnHostFoundListener onHostFoundListener){
         this.context = context;
         this.listener = onHostFoundListener;
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.connectTimeout(2000, TimeUnit.MILLISECONDS);
+        builder.connectTimeout(200, TimeUnit.MILLISECONDS);
         client = builder.build();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -109,18 +106,26 @@ public class ClientDiscoverer {
 
         String subnet = getSubNet(context);
 
+        discoveryTasksRunning = 0;
         DiscoveryTask discoveryTask = new DiscoveryTask();
         // scan subnet
-        discoveryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, subnet);
+        discoveryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, subnet,"1-127");
+        discoveryTask = new DiscoveryTask();
+        discoveryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, subnet,"128-255");
+        discoveryTasksRunning +=2;
 
         // also scan other subnet? one for hardwire one for wifi?
         discoveryTask = new DiscoveryTask();
         if(subnet.equals("192.168.1.")){
-            discoveryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "192.168.0.");
+            discoveryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "192.168.0.","1-127");
+            discoveryTask = new DiscoveryTask();
+            discoveryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "192.168.0.","128-255");
         }else if(subnet.equals("192.168.0.")){
-            discoveryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "192.168.1.");
+            discoveryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "192.168.1.","1-127");
+            discoveryTask = new DiscoveryTask();
+            discoveryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "192.168.1.","128-255");
         }
-
+        discoveryTasksRunning +=2;
     }
 
     // scans subnet for appropriate client
@@ -130,7 +135,8 @@ public class ClientDiscoverer {
         @Override
         protected String doInBackground(String... params) {
 
-            String hostName = scanSubNet(params[0]); // todo
+            String[] range = params[1].split("-");
+            String hostName = scanSubNet(params[0],Integer.valueOf(range[0]),Integer.valueOf(range[1])); // todo
 
             return hostName;
         }
@@ -146,11 +152,17 @@ public class ClientDiscoverer {
             }else if(!found){
                 listener.onNoHostFound();
             }
+            discoveryTasksRunning--;
+
+            if(discoveryTasksRunning == 0 && !cancel){
+                // todo not connected
+                MediaLoaderApplication.getBus().post(new ResourceServerConnectFailed());
+            }
         }
 
-        private String scanSubNet(String subnet){
+        private String scanSubNet(String subnet, int startAddress, int endAddress){
             InetAddress inetAddress = null;
-            for(int i=1; i<255; i++){
+            for(int i=startAddress; i <= endAddress; i++){
                 if(found || cancel){
                     cancel(true);
                     return null;
@@ -202,7 +214,7 @@ public class ClientDiscoverer {
                 listener.onHostFound(host);
             }else{
                 // notify that we failed to reconnect on last discovered host, try to rediscover host
-                MediaLoaderApplication.getBus().post(new ResourceServerReconnectFailed());
+//                MediaLoaderApplication.getBus().post(new ResourceServerConnectFailed());
                 startSubNetScan();
             }
         }
