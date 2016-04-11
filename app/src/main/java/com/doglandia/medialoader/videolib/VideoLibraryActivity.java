@@ -49,10 +49,9 @@ public class VideoLibraryActivity extends Activity {
         }else{
             getResourceData();
         }
-
     }
 
-    private void getResourceData(){
+    public void getResourceData() {
         ResourceServer server = ((MediaLoaderApplication) getApplication()).getResourceServer();
         server.getResourceGroups(new Callback<ResourcesResponse>() {
             @Override
@@ -71,6 +70,11 @@ public class VideoLibraryActivity extends Activity {
                 error.printStackTrace();
             }
         });
+    }
+
+    public void refreshResourceData(){
+        getFragmentManager().beginTransaction().replace(R.id.video_lib_content, reconnectingFragment).commitAllowingStateLoss();
+        getResourceData();
     }
 
 //    private void loadThumbnails(final List<ResourceGroup> resourceGroups){

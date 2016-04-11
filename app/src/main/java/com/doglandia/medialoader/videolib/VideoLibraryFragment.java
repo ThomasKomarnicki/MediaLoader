@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Created by tdk10 on 2/21/2016.
  */
-public class VideoLibraryFragment extends BrowseFragment {
+public class VideoLibraryFragment extends BrowseFragment implements View.OnClickListener {
 
     public static final int PLAY_MEDIA_REQUEST = 8;
 
@@ -79,14 +79,12 @@ public class VideoLibraryFragment extends BrowseFragment {
 
         IconPresenter iconPresenter = new IconPresenter();
         ArrayObjectAdapter gridRowAdapter = new ArrayObjectAdapter(iconPresenter);
-        gridRowAdapter.add(new ActionIcon(R.drawable.ic_refresh_black_24dp, "Refresh",
-                new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        }));
+        gridRowAdapter.add(new ActionIcon(R.drawable.ic_refresh_black_24dp, "Refresh",this));
+        gridRowAdapter.add(new ActionIcon(R.drawable.ic_refresh_black_24dp, "Help",this));
         mRowsAdapter.add(new ListRow(gridHeader, gridRowAdapter));
+
+
+
 
         setAdapter(mRowsAdapter);
     }
@@ -101,6 +99,11 @@ public class VideoLibraryFragment extends BrowseFragment {
         }
 
         return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        ((VideoLibraryActivity) getActivity()).refreshResourceData();
     }
 
 

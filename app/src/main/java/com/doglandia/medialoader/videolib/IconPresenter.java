@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.support.v17.leanback.widget.BaseCardView;
 import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.Presenter;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +26,10 @@ public class IconPresenter extends Presenter {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
-
-
-        return new Presenter.ViewHolder(new IconCardView(parent.getContext()));
-//        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.icon_item,parent,false));
+        ViewHolder viewHolder = new Presenter.ViewHolder(new IconCardView(parent.getContext()));
+        viewHolder.view.setFocusable(true);
+        viewHolder.view.setFocusableInTouchMode(true);
+        return viewHolder;
     }
 
     @Override
@@ -37,16 +38,21 @@ public class IconPresenter extends Presenter {
 
         IconCardView cardView = (IconCardView) viewHolder.view;
 
-
         cardView.getTitle().setText(actionIcon.getTitle());
 
         cardView.setOnClickListener(actionIcon.getOnClickListener());
         cardView.getIcon().setImageResource(actionIcon.getResId());
 
+        setOnClickListener(viewHolder, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("IconPresenter", "click");
+            }
+        });
+
     }
 
     @Override
     public void onUnbindViewHolder(ViewHolder viewHolder) {
-
     }
 }

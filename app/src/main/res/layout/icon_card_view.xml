@@ -5,7 +5,8 @@
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
     android:paddingTop="16dp"
-    android:paddingBottom="16dp">
+    android:paddingBottom="16dp"
+    android:clickable="false">
 
     <ImageView
         android:layout_width="48dp"
@@ -14,7 +15,8 @@
         android:src="@drawable/ic_refresh_black_24dp"
         android:tint="@android:color/white"
         android:layout_gravity="center"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        android:clickable="false"/>
 
     <TextView
         android:layout_width="wrap_content"
