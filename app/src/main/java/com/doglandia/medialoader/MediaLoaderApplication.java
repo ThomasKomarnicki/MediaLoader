@@ -2,9 +2,10 @@ package com.doglandia.medialoader;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.doglandia.medialoader.resourceserver.ResourceServer;
-import com.doglandia.medialoader.thumbnail.ThumbnailManager;
 import com.squareup.otto.Bus;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by tdk10 on 2/21/2016.
@@ -19,7 +20,7 @@ public class MediaLoaderApplication extends Application {
 
     private ResourceServer resourceServer;
 
-    private ThumbnailManager thumbnailManager;
+//    private ThumbnailManager thumbnailManager;
 
 
     public ResourceServer getResourceServer() {
@@ -29,15 +30,18 @@ public class MediaLoaderApplication extends Application {
         return resourceServer;
     }
 
-    public ThumbnailManager getThumbnailManager() {
-        return thumbnailManager;
-    }
+//    public ThumbnailManager getThumbnailManager() {
+//        return thumbnailManager;
+//    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        if(!BuildConfig.BUILD_TYPE.equals("debug")) {
+            Fabric.with(this, new Crashlytics());
+        }
 
         resourceServer = new ResourceServer(getApplicationContext());
-        thumbnailManager = new ThumbnailManager(resourceServer, getFilesDir());
+//        thumbnailManager = new ThumbnailManager(resourceServer, getFilesDir());
     }
 }
