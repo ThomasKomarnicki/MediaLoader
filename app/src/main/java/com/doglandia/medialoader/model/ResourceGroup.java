@@ -3,6 +3,7 @@ package com.doglandia.medialoader.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +15,13 @@ public class ResourceGroup implements Parcelable{
     private String groupName;
 
     private List<Resource> resourceList;
+
+    private String location;
+
+    public ResourceGroup(String groupName){
+        this.groupName = groupName;
+        resourceList = new ArrayList<>();
+    }
 
     protected ResourceGroup(Parcel in) {
 //        name = in.readString();
