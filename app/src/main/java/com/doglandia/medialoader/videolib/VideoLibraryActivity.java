@@ -14,9 +14,7 @@ import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.functions.Action1;
 
 /**
  * Created by tdk10 on 2/21/2016.
@@ -26,8 +24,10 @@ public class VideoLibraryActivity extends Activity {
     private VideoLibraryFragment videoLibraryFragment;
 
     private ReconnectingFragment reconnectingFragment;
+    private RefreshingFragment refreshingFragment;
 
     private List<ResourceGroup> resourceGroups;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +37,7 @@ public class VideoLibraryActivity extends Activity {
 
         reconnectingFragment = new ReconnectingFragment();
         videoLibraryFragment = new VideoLibraryFragment();
+        refreshingFragment = new RefreshingFragment();
 
 //        getFragmentManager().beginTransaction().add(R.id.video_lib_content,reconnectingFragment).commit();
 
@@ -53,34 +54,36 @@ public class VideoLibraryActivity extends Activity {
 
     public void getResourceData() {
         ResourceServer server = ((MediaLoaderApplication) getApplication()).getResourceServer();
-        server.getResourceGroups(new Callback<ResourcesResponse>() {
+        server.getResourceGroups().subscribe(new Action1<ResourcesResponse>() {
             @Override
-            public void success(ResourcesResponse resourcesResponse, Response response) {
-                resourceGroups = resourcesResponse.getResourceGroups();
-//                initViews(resourceGroups);
-
-                getFragmentManager().beginTransaction().replace(R.id.video_lib_content, videoLibraryFragment).commitAllowingStateLoss();
-                videoLibraryFragment.initViews(resourceGroups);
-//                loadThumbnails(resourceGroups);
-
+            public void call(ResourcesResponse resourcesResponse) {
+                showResourceGroups(resourcesResponse);
             }
-
+        }, new Action1<Throwable>() {
             @Override
-            public void failure(RetrofitError error) {
-                error.printStackTrace();
+            public void call(Throwable throwable) {
+                throwable.printStackTrace();
             }
         });
     }
 
     public void refreshResourceData(){
-        getFragmentManager().beginTransaction().replace(R.id.video_lib_content, reconnectingFragment).commitAllowingStateLoss();
-        getResourceData();
+        getFragmentManager().beginTransaction().add(android.R.id.content, refreshingFragment).commitAllowingStateLoss();
+
     }
 
-//    private void loadThumbnails(final List<ResourceGroup> resourceGroups){
-//        ThumbnailManager thumbnailManager = ((MediaLoaderApplication) getApplication()).getThumbnailManager();
-//        thumbnailManager.addThumbnails(resourceGroups);
-//    }
+    private void showResourceGroups(ResourcesResponse resourcesResponse){
+        resourceGroups = resourcesResponse.getResourceGroups();
+        getFragmentManager().beginTransaction().replace(R.id.video_lib_content, videoLibraryFragment).commitAllowingStateLoss();
+        videoLibraryFragment.initViews(resourceGroups);
+    }
+
+    public void onRefreshed(ResourcesResponse resourcesResponse){
+        getFragmentManager().beginTransaction().remove(refreshingFragment).commitAllowingStateLoss();
+        resourceGroups = resourcesResponse.getResourceGroups();
+        videoLibraryFragment.initViews(resourceGroups);
+    }
+
 
     @Override
     public void onDestroy() {

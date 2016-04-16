@@ -7,12 +7,16 @@ import com.doglandia.medialoader.clientdiscovery.ClientDiscoverer;
 import com.doglandia.medialoader.event.ResourceServerConnected;
 import com.doglandia.medialoader.model.Resource;
 import com.doglandia.medialoader.model.ResourcesResponse;
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.GsonBuilder;
 
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.converter.GsonConverter;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.GsonConverterFactory;
+import retrofit2.Retrofit;
+import retrofit2.RxJavaCallAdapterFactory;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by tdk10 on 2/21/2016.
@@ -39,15 +43,22 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
     }
 
     private void createRestAdapter(){
-        RestAdapter.Builder builder = new RestAdapter.Builder();
-//        builder.setEndpoint("http://192.168.0.9:8080/");
-        builder.setEndpoint(getResourceServerEndpoint());
-        builder.setLogLevel(RestAdapter.LogLevel.FULL);
 
-        GsonBuilder gsonBuilder = new GsonBuilder();
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+        clientBuilder.addInterceptor(new HttpLoggingInterceptor());
 
-        builder.setConverter(new GsonConverter(gsonBuilder.create()));
+
+        Retrofit.Builder builder = new Retrofit.Builder();
+        builder.baseUrl(getResourceServerEndpoint());
+        builder.addConverterFactory(GsonConverterFactory.create());
+        builder.addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+        builder.client(clientBuilder.build());
+
         instance = builder.build().create(ServerInterface.class); // possible to switch to testable instance
+    }
+
+    public ServerInterface getServerInstance(){
+        return this;
     }
 
     private String getResourceServerEndpoint(){
@@ -59,10 +70,15 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
     }
 
 
-    @Override
-    public void getResourceGroups(Callback<ResourcesResponse> callback) {
-        instance.getResourceGroups(callback);
-    }
+//    @Override
+//    public void getResourceGroups(Callback<ResourcesResponse> callback) {
+//        instance.getResourceGroups(callback);
+//    }
+//
+//    @Override
+//    public ResourcesResponse getResourceGroups() {
+//        return instance.getResourceGroups();
+//    }
 
     public String getMediaUrl(Resource resource) {
         // todo
@@ -96,5 +112,16 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
         if(clientDiscoverer != null){
             clientDiscoverer.cancelTasks();
         }
+    }
+
+    @Override
+    public Observable<ResourcesResponse> getResourceGroups() {
+        return instance.getResourceGroups().flatMap(new Func1<ResourcesResponse, Observable<ResourcesResponse>>() {
+            @Override
+            public Observable<ResourcesResponse> call(ResourcesResponse resourcesResponse) {
+                resourcesResponse.expandResourceGroups();
+                return Observable.just(resourcesResponse);
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 }

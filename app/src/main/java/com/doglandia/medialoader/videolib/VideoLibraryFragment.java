@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Created by tdk10 on 2/21/2016.
  */
-public class VideoLibraryFragment extends BrowseFragment implements View.OnClickListener {
+public class VideoLibraryFragment extends BrowseFragment {
 
     public static final int PLAY_MEDIA_REQUEST = 8;
 
@@ -79,14 +79,22 @@ public class VideoLibraryFragment extends BrowseFragment implements View.OnClick
 
         IconPresenter iconPresenter = new IconPresenter();
         ArrayObjectAdapter gridRowAdapter = new ArrayObjectAdapter(iconPresenter);
-        gridRowAdapter.add(new ActionIcon(R.drawable.ic_refresh_black_24dp, "Refresh",this));
-        gridRowAdapter.add(new ActionIcon(R.drawable.ic_refresh_black_24dp, "Help",this));
+        gridRowAdapter.add(new ActionIcon(R.drawable.ic_refresh_black_24dp, "Refresh", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((VideoLibraryActivity) getActivity()).refreshResourceData();
+            }
+        }));
+        gridRowAdapter.add(new ActionIcon(R.drawable.ic_refresh_black_24dp, "Help", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        }));
         mRowsAdapter.add(new ListRow(gridHeader, gridRowAdapter));
 
-
-
-
         setAdapter(mRowsAdapter);
+
     }
 
     private ResourceGroup getResourceGroupForResource(Resource resource){
@@ -99,11 +107,6 @@ public class VideoLibraryFragment extends BrowseFragment implements View.OnClick
         }
 
         return null;
-    }
-
-    @Override
-    public void onClick(View v) {
-        ((VideoLibraryActivity) getActivity()).refreshResourceData();
     }
 
 
@@ -122,6 +125,9 @@ public class VideoLibraryFragment extends BrowseFragment implements View.OnClick
                         ((ImageCardView) itemViewHolder.view).getMainImageView(),
                         "dog").toBundle();
                 startActivityForResult(intent,PLAY_MEDIA_REQUEST, bundle);
+            }
+            if(item instanceof ActionIcon){
+                ((ActionIcon) item).getOnClickListener().onClick(itemViewHolder.view);
             }
         }
     }

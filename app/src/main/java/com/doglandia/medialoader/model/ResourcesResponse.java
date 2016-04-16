@@ -12,4 +12,8 @@ public class ResourcesResponse {
     public List<ResourceGroup> getResourceGroups() {
         return resourceGroups;
     }
+
+    public void expandResourceGroups(){
+
+    }
 }

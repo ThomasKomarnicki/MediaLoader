@@ -11,14 +11,8 @@ import android.view.ViewGroup;
 import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.R;
 import com.doglandia.medialoader.event.ResourceServerConnectFailed;
-import com.doglandia.medialoader.event.ResourceServerConnected;
-import com.doglandia.medialoader.model.ResourcesResponse;
-import com.doglandia.medialoader.resourceserver.ResourceServer;
 import com.squareup.otto.Subscribe;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by tdk10 on 2/28/2016.
@@ -52,10 +46,21 @@ public class ReconnectingFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        MediaLoaderApplication.getBus().register(this);
         showConnectingView();
 
         startClientDiscovery();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MediaLoaderApplication.getBus().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MediaLoaderApplication.getBus().unregister(this);
     }
 
     private void startClientDiscovery(){

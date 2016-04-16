@@ -25,9 +25,8 @@ import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.functions.Action1;
+
 
 /**
  * Created by tdk10 on 2/27/2016.
@@ -125,16 +124,16 @@ public class ConnectingToPcFragment extends Fragment {
 
         if(getActivity() != null) { //
             ResourceServer server = ((MediaLoaderApplication) getActivity().getApplication()).getResourceServer();
-            server.getResourceGroups(new Callback<ResourcesResponse>() {
+            server.getResourceGroups().subscribe(new Action1<ResourcesResponse>() {
                 @Override
-                public void success(ResourcesResponse resourcesResponse, Response response) {
+                public void call(ResourcesResponse resourcesResponse) {
                     resourceGroups = resourcesResponse.getResourceGroups();
                     onResourceGroupsRetrieved();
                 }
-
+            }, new Action1<Throwable>() {
                 @Override
-                public void failure(RetrofitError error) {
-                    error.printStackTrace();
+                public void call(Throwable throwable) {
+                    throwable.printStackTrace();
                 }
             });
         }

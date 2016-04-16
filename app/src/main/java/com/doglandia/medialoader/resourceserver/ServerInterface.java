@@ -2,8 +2,9 @@ package com.doglandia.medialoader.resourceserver;
 
 import com.doglandia.medialoader.model.ResourcesResponse;
 
-import retrofit.Callback;
-import retrofit.http.GET;
+import retrofit2.http.GET;
+import rx.Observable;
+
 
 /**
  * Created by tdk10 on 2/21/2016.
@@ -11,7 +12,7 @@ import retrofit.http.GET;
 public interface ServerInterface {
 
     @GET("/data")
-    void getResourceGroups(Callback<ResourcesResponse> callback);
+    Observable<ResourcesResponse> getResourceGroups();
 
 
 }

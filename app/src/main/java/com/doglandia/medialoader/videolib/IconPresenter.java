@@ -7,6 +7,7 @@ import android.support.v17.leanback.widget.Presenter;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -42,14 +43,6 @@ public class IconPresenter extends Presenter {
 
         cardView.setOnClickListener(actionIcon.getOnClickListener());
         cardView.getIcon().setImageResource(actionIcon.getResId());
-
-        setOnClickListener(viewHolder, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("IconPresenter", "click");
-            }
-        });
-
     }
 
     @Override
