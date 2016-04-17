@@ -87,4 +87,8 @@ public class Resource implements Parcelable{
         dest.writeString(location);
         dest.writeString(thumbnailPath);
     }
+
+    public boolean isNativeFormat() {
+        return name.endsWith(".mp4") || name.endsWith(".3gp") || name.endsWith(".webm");
+    }
 }

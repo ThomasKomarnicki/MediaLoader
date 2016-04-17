@@ -93,6 +93,7 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, 
     @Override
     public void setVideo(Uri uri) {
         this.videoUri = uri;
+        Log.d(TAG, "playing: "+uri);
 
         if(player != null){
             preparePlayer(true);

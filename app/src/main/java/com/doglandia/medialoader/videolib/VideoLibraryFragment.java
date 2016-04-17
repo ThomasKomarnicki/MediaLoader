@@ -1,6 +1,11 @@
 package com.doglandia.medialoader.videolib;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v17.leanback.app.BrowseFragment;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
@@ -15,11 +20,13 @@ import android.support.v17.leanback.widget.RowPresenter;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.view.View;
 
+import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.R;
 import com.doglandia.medialoader.event.ResourceServerConnectFailed;
 import com.doglandia.medialoader.model.Resource;
 import com.doglandia.medialoader.model.ResourceGroup;
 import com.doglandia.medialoader.playmedia.PlayMediaActivity;
+import com.doglandia.medialoader.resourceserver.ResourceServer;
 
 import java.util.List;
 
@@ -116,15 +123,34 @@ public class VideoLibraryFragment extends BrowseFragment {
 
             if (item instanceof Resource) {
                 Resource resource = (Resource) item;
-                Intent intent = new Intent(getActivity(), PlayMediaActivity.class);
-                intent.putExtra("resource", resource);
-                intent.putExtra("resource_group",getResourceGroupForResource(resource));
+                if (!resource.isNativeFormat()) {
+                    ResourceServer server = ((MediaLoaderApplication) getActivity().getApplication()).getResourceServer();
+                    String videoPath = server.getMediaUrl((Resource) item);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(videoPath));
 
-                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(),
-                        ((ImageCardView) itemViewHolder.view).getMainImageView(),
-                        "dog").toBundle();
-                startActivityForResult(intent,PLAY_MEDIA_REQUEST, bundle);
+                    PackageManager manager = getActivity().getPackageManager();
+                    List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
+                    if (infos.size() > 1 || (infos.size() == 1 && !infos.get(0).activityInfo.packageName.contains("frameworkpackagestubs"))) {
+                        //Then there is application can handle your intent
+//                        intent.setData(Uri.parse(videoPath));
+                        intent.setDataAndType(Uri.parse(videoPath), "video/avi");
+                        startActivity(intent);
+                    }else{
+                        //No Application can handle your intent
+                        createMXPlayerDialog();
+                    }
+                }else {
+
+                    Intent intent = new Intent(getActivity(), PlayMediaActivity.class);
+                    intent.putExtra("resource", resource);
+                    intent.putExtra("resource_group", getResourceGroupForResource(resource));
+
+                    Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            getActivity(),
+                            ((ImageCardView) itemViewHolder.view).getMainImageView(),
+                            "dog").toBundle();
+                    startActivityForResult(intent, PLAY_MEDIA_REQUEST, bundle);
+                }
             }
             if(item instanceof ActionIcon){
                 ((ActionIcon) item).getOnClickListener().onClick(itemViewHolder.view);
@@ -140,5 +166,26 @@ public class VideoLibraryFragment extends BrowseFragment {
             VideoLibraryActivity activity = (VideoLibraryActivity) getActivity();
             activity.onResourceServerReconnectFailed(new ResourceServerConnectFailed());
         }
+    }
+
+    private void createMXPlayerDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setPositiveButton("Install", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.mxtech.videoplayer.ad")));
+
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setMessage("To play this video you'll need to download a player that supports it. MX Player is a good choice");
+        builder.create().show();
     }
 }
