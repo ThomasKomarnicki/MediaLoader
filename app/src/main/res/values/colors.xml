@@ -19,7 +19,9 @@
 
     <!--<color name="accent_color">#81e2e7</color>-->
     <color name="accent_color">@color/primary</color>
-    <color name="primary">#77c9dd</color>
+    <!--<color name="primary">#77c9dd</color>-->
+    <color name="primary">#6699cc</color>
+
 
     <color name="primary_background">#333637</color>
 </resources>

@@ -74,8 +74,12 @@ public class VideoLibraryActivity extends Activity {
 
     private void showResourceGroups(ResourcesResponse resourcesResponse){
         resourceGroups = resourcesResponse.getResourceGroups();
-        getFragmentManager().beginTransaction().replace(R.id.video_lib_content, videoLibraryFragment).commitAllowingStateLoss();
-        videoLibraryFragment.initViews(resourceGroups);
+        if(resourceGroups.size() == 0){
+            getFragmentManager().beginTransaction().replace(R.id.video_lib_content, new NoContentFragment()).commitAllowingStateLoss();
+        }else {
+            getFragmentManager().beginTransaction().replace(R.id.video_lib_content, videoLibraryFragment).commitAllowingStateLoss();
+            videoLibraryFragment.initViews(resourceGroups);
+        }
     }
 
     public void onRefreshed(ResourcesResponse resourcesResponse){
