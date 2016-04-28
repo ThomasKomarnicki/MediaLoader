@@ -14,8 +14,6 @@ import com.doglandia.medialoader.resourceserver.ResourceServer;
 
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -28,7 +26,7 @@ public class RefreshingFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_refreshing, null);
+        return inflater.inflate(R.layout.fragment_refreshing, container, false);
     }
 
     @Override

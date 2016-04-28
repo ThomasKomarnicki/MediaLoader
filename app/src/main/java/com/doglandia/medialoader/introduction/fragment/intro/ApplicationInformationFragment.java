@@ -14,6 +14,6 @@ public class ApplicationInformationFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_application_information, null);
+        return inflater.inflate(R.layout.fragment_application_information, container, false);
     }
 }

@@ -1,13 +1,11 @@
 package com.doglandia.medialoader.playmedia;
 
 import android.os.Bundle;
-import android.support.v17.leanback.app.PlaybackControlGlue;
 import android.support.v17.leanback.app.PlaybackOverlayFragment;
 import android.support.v17.leanback.widget.Action;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
 import android.support.v17.leanback.widget.ClassPresenterSelector;
 import android.support.v17.leanback.widget.ControlButtonPresenterSelector;
-import android.support.v17.leanback.widget.CursorObjectAdapter;
 import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.ListRowPresenter;
@@ -75,7 +73,7 @@ public class PlaybackControlsFragment extends PlaybackOverlayFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        int[] playbackSpeeds = new int[]{PlaybackControlGlue.PLAYBACK_SPEED_NORMAL, PlaybackControlGlue.PLAYBACK_SPEED_FAST_L0};
+//        int[] playbackSpeeds = new int[]{PlaybackControlGlue.PLAYBACK_SPEED_NORMAL, PlaybackControlGlue.PLAYBACK_SPEED_FAST_L0};
 //        playbackGlue = new PlaybackGlue(getActivity(), this, playbackSpeeds, playbackSpeeds);
 
         Resource resource = getActivity().getIntent().getParcelableExtra("resource");

@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v17.leanback.app.GuidedStepFragment;
-import android.support.v17.leanback.app.OnboardingFragment;
 
 import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.R;

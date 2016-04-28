@@ -2,7 +2,6 @@ package com.doglandia.medialoader.videolib;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +24,7 @@ public class ReconnectingFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_reconnecting, null);
+        return inflater.inflate(R.layout.fragment_reconnecting, container, false);
     }
 
     @Override

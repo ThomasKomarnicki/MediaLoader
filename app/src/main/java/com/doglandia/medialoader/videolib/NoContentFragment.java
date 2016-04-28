@@ -15,18 +15,16 @@ import com.doglandia.medialoader.R;
  */
 public class NoContentFragment extends Fragment {
 
-    private Button refreshButton;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_no_content, null);
+        return inflater.inflate(R.layout.fragment_no_content, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        refreshButton = (Button) view.findViewById(R.id.no_content_refresh);
+        Button refreshButton = (Button) view.findViewById(R.id.no_content_refresh);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

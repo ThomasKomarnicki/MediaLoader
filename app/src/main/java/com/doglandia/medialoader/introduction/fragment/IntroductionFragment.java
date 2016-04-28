@@ -1,8 +1,6 @@
 package com.doglandia.medialoader.introduction.fragment;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v17.leanback.app.OnboardingFragment;
@@ -94,7 +92,7 @@ public class IntroductionFragment extends OnboardingFragment {
     @Override
     protected View onCreateContentView(LayoutInflater inflater, ViewGroup container) {
         Log.d(TAG, "created content");
-        View view = inflater.inflate(R.layout.fragment_introduction, null);
+        View view = inflater.inflate(R.layout.fragment_introduction, container, false);
 
         onPageChanged(0,-1);
 

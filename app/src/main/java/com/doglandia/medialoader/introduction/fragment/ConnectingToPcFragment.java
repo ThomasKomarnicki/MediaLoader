@@ -33,7 +33,7 @@ import rx.functions.Action1;
  */
 public class ConnectingToPcFragment extends Fragment {
 
-    private CountDownTimer countDownTimer;
+//    private CountDownTimer countDownTimer;
 
     private boolean doneCountingDown = false;
     private List<ResourceGroup> resourceGroups;
@@ -47,7 +47,7 @@ public class ConnectingToPcFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_connecting, null);
+        return inflater.inflate(R.layout.fragment_connecting, container, false);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class ConnectingToPcFragment extends Fragment {
 
     private void startClientDiscovery(){
         // wait atlesat 3 seconds before continuing to the next screen
-        countDownTimer = new CountDownTimer(3000,1000) {
+        CountDownTimer countDownTimer = new CountDownTimer(3000,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -152,9 +152,7 @@ public class ConnectingToPcFragment extends Fragment {
 
         // else go to video library
 
-        if(resourceGroups.size() == 0){
-
-        }else{
+        if(resourceGroups.size() != 0){
             setFirstRunPreference();
             Intent intent = new Intent(getActivity(), VideoLibraryActivity.class);
             startActivity(intent);

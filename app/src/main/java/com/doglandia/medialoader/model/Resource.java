@@ -8,8 +8,6 @@ import android.support.v17.leanback.widget.Presenter;
 import com.bumptech.glide.Glide;
 import com.doglandia.medialoader.MediaLoaderApplication;
 
-import java.io.File;
-
 /**
  * Created by tdk10 on 2/21/2016.
  */

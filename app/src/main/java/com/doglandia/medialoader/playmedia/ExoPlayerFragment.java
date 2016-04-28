@@ -21,14 +21,9 @@ import com.google.android.exoplayer.ExoPlaybackException;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.MediaCodecTrackRenderer;
 import com.google.android.exoplayer.MediaCodecUtil;
-import com.google.android.exoplayer.TimeRange;
-import com.google.android.exoplayer.chunk.Format;
 import com.google.android.exoplayer.drm.UnsupportedDrmException;
-import com.google.android.exoplayer.metadata.id3.Id3Frame;
 import com.google.android.exoplayer.upstream.HttpDataSource;
 import com.google.android.exoplayer.util.Util;
-
-import java.util.List;
 
 public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, DemoPlayer.Listener {
 
@@ -50,7 +45,7 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.exo_player, null);
+        return inflater.inflate(R.layout.exo_player, container, false);
     }
 
     @Override
@@ -219,7 +214,7 @@ public class ExoPlayerFragment extends Fragment implements MediaPlayerFragment, 
         playerNeedsPrepare = true;
         if (e instanceof UnsupportedDrmException) {
             // Special case DRM failures.
-            UnsupportedDrmException unsupportedDrmException = (UnsupportedDrmException) e;
+//            UnsupportedDrmException unsupportedDrmException = (UnsupportedDrmException) e;
             e.printStackTrace();
         } else if (e instanceof ExoPlaybackException
                 && e.getCause() instanceof MediaCodecTrackRenderer.DecoderInitializationException) {

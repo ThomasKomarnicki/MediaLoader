@@ -2,15 +2,12 @@ package com.doglandia.medialoader.videolib;
 
 import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.Presenter;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.doglandia.medialoader.MediaLoaderApplication;
 import com.doglandia.medialoader.model.Resource;
-
-import java.io.File;
 
 /**
  * Created by tdk10 on 2/21/2016.

@@ -82,8 +82,7 @@ public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostF
 
     public String getMediaUrl(Resource resource) {
         // todo
-        String url = (getResourceServerEndpoint() + "/media/" + resource.getLocation()).replace(" ","%20");
-        return url;
+        return (getResourceServerEndpoint() + "/media/" + resource.getLocation()).replace(" ","%20");
     }
 
     public String getThumbnailUrl(Resource resource){

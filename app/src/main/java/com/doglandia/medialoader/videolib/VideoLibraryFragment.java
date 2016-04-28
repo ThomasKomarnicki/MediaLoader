@@ -39,7 +39,7 @@ public class VideoLibraryFragment extends BrowseFragment {
 
     public static final int MEDIA_COULDNT_CONNECT = 9;
 
-    private ArrayObjectAdapter mRowsAdapter;
+//    private ArrayObjectAdapter mRowsAdapter;
 
     private List<ResourceGroup> resourceGroups;
 
@@ -68,7 +68,7 @@ public class VideoLibraryFragment extends BrowseFragment {
     public void initViews(List<ResourceGroup> resourceGroups){
         this.resourceGroups = resourceGroups;
 
-        mRowsAdapter = new ArrayObjectAdapter(new ListRowPresenter());
+        ArrayObjectAdapter mRowsAdapter = new ArrayObjectAdapter(new ListRowPresenter());
         VideoPresenter presenter = new VideoPresenter();
 
         int i;

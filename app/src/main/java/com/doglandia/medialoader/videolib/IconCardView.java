@@ -2,7 +2,6 @@ package com.doglandia.medialoader.videolib;
 
 import android.content.Context;
 import android.support.v17.leanback.widget.BaseCardView;
-import android.support.v4.view.LayoutInflaterCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;

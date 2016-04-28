@@ -78,11 +78,7 @@ public class ClientDiscoverer {
         Response response = client.newCall(request).execute();
         String body = response.body().string();
 //        Log.d(TAG, "body of "+hostName + " = "+body);
-        if(body.contains("\"status\":200")){
-            return true;
-        }else{
-            return false;
-        }
+        return body.contains("\"status\":200");
     }
 
     private String getSubNet(Context context){
@@ -114,7 +110,7 @@ public class ClientDiscoverer {
         discoveryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, subnet,"128-255");
         discoveryTasksRunning +=2;
 
-        // also scan other subnet? one for hardwire one for wifi?
+        // also scan other subnet? one for hard wire one for wifi?
         discoveryTask = new DiscoveryTask();
         if(subnet.equals("192.168.1.")){
             discoveryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "192.168.0.","1-127");
@@ -136,9 +132,7 @@ public class ClientDiscoverer {
         protected String doInBackground(String... params) {
 
             String[] range = params[1].split("-");
-            String hostName = scanSubNet(params[0],Integer.valueOf(range[0]),Integer.valueOf(range[1])); // todo
-
-            return hostName;
+            return scanSubNet(params[0],Integer.valueOf(range[0]),Integer.valueOf(range[1])); // todo
         }
 
         @Override
