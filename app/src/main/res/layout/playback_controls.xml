@@ -26,14 +26,14 @@
         <fragment
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:name="com.doglandia.medialoader.playmedia.ExoPlayerFragment"
+            android:name="com.doglandia.hometheater.playmedia.ExoPlayerFragment"
             android:id="@+id/media_player_fragment"/>
 
     </FrameLayout>
 
     <fragment
         android:id="@+id/playback_controls_fragment"
-        android:name="com.doglandia.medialoader.playmedia.PlaybackControlsFragment"
+        android:name="com.doglandia.hometheater.playmedia.PlaybackControlsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
