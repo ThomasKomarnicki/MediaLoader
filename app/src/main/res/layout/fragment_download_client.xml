@@ -36,7 +36,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="www.todo.com/download"
+            android:text="www.AndroidHomeTheater.tv"
             android:id="@+id/textView3"
             android:textAppearance="@style/IntroTextAppearance"
             android:textSize="36sp"
