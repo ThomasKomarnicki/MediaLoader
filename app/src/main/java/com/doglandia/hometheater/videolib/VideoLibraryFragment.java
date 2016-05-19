@@ -30,9 +30,6 @@ import com.doglandia.hometheater.resourceserver.ResourceServer;
 
 import java.util.List;
 
-/**
- * Created by tdk10 on 2/21/2016.
- */
 public class VideoLibraryFragment extends BrowseFragment {
 
     public static final int PLAY_MEDIA_REQUEST = 8;

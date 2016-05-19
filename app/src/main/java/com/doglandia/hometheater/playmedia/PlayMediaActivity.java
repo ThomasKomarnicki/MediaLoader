@@ -11,9 +11,6 @@ import com.doglandia.hometheater.R;
 import com.doglandia.hometheater.model.Resource;
 import com.doglandia.hometheater.resourceserver.ResourceServer;
 
-/**
- * Created by tdk10 on 2/21/2016.
- */
 public class PlayMediaActivity extends Activity{
 
 //    private VideoView mVideoView;

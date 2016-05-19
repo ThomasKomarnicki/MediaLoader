@@ -6,9 +6,6 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by tdk10 on 2/21/2016.
- */
 public class ResourceGroup implements Parcelable{
 
 //    private String name;

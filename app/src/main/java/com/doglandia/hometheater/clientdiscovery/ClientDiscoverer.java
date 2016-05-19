@@ -21,9 +21,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/**
- * Created by tdk10 on 2/22/2016.
- */
 public class ClientDiscoverer {
 
     private static final String TAG = "ClientDiscoverer";

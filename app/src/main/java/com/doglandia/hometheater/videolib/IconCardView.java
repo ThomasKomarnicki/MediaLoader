@@ -9,9 +9,6 @@ import android.widget.TextView;
 
 import com.doglandia.hometheater.R;
 
-/**
- * Created by tdk10 on 3/30/2016.
- */
 public class IconCardView extends BaseCardView {
 
     private ImageView icon;

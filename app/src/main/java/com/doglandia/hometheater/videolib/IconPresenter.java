@@ -3,9 +3,6 @@ package com.doglandia.hometheater.videolib;
 import android.support.v17.leanback.widget.Presenter;
 import android.view.ViewGroup;
 
-/**
- * Created by tdk10 on 3/29/2016.
- */
 public class IconPresenter extends Presenter {
 
     public IconPresenter(){

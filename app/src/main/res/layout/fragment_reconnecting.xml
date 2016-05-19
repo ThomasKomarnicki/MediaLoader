@@ -21,13 +21,11 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Trying to connect to your PC"
-                android:id="@+id/textView"
                 android:layout_gravity="center_horizontal" />
 
             <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/progressBar"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="40dp" />
 
@@ -51,7 +49,6 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
                 android:text="Could not connect to your PC"
-                android:id="@+id/textView8"
                 android:layout_gravity="center_horizontal" />
 
             <TextView
@@ -59,7 +56,6 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Visit www.todo.com for help"
-                android:id="@+id/textView11"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="center_horizontal" />
 

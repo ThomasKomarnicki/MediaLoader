@@ -15,7 +15,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView4"
             android:text="@string/app_introduction1"
             android:layout_gravity="center_horizontal"
             android:textAppearance="@style/IntroTextAppearance"
@@ -36,7 +35,6 @@
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:id="@+id/imageView2"
                     android:src="@drawable/ic_desktop_windows_black_24dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
@@ -45,7 +43,6 @@
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:id="@+id/imageView3"
                     android:src="@drawable/ic_sync_black_24dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
@@ -56,7 +53,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView5"
             android:text="@string/app_intro_get_you_started"
             android:layout_gravity="center_horizontal"
             android:textAppearance="@style/IntroTextAppearance"

@@ -8,9 +8,6 @@ import android.support.v17.leanback.widget.Presenter;
 import com.bumptech.glide.Glide;
 import com.doglandia.hometheater.MediaLoaderApplication;
 
-/**
- * Created by tdk10 on 2/21/2016.
- */
 public class Resource implements Parcelable{
 
     private String name;

@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 
 import com.doglandia.hometheater.R;
 
-/**
- * Created by tdk10 on 3/14/2016.
- */
 public class SelectVideoLocationsFragment extends Fragment {
 
     @Nullable

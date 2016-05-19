@@ -28,9 +28,6 @@ import java.util.List;
 import rx.functions.Action1;
 
 
-/**
- * Created by tdk10 on 2/27/2016.
- */
 public class ConnectingToPcFragment extends Fragment {
 
 //    private CountDownTimer countDownTimer;

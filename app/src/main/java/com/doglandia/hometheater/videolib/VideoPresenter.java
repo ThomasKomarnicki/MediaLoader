@@ -9,9 +9,6 @@ import com.bumptech.glide.Glide;
 import com.doglandia.hometheater.MediaLoaderApplication;
 import com.doglandia.hometheater.model.Resource;
 
-/**
- * Created by tdk10 on 2/21/2016.
- */
 public class VideoPresenter extends Presenter {
 
     private static final int CARD_WIDTH = (int) (313 * 1.5);

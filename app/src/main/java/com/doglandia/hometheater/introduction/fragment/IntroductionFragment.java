@@ -14,9 +14,6 @@ import com.doglandia.hometheater.introduction.fragment.intro.ApplicationInformat
 import com.doglandia.hometheater.introduction.fragment.intro.DownloadClientFragment;
 import com.doglandia.hometheater.introduction.fragment.intro.SelectVideoLocationsFragment;
 
-/**
- * Created by tdk10 on 2/27/2016.
- */
 public class IntroductionFragment extends OnboardingFragment {
 
     private static final String TAG = "IntroFragment";

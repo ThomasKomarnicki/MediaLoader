@@ -12,9 +12,6 @@ import com.doglandia.hometheater.introduction.fragment.ConnectingToPcFragment;
 import com.doglandia.hometheater.introduction.fragment.IntroductionFragment;
 import com.doglandia.hometheater.videolib.VideoLibraryActivity;
 
-/**
- * Created by tdk10 on 2/27/2016.
- */
 public class IntroductionActivity extends Activity {
 
     public static final String FIRST_RUN_CONNECTED = "first_run_connected";

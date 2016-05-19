@@ -13,7 +13,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Your computer is connected but there are no video folders selected"
-            android:id="@+id/textView12"
             android:layout_gravity="center"
             android:textSize="24sp" />
 
@@ -33,7 +32,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Visit "
-                    android:id="@+id/textView14"
                     android:layout_gravity="center"
                     android:textSize="24sp" />
 
@@ -41,7 +39,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="www.dogland.com/get-started "
-                    android:id="@+id/textView13"
                     android:layout_gravity="center"
                     android:textSize="24sp"
                     android:textColor="@color/primary" />
@@ -50,7 +47,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="for more help"
-                    android:id="@+id/textView15"
                     android:layout_gravity="center"
                     android:textSize="24sp" />
             </LinearLayout>

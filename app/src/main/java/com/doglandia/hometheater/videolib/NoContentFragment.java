@@ -10,9 +10,6 @@ import android.widget.Button;
 
 import com.doglandia.hometheater.R;
 
-/**
- * Created by tdk10 on 4/21/2016.
- */
 public class NoContentFragment extends Fragment {
 
     @Nullable

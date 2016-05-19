@@ -13,9 +13,6 @@ import com.doglandia.hometheater.event.ResourceServerConnectFailed;
 import com.squareup.otto.Subscribe;
 
 
-/**
- * Created by tdk10 on 2/28/2016.
- */
 public class ReconnectingFragment extends Fragment {
 
     private View connectingView;

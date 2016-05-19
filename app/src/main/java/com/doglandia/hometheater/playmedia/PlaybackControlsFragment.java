@@ -26,9 +26,6 @@ import com.doglandia.hometheater.videolib.VideoPresenter;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * Created by tdk10 on 2/26/2016.
- */
 public class PlaybackControlsFragment extends PlaybackOverlayFragment {
 
     private static final String TAG = "PlabackControls";

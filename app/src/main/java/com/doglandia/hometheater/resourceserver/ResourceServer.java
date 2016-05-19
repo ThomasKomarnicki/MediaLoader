@@ -18,9 +18,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by tdk10 on 2/21/2016.
- */
 public class ResourceServer implements ServerInterface, ClientDiscoverer.OnHostFoundListener{
 
     public static final String PORT = "8988";

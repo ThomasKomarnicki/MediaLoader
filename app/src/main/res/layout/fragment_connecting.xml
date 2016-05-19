@@ -14,13 +14,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Connecting to your PC..."
-            android:id="@+id/textView" />
+            android:text="Connecting to your PC..." />
 
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/progressBar"
             android:layout_gravity="center"
             android:layout_marginTop="40dp" />
     </LinearLayout>
@@ -37,7 +35,6 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
             android:text="Could not connect to your PC"
-            android:id="@+id/textView9"
             android:layout_gravity="center_horizontal" />
 
         <TextView
@@ -45,7 +42,6 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Make sure you set up the PC Client application"
-            android:id="@+id/textView10"
             android:layout_marginTop="20dp"
             android:layout_gravity="center_horizontal" />
 

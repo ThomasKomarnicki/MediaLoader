@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by tdk10 on 2/21/2016.
- */
 public class ResourcesResponse {
 
     private List<ResourceGroup> resourceGroups;

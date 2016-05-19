@@ -16,9 +16,6 @@ import java.util.List;
 
 import rx.functions.Action1;
 
-/**
- * Created by tdk10 on 2/21/2016.
- */
 public class VideoLibraryActivity extends Activity {
 
     private VideoLibraryFragment videoLibraryFragment;

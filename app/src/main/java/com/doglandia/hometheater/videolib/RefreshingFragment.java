@@ -18,9 +18,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by tdk10 on 4/16/2016.
- */
 public class RefreshingFragment extends Fragment {
 
     @Nullable

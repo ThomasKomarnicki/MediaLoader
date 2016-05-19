@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "249523769859",
+    "firebase_url": "https://home-theater-tv.firebaseio.com",
+    "project_id": "home-theater-tv",
+    "storage_bucket": "home-theater-tv.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:249523769859:android:260fe2c83f992397",
+        "android_client_info": {
+          "package_name": "com.doglandia.medialoader"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "249523769859-b0aofn02asff43mf4jq2ncaalqpfb69v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.doglandia.medialoader",
+            "certificate_hash": "D8C063D09D59893DE1748E223B5DF9268C147A89"
+          }
+        },
+        {
+          "client_id": "249523769859-vo711tt4tfplcqip9ttnk3dbftu0b8df.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwGp221tGdg81qXjC-CemjHlayWBwsgkU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "249523769859-vo711tt4tfplcqip9ttnk3dbftu0b8df.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

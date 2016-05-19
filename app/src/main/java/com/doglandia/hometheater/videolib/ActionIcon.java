@@ -2,9 +2,6 @@ package com.doglandia.hometheater.videolib;
 
 import android.view.View;
 
-/**
- * Created by tdk10 on 3/29/2016.
- */
 public class ActionIcon {
 
     private int resId;
